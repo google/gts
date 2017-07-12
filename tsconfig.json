@@ -1,0 +1,7 @@
+{
+  "extends": "./tsconfig-google.json",
+  "include": [
+    "src/*.ts",
+    "test/*.ts"
+  ]
+}

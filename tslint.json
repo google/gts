@@ -1,0 +1,31 @@
+{
+  "rules": {
+    "class-name": true,
+    "comment-format": [true, "check-space"],
+    "eofline": true,
+    "forin": true,
+    "indent": [true, "spaces"],
+    "jsdoc-format": true,
+    "label-position": true,
+    "no-arg": true,
+    "no-conditional-assignment": true,
+    "no-construct": true,
+    "no-debugger": true,
+    "no-duplicate-variable": true,
+    "no-empty": true,
+    "no-inferrable-types": true,
+    "no-internal-module": true,
+    "no-shadowed-variable": true,
+    "no-switch-case-fall-through": true,
+    "no-trailing-whitespace": true,
+    "no-unused-expression": true,
+    "no-use-before-declare": true,
+    "no-var-keyword": true,
+    "quotemark": [true, "single"],
+    "radix": true,
+    "semicolon": [true, "always"],
+    "switch-default": true,
+    "triple-equals": [true, "allow-null-check"],
+    "variable-name": [true, "check-format", "ban-keywords"]
+  }
+}

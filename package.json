@@ -1,0 +1,59 @@
+{
+  "name": "google-ts-style",
+  "version": "0.0.1",
+  "description": "Google TypeScript Style",
+  "main": "build/src/index.js",
+  "bin": {
+    "google-ts-style": "build/src/cli.js",
+    "gts": "build/src/cli.js"
+  },
+  "files": [
+    ".clang-format",
+    "CHANGELOG.md",
+    "LICENSE",
+    "README.md",
+    "build/src",
+    "build/types",
+    "tsconfig.json",
+    "tslint.json"
+  ],
+  "scripts": {
+    "build": "npm run compile",
+    "clean": "rm -rf ./build/",
+    "compile": "tsc -p . --rootDir . --outDir build/",
+    "format": "clang-format -i -style='{Language: JavaScript, BasedOnStyle: Google, ColumnLimit: 80}' src/*.ts",
+    "lint": "tslint -c tslint.json  --project . --type-check -t codeFrame",
+    "lint-fix": "tslint -c tslint.json --project .  --type-check -t codeFrame --fix",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines": {
+    "node": ">=4"
+  },
+  "keywords": [],
+  "author": "Google Inc.",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "inquirer": "^3.2.1",
+    "meow": "^3.7.0",
+    "pify": "^3.0.0",
+    "read-package-json": "^2.0.10",
+    "update-notifier": "^2.2.0",
+    "write-file-atomic": "^2.1.0"
+  },
+  "devDependencies": {
+    "@types/inquirer": "0.0.35",
+    "@types/meow": "^3.6.2",
+    "@types/node": "^8.0.17",
+    "@types/pify": "0.0.28",
+    "@types/update-notifier": "^1.0.1",
+    "clang-format": "^1.0.53",
+    "source-map-support": "^0.4.15",
+    "tslint": "^5.5.0",
+    "typescript": "^2.4.1"
+  },
+  "peerDependencies": {
+    "clang-format": "^1.0.53",
+    "typescript": "^2.4.1",
+    "tslint": "^5.5.0"
+  }
+}
