@@ -25,6 +25,7 @@
     "format": "clang-format -i -style='{Language: JavaScript, BasedOnStyle: Google, ColumnLimit: 80}' src/*.ts",
     "lint": "tslint -c tslint.json  --project . --type-check -t codeFrame",
     "lint-fix": "tslint -c tslint.json --project .  --type-check -t codeFrame --fix",
+    "release": "standard-version",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "engines": {
@@ -52,6 +53,7 @@
     "clang-format": "^1.0.53",
     "husky": "^0.14.3",
     "source-map-support": "^0.4.15",
+    "standard-version": "^4.2.0",
     "tslint": "^5.5.0",
     "typescript": "^2.4.1"
   },
