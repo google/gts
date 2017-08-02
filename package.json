@@ -2,6 +2,7 @@
   "name": "google-ts-style",
   "version": "0.1.1",
   "description": "Google TypeScript Style",
+  "repository": "google/ts-style",
   "main": "build/src/index.js",
   "bin": {
     "google-ts-style": "build/src/cli.js",
