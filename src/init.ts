@@ -124,10 +124,12 @@ async function generatePackageJson(
   }
 
   console.log('Writing package.json...');
-  try {
-    await write('./package.json', JSON.stringify(packageJson, null, '  '));
-  } catch (err) {
-    throw err;
+  if (!options.dryRun) {
+    try {
+      await write('./package.json', JSON.stringify(packageJson, null, '  '));
+    } catch (err) {
+      throw err;
+    }
   }
   const preview = {
     scripts: packageJson.scripts,
@@ -168,10 +170,12 @@ async function generateTsConfig(options: Options): Promise<void> {
 
   if (writeTsConfig) {
     console.log('Writing tsconfig.json...');
-    try {
-      await write('./tsconfig.json', tsconfig);
-    } catch (err) {
-      throw err;
+    if (!options.dryRun) {
+      try {
+        await write('./tsconfig.json', tsconfig);
+      } catch (err) {
+        throw err;
+      }
     }
     console.dir(JSON.parse(tsconfig));
   }
