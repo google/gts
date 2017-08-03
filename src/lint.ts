@@ -25,8 +25,9 @@ const tslintPath = path.join(gtsRootDir, '../tslint/bin/tslint');
  */
 export async function lint(options: Options): Promise<void> {
   const pkgDir = path.relative(options.targetRootDir, gtsRootDir);
-  const args = ['-c', path.join(pkgDir, 'tslint.json'), '-p',
-                  options.targetRootDir, '-t', 'codeFrame', '--type-check'];
-  cp.spawn(tslintPath, args, { stdio: "inherit" });
-
+  const args = [
+    '-c', path.join(pkgDir, 'tslint.json'), '-p', options.targetRootDir, '-t',
+    'codeFrame', '--type-check'
+  ];
+  cp.spawn(tslintPath, args, {stdio: 'inherit'});
 }

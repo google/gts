@@ -37,27 +37,28 @@
   "author": "Google Inc.",
   "license": "Apache-2.0",
   "dependencies": {
+    "clang-format": "^1.0.53",
+    "glob": "^7.1.2",
     "inquirer": "^3.2.1",
     "meow": "^3.7.0",
     "pify": "^3.0.0",
     "read-package-json": "^2.0.10",
+    "tslint": "^5.5.0",
     "update-notifier": "^2.2.0",
-    "write-file-atomic": "^2.1.0",
-    "tslint": "^5.5.0"
+    "write-file-atomic": "^2.1.0"
   },
   "devDependencies": {
+    "@types/glob": "^5.0.30",
     "@types/inquirer": "0.0.35",
     "@types/meow": "^3.6.2",
     "@types/node": "^8.0.17",
     "@types/pify": "0.0.28",
     "@types/update-notifier": "^1.0.1",
-    "clang-format": "^1.0.53",
     "source-map-support": "^0.4.15",
     "standard-version": "^4.2.0",
     "typescript": "^2.4.1"
   },
   "peerDependencies": {
-    "clang-format": "^1.0.53",
     "typescript": "^2.4.1"
   }
 }

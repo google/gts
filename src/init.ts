@@ -49,16 +49,11 @@ async function generatePackageJson(
     packageJson: any, options: Options): Promise<void> {
   let edits = false;
   const outDir = 'build/';
-  const defaultSources = 'src/*.ts test/*.ts';
   const scripts: Bag<string> = {
     build: 'npm run compile',
     clean: 'rm -rf ./build/',
     compile: `tsc -p . --rootDir . --outDir ${outDir}`,
-    // TODO(ofrobots): use a clang-format wrapper so that it can use the files,
-    // include, and exclude sections from tsconfig.json.
-    format:
-        `clang-format -i -style="{Language: JavaScript, BasedOnStyle: Google,` +
-        ` ColumnLimit: 80}" ${defaultSources}`,
+    fix: `gts fix`,
     lint: `gts lint`
   };
 
