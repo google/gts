@@ -50,7 +50,6 @@ async function generatePackageJson(
   let edits = false;
   const outDir = 'build/';
   const defaultSources = 'src/*.ts test/*.ts';
-  const pkgDir = path.relative(options.targetRootDir, gtsRootDir);
   const scripts: Bag<string> = {
     build: 'npm run compile',
     clean: 'rm -rf ./build/',
@@ -60,8 +59,7 @@ async function generatePackageJson(
     format:
         `clang-format -i -style="{Language: JavaScript, BasedOnStyle: Google,` +
         ` ColumnLimit: 80}" ${defaultSources}`,
-    lint: `tslint -c ${path.join(pkgDir, 'tslint.json')} -p . -t codeFrame ` +
-        `--type-check`
+    lint: `gts lint`
   };
 
   if (!packageJson.scripts) {

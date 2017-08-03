@@ -17,6 +17,7 @@
 import * as meow from 'meow';
 import * as updateNotifier from 'update-notifier';
 import {init} from './init';
+import {lint} from './lint';
 
 export class Options {
   dryRun: boolean;
@@ -30,6 +31,7 @@ const cli = meow(`
 
     Verb can be:
       init        Adds default npm scripts to your package.json.
+      lint        Runs the lint tool against all *.ts files in the cwd.
 
   Options
     --help        Prints this help message.
@@ -37,7 +39,8 @@ const cli = meow(`
     --dry-run     Don't make any acutal changes.
 
 	Examples
-	  $ gts init
+    $ gts init
+    $ gts lint
 `);
 
 function usage(msg?: string): void {
@@ -64,7 +67,9 @@ switch (verb) {
   case 'init':
     init(options);
     break;
-
+  case 'lint':
+    lint(options);
+    break;
   default:
     usage(`Unknown verb: ${verb}`);
     break;

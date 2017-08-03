@@ -40,7 +40,8 @@
     "pify": "^3.0.0",
     "read-package-json": "^2.0.10",
     "update-notifier": "^2.2.0",
-    "write-file-atomic": "^2.1.0"
+    "write-file-atomic": "^2.1.0",
+    "tslint": "^5.5.0"
   },
   "devDependencies": {
     "@types/inquirer": "0.0.35",
@@ -51,12 +52,10 @@
     "clang-format": "^1.0.53",
     "source-map-support": "^0.4.15",
     "standard-version": "^4.2.0",
-    "tslint": "^5.5.0",
     "typescript": "^2.4.1"
   },
   "peerDependencies": {
     "clang-format": "^1.0.53",
-    "typescript": "^2.4.1",
-    "tslint": "^5.5.0"
+    "typescript": "^2.4.1"
   }
 }
