@@ -17,17 +17,14 @@ import * as cp from 'child_process';
 import * as path from 'path';
 import {Options} from './cli';
 
-const gtsRootDir = path.join(__dirname, '../..');
-const tslintPath = path.join(gtsRootDir, '../tslint/bin/tslint');
-
 /**
  * Run tslint with the default configuration
  */
 export async function lint(options: Options): Promise<void> {
-  const pkgDir = path.relative(options.targetRootDir, gtsRootDir);
-  const args = [
-    '-c', path.join(pkgDir, 'tslint.json'), '-p', options.targetRootDir, '-t',
-    'codeFrame', '--type-check'
-  ];
-  cp.spawn(tslintPath, args, {stdio: 'inherit'});
+  const tslintPath = path.join(options.gtsRootDir, '../tslint/bin/tslint');
+  const pkgDir = path.relative(options.targetRootDir, options.gtsRootDir);
+  const args = ['-c', path.join(pkgDir, 'tslint.json'), '-p',
+                  options.targetRootDir, '-t', 'codeFrame', '--type-check'];
+  cp.spawn(tslintPath, args, { stdio: 'inherit' });
+
 }

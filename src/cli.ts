@@ -20,8 +20,9 @@ import {init} from './init';
 import {lint} from './lint';
 import {fix} from './fix';
 
-export class Options {
+export interface Options {
   dryRun: boolean;
+  gtsRootDir: string;
   targetRootDir: string;
   yes: boolean;
 }
@@ -62,6 +63,7 @@ if (cli.input.length !== 1) {
 const verb = cli.input[0];
 const options: Options = {
   dryRun: cli.flags.dryRun || false,
+  gtsRootDir: `${process.cwd()}/node_modules/google-ts-style`,
   targetRootDir: process.cwd(),
   yes: cli.flags.yes || cli.flags.y || false
 };
