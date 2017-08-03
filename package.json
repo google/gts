@@ -21,7 +21,6 @@
   "scripts": {
     "build": "npm run compile",
     "clean": "rm -rf ./build/",
-    "commitmsg": "commitlint -e",
     "compile": "tsc -p . --rootDir . --outDir build/",
     "format": "clang-format -i -style='{Language: JavaScript, BasedOnStyle: Google, ColumnLimit: 80}' src/*.ts",
     "lint": "tslint -c tslint.json  --project . --type-check -t codeFrame",
@@ -44,15 +43,12 @@
     "write-file-atomic": "^2.1.0"
   },
   "devDependencies": {
-    "@commitlint/cli": "^3.1.0",
-    "@commitlint/config-angular": "^3.1.0",
     "@types/inquirer": "0.0.35",
     "@types/meow": "^3.6.2",
     "@types/node": "^8.0.17",
     "@types/pify": "0.0.28",
     "@types/update-notifier": "^1.0.1",
     "clang-format": "^1.0.53",
-    "husky": "^0.14.3",
     "source-map-support": "^0.4.15",
     "standard-version": "^4.2.0",
     "tslint": "^5.5.0",
