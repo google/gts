@@ -43,7 +43,8 @@ async function query(
   return answers.query;
 }
 
-async function addScripts(packageJson: any, options: Options): Promise<boolean> {
+async function addScripts(
+    packageJson: any, options: Options): Promise<boolean> {
   let edits = false;
   const outDir = 'build/';
   const scripts: Bag<string> = {
@@ -151,7 +152,7 @@ async function generateTsConfig(options: Options): Promise<void> {
         include: ['src/*.ts', 'src/**/*.ts', 'test/*.ts', 'test/**/*.ts'],
         exclude: ['node_modules']
       },
-      null, '  '); // TODO: preserve the indent from the input file.
+      null, '  ');  // TODO: preserve the indent from the input file.
 
   let writeTsConfig = true;
   if (existing && existing === tsconfig) {

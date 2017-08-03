@@ -23,8 +23,9 @@ import {Options} from './cli';
 export async function lint(options: Options): Promise<void> {
   const tslintPath = path.join(options.gtsRootDir, '../tslint/bin/tslint');
   const pkgDir = path.relative(options.targetRootDir, options.gtsRootDir);
-  const args = ['-c', path.join(pkgDir, 'tslint.json'), '-p',
-                  options.targetRootDir, '-t', 'codeFrame', '--type-check'];
-  cp.spawn(tslintPath, args, { stdio: 'inherit' });
-
+  const args = [
+    '-c', path.join(pkgDir, 'tslint.json'), '-p', options.targetRootDir, '-t',
+    'codeFrame', '--type-check'
+  ];
+  cp.spawn(tslintPath, args, {stdio: 'inherit'});
 }
