@@ -22,11 +22,13 @@
     "build": "npm run compile",
     "clean": "rm -rf ./build/",
     "compile": "tsc -p . --rootDir . --outDir build/",
+    "format-check": "echo \"TODO\"",
     "format": "clang-format -i -style='{Language: JavaScript, BasedOnStyle: Google, ColumnLimit: 80}' src/*.ts",
     "lint": "tslint -c tslint.json  --project . --type-check -t codeFrame",
     "lint-fix": "tslint -c tslint.json --project .  --type-check -t codeFrame --fix",
     "release": "standard-version",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"TODO\"",
+    "posttest": "npm run lint && npm run format-check"
   },
   "engines": {
     "node": ">=4"
