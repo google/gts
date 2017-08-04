@@ -52,11 +52,10 @@ async function query(
 async function addScripts(
     packageJson: any, options: Options): Promise<boolean> {
   let edits = false;
-  const outDir = 'build/';
   const scripts: Bag<string> = {
     build: 'npm run compile',
     clean: 'rm -rf ./build/',
-    compile: `tsc -p . --rootDir . --outDir ${outDir}`,
+    compile: `tsc -p .`,
     fix: `gts fix`,
     lint: `gts lint`
   };
@@ -156,6 +155,7 @@ async function generateTsConfig(options: Options): Promise<void> {
   const tsconfig = JSON.stringify(
       {
         extends: `${path.join(pkgDir, 'tsconfig-google.json')}`,
+        compilerOptions: {rootDir: '.', outDir: 'build'},
         include: ['src/*.ts', 'src/**/*.ts', 'test/*.ts', 'test/**/*.ts'],
         exclude: ['node_modules']
       },
