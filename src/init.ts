@@ -54,7 +54,7 @@ async function addScripts(
   let edits = false;
   const scripts: Bag<string> = {
     build: 'npm run compile',
-    clean: 'rm -rf ./build/',
+    clean: 'gts clean',
     compile: `tsc -p .`,
     fix: `gts fix`,
     lint: `gts lint`
@@ -89,12 +89,8 @@ async function addScripts(
 async function addDependencies(
     packageJson: any, options: Options): Promise<boolean> {
   let edits = false;
-  const deps: Bag<string> = {
-    'google-ts-style': 'latest',
-    'clang-format': '^1.0.53',
-    'typescript': '^2.4.1',
-    'tslint': '^5.5.0'
-  };
+  const deps:
+      Bag<string> = {'google-ts-style': 'latest', 'typescript': '^2.4.1'};
 
   if (!packageJson.devDependencies) {
     packageJson.devDependencies = {};
