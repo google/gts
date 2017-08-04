@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import * as chalk from 'chalk';
 import * as cp from 'child_process';
 import * as fs from 'fs';
 import * as inquirer from 'inquirer';
@@ -33,13 +34,18 @@ function noop() {
 }
 
 async function query(
-    message: string, defaultVal: boolean, options: Options): Promise<boolean> {
+    message: string, question: string, defaultVal: boolean,
+    options: Options): Promise<boolean> {
   if (options.yes) {
     return true;
   }
 
+  if (message) {
+    console.log(message);
+  }
+
   const answers = await inquirer.prompt(
-      {type: 'confirm', name: 'query', message: message, default: defaultVal});
+      {type: 'confirm', name: 'query', message: question, default: defaultVal});
   return answers.query;
 }
 
@@ -66,9 +72,10 @@ async function addScripts(
 
     if (existing !== target) {
       if (existing) {
-        const message = `package.json already has a script for '${script}' ` +
-            `with contents:\n\t${existing}\nOverwrite with\n\t${target}\n?`;
-        install = await query(message, false, options);
+        const message =
+            `package.json already has a script for ${chalk.bold(script)}:\n` +
+            `-${chalk.red(existing)}\n+${chalk.green(target)}`;
+        install = await query(message, 'Replace', false, options);
       }
 
       if (install) {
@@ -101,9 +108,9 @@ async function addDependencies(
 
     if (existing !== target) {
       if (existing) {
-        const message = `Already have devDependency on ${dep}@${existing}.` +
-            `Overwrite with ${dep}@${target}?`;
-        install = await query(message, false, options);
+        const message = `Already have devDependency for ${chalk.bold(dep)}:\n` +
+            `-${chalk.red(existing)}\n+${chalk.green(target)}`;
+        install = await query(message, 'Overwrite', false, options);
       }
 
       if (install) {
@@ -160,7 +167,8 @@ async function generateTsConfig(options: Options): Promise<void> {
     return;
   } else if (existing) {
     writeTsConfig = await query(
-        `'tsconfig.json' already exists. Overwrite?`, false, options);
+        `${chalk.bold('tsconfig.json')} already exists`, 'Overwrite', false,
+        options);
   }
 
   if (writeTsConfig) {
@@ -184,8 +192,9 @@ export async function init(options: Options): Promise<void> {
     if (err.code !== 'ENOENT') {
       throw new Error(`Unable to open package.json file: ${err.message}`);
     }
-    const generate =
-        await query(`package.json does not exist. Generate?`, true, options);
+    const generate = await query(
+        `${chalk.bold('package.json')} does not exist.`, `Generate`, true,
+        options);
 
     if (!generate) {
       console.log('Please run from a directory with your package.json.');
