@@ -21,7 +21,7 @@
   "scripts": {
     "build": "npm run compile",
     "clean": "rm -rf ./build/",
-    "compile": "tsc -p . --rootDir . --outDir build/",
+    "compile": "tsc -p .",
     "format-check": "echo \"TODO\"",
     "format": "clang-format -i -style='{Language: JavaScript, BasedOnStyle: Google, ColumnLimit: 80}' src/*.ts",
     "lint": "tslint -c tslint.json  --project . --type-check -t codeFrame",
