@@ -24,8 +24,6 @@ const readJson = pify(require('read-package-json'));
 const read = pify(fs.readFile);
 const write = pify(require('write-file-atomic'));
 
-const gtsRootDir = path.join(__dirname, '../..');
-
 interface Bag<T> {
   [script: string]: T;
 }
@@ -45,8 +43,8 @@ async function query(
   return answers.query;
 }
 
-async function generatePackageJson(
-    packageJson: any, options: Options): Promise<void> {
+async function addScripts(
+    packageJson: any, options: Options): Promise<boolean> {
   let edits = false;
   const outDir = 'build/';
   const scripts: Bag<string> = {
@@ -79,8 +77,12 @@ async function generatePackageJson(
       }
     }
   }
+  return edits;
+}
 
-  // Install dev-dependencies.
+async function addDependencies(
+    packageJson: any, options: Options): Promise<boolean> {
+  let edits = false;
   const deps: Bag<string> = {
     'google-ts-style': 'latest',
     'clang-format': '^1.0.53',
@@ -111,11 +113,11 @@ async function generatePackageJson(
     }
   }
 
-  if (!edits) {
-    console.log('No edits needed in package.json.');
-    return;
-  }
+  return edits;
+}
 
+async function writePackageJson(
+    packageJson: any, options: Options): Promise<void> {
   console.log('Writing package.json...');
   if (!options.dryRun) {
     try {
@@ -143,14 +145,14 @@ async function generateTsConfig(options: Options): Promise<void> {
     }
   }
 
-  const pkgDir = path.relative(options.targetRootDir, gtsRootDir);
+  const pkgDir = path.relative(options.targetRootDir, options.gtsRootDir);
   const tsconfig = JSON.stringify(
       {
         extends: `${path.join(pkgDir, 'tsconfig-google.json')}`,
         include: ['src/*.ts', 'src/**/*.ts', 'test/*.ts', 'test/**/*.ts'],
         exclude: ['node_modules']
       },
-      null, '  ');
+      null, '  ');  // TODO: preserve the indent from the input file.
 
   let writeTsConfig = true;
   if (existing && existing === tsconfig) {
@@ -185,18 +187,26 @@ export async function init(options: Options): Promise<void> {
     const generate =
         await query(`package.json does not exist. Generate?`, true, options);
 
-    if (generate) {
-      try {
-        cp.spawnSync('npm', ['init', '-y']);
-        packageJson = await readJson('./package.json', noop, true /* strict */);
-      } catch (err2) {
-        throw err2;
-      }
+    if (!generate) {
+      console.log('Please run from a directory with your package.json.');
+      return;
+    }
+
+    try {
+      // TODO(ofrobots): add proper error handling.
+      cp.spawnSync('npm', ['init', '-y']);
+      packageJson = await readJson('./package.json', noop, true /* strict */);
+    } catch (err2) {
+      throw err2;
     }
   }
 
-  if (packageJson) {
-    await generatePackageJson(packageJson, options);
-    await generateTsConfig(options);
+  const addedDeps = await addDependencies(packageJson, options);
+  const addedScripts = await addScripts(packageJson, options);
+  if (addedDeps || addedScripts) {
+    await writePackageJson(packageJson, options);
+  } else {
+    console.log('No edits needed in package.json.');
   }
+  await generateTsConfig(options);
 }
