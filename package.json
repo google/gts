@@ -37,6 +37,7 @@
   "author": "Google Inc.",
   "license": "Apache-2.0",
   "dependencies": {
+    "chalk": "^2.0.1",
     "clang-format": "^1.0.53",
     "glob": "^7.1.2",
     "inquirer": "^3.2.1",
@@ -48,6 +49,7 @@
     "write-file-atomic": "^2.1.0"
   },
   "devDependencies": {
+    "@types/chalk": "^0.4.31",
     "@types/glob": "^5.0.30",
     "@types/inquirer": "0.0.35",
     "@types/meow": "^3.6.2",
