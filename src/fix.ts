@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 import * as cp from 'child_process';
-import * as glob from 'glob';
 import * as os from 'os';
 import * as path from 'path';
-import * as pify from 'pify';
 
 import {Options} from './cli';
+import * as tscfg from './tscfg';
 
 /**
  * Run tslint fix and clang fix with the default configuration
@@ -42,11 +41,8 @@ export async function fix(options: Options): Promise<void> {
     'codeFrame', '--fix'
   ];
 
-  const globby = pify(glob);
-  // TODO: We should glob based on the files, includes and
-  // excludes section of the tsconfig.json file.
-  const srcGlobPath = `${options.targetRootDir}/src/**/*.ts`;
-  const srcFiles = await globby(srcGlobPath);
+  const tsconfig = await tscfg.getTsConfig(options.targetRootDir);
+  const srcFiles = await tscfg.getInputFiles(tsconfig);
   const initClangArgs = [
     '-i', '-style',
     '{Language: JavaScript, BasedOnStyle: Google, ColumnLimit: 80}'
