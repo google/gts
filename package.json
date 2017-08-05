@@ -23,11 +23,11 @@
     "clean": "rm -rf ./build/",
     "compile": "tsc -p .",
     "format-check": "echo \"TODO\"",
-    "format": "clang-format -i -style='{Language: JavaScript, BasedOnStyle: Google, ColumnLimit: 80}' src/*.ts",
+    "format": "clang-format -i -style='{Language: JavaScript, BasedOnStyle: Google, ColumnLimit: 80}' src/*.ts test/*.ts",
     "lint": "tslint -c tslint.json  --project . --type-check -t codeFrame",
     "lint-fix": "tslint -c tslint.json --project .  --type-check -t codeFrame --fix",
     "release": "standard-version",
-    "test": "echo \"TODO\"",
+    "test": "npm run build && ava build/test/",
     "posttest": "npm run lint && npm run format-check"
   },
   "engines": {
@@ -54,10 +54,13 @@
     "@types/glob": "^5.0.30",
     "@types/inquirer": "0.0.35",
     "@types/meow": "^3.6.2",
+    "@types/ncp": "^2.0.0",
     "@types/node": "^8.0.17",
     "@types/pify": "0.0.28",
     "@types/rimraf": "0.0.28",
     "@types/update-notifier": "^1.0.1",
+    "ava": "^0.21.0",
+    "ncp": "^2.0.0",
     "source-map-support": "^0.4.15",
     "standard-version": "^4.2.0",
     "typescript": "^2.4.1"

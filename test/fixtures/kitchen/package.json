@@ -1,0 +1,19 @@
+{
+  "name": "kitchen",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc -p .",
+    "fix": "gts fix",
+    "clean": "gts clean",
+    "lint": "gts lint"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^2.4.2",
+    "google-ts-style": "file:../google-ts-style.tgz"
+  }
+}
