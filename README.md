@@ -1,5 +1,7 @@
 # google-ts-style
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/google/ts-style.svg)](https://greenkeeper.io/)
+
 > ***NOTE: This repo is a work-in-progress and is not ready for general use just yet. This is not an official Google product.***
 
 This repository is Google's default TypeScript configuration. Made with ❤️ by the Google Node.js team.
