@@ -37,8 +37,6 @@ test('get should use the provided readFile', async t => {
   });
 });
 
-// TODO: similar test for globp
-
 test('get should open the correct tsconfig file', async t => {
   await TSConfig.get(FAKE_DIRECTORY, {
     readFile: (configPath: string, encoding: string) => {
