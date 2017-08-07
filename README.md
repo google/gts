@@ -21,7 +21,7 @@ Still on an older version of npm? We got ya! In a directory with your `package.j
 
 ```sh
 npm install --save-dev google-ts-style typescript@2.x tslint@5.x clang-format@1.x
-$(npm bin)/gts --init
+$(npm bin)/gts init
 ```
 
 # How this works

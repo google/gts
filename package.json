@@ -15,6 +15,7 @@
     "README.md",
     "build/src",
     "build/types",
+    "tsconfig-google.json",
     "tsconfig.json",
     "tslint.json"
   ],
