@@ -13,13 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as fs from 'fs';
-import * as glob from 'glob';
 import * as path from 'path';
-import * as pify from 'pify';
 
-const globp = pify(glob);
-const readFile = pify(fs.readFile);
+import {globp, readFilep as readFile} from './util';
 
 /**
  * Find the tsconfig.json, read it, and return a JSON
