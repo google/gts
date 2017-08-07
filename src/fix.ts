@@ -18,7 +18,7 @@ import * as os from 'os';
 import * as path from 'path';
 
 import {Options} from './cli';
-import * as tscfg from './tscfg';
+import {TSConfig} from './tscfg';
 
 /**
  * Run tslint fix and clang fix with the default configuration
@@ -41,8 +41,8 @@ export async function fix(options: Options): Promise<void> {
     'codeFrame', '--fix'
   ];
 
-  const tsconfig = await tscfg.getTsConfig(options.targetRootDir);
-  const srcFiles = await tscfg.getInputFiles(tsconfig);
+  const tsconfig = await TSConfig.get(options.targetRootDir);
+  const srcFiles = await tsconfig.getInputFiles();
   const initClangArgs = [
     '-i', '-style',
     '{Language: JavaScript, BasedOnStyle: Google, ColumnLimit: 80}'

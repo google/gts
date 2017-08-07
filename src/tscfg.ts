@@ -17,62 +17,82 @@ import * as path from 'path';
 
 import {globp, readFilep as readFile} from './util';
 
-/**
- * Find the tsconfig.json, read it, and return a JSON
- * object with the results.
- * @param rootDir Directory where the tsconfig.json should be found.
- */
-export async function getTsConfig(rootDir: string) {
-  const tsconfigPath = path.join(rootDir, 'tsconfig.json');
-  const tsconfigContents = await readFile(tsconfigPath, 'utf8');
-  const tsconfig = JSON.parse(tsconfigContents);
-  return tsconfig;
+export interface TSConfigOptions {
+  globp?: any;
+  readFile?: any;
 }
 
 /**
- * Given a tsconfig, find a list of all input files for
- * the compiler.
- * https://www.typescriptlang.org/docs/handbook/tsconfig-json.html
- * @param tsconfig object containing the ts config
+ * Find and read the tsconfig.json for the provided directory at `rootDir`.
  */
-export async function getInputFiles(tsconfig: any): Promise<string[]> {
-  const inputFiles: string[] = [];
-  const excludes = getExcludeFiles(tsconfig);
-  const options: any = {};
+export class TSConfig {
+  private globp: any;
 
-  if (excludes) options.ignore = excludes;
-  if (tsconfig.files) {
-    Array.prototype.push.apply(inputFiles, tsconfig.files);
-  }
-  if (tsconfig.include) {
-    for (let globEntry of tsconfig.include) {
-      const globFiles = await globp(globEntry, options);
-      Array.prototype.push.apply(inputFiles, globFiles);
-    }
-  }
-  if (!tsconfig.include && !tsconfig.files) {
-    const defaultIncludes = ['**/*.ts', '**/*.d.ts', '**/*.tsx'];
-    for (let globEntry of defaultIncludes) {
-      const globFiles = await globp(globEntry, options);
-      Array.prototype.push.apply(inputFiles, globFiles);
-    }
-  }
-  return inputFiles;
-}
+  /**
+   * Find the tsconfig.json, read it, and return a TSConfig object.
+   * @param rootDir Directory where the tsconfig.json should be found.
+   */
+  static async get(rootDir: string, options?: TSConfigOptions):
+      Promise<TSConfig> {
+    options = options || {};
+    options.globp = options.globp || globp;
+    options.readFile = options.readFile || readFile;
 
-/**
- * Get the list of excluded files from the build
- * @param tsconfig object containing the ts config
- */
-export function getExcludeFiles(tsconfig: any): string[] {
-  if (tsconfig.exclude) {
-    return tsconfig.exclude;
-  } else {
+    const tsconfigPath = path.join(rootDir, 'tsconfig.json');
+    const json = await options.readFile(tsconfigPath, 'utf8');
+    const contents = JSON.parse(json);
+    return new TSConfig(contents, options);
+  }
+
+  private constructor(readonly contents: any, options: TSConfigOptions) {
+    this.globp = options.globp || globp;
+  }
+
+  /**
+   * Get the list of excluded files from the build. This is based on the
+   * exclude property of the config. A default is provided if the property is
+   * missing.
+   */
+  getExcludeFiles(): string[] {
+    if (this.contents.exclude) {
+      return this.contents.exclude;
+    }
     const defaultExcludes =
         ['node_modules', 'bower_components', 'jspm_packages'];
-    if (tsconfig.compilerOptions && tsconfig.compilerOptions.outDir) {
-      defaultExcludes.push(tsconfig.compilerOptions.outDir);
+    if (this.contents.compilerOptions && this.contents.compilerOptions.outDir) {
+      defaultExcludes.push(this.contents.compilerOptions.outDir);
     }
     return defaultExcludes;
+  }
+
+  /**
+   * Find a list of all input files for the compiler based on the config.
+   * https://www.typescriptlang.org/docs/handbook/tsconfig-json.html
+   * @param tsconfig object containing the ts config
+   */
+  async getInputFiles(): Promise<string[]> {
+    const inputFiles: string[] = [];
+    const excludes = this.getExcludeFiles();
+    const options: any = {};
+
+    if (excludes) options.ignore = excludes;
+    if (this.contents.files) {
+      Array.prototype.push.apply(inputFiles, this.contents.files);
+    }
+
+    if (this.contents.include) {
+      for (let globEntry of this.contents.include) {
+        const globFiles = await this.globp(globEntry, options);
+        Array.prototype.push.apply(inputFiles, globFiles);
+      }
+    }
+    if (!this.contents.include && !this.contents.files) {
+      const defaultIncludes = ['**/*.ts', '**/*.d.ts', '**/*.tsx'];
+      for (let globEntry of defaultIncludes) {
+        const globFiles = await this.globp(globEntry, options);
+        Array.prototype.push.apply(inputFiles, globFiles);
+      }
+    }
+    return inputFiles;
   }
 }
