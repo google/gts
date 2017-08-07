@@ -15,15 +15,11 @@
  */
 import * as chalk from 'chalk';
 import * as cp from 'child_process';
-import * as fs from 'fs';
 import * as inquirer from 'inquirer';
 import * as path from 'path';
-import * as pify from 'pify';
-import {Options} from './cli';
 
-const readJson = pify(require('read-package-json'));
-const read = pify(fs.readFile);
-const write = pify(require('write-file-atomic'));
+import {Options} from './cli';
+import {readFilep as read, readJsonp as readJson, writeFileAtomicp as write} from './util';
 
 interface Bag<T> {
   [script: string]: T;
