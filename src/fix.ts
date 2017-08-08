@@ -18,15 +18,17 @@ import * as os from 'os';
 import * as path from 'path';
 
 import {Options} from './cli';
+import {lint} from './lint';
 import {TSConfig} from './tscfg';
 
 /**
  * Run tslint fix and clang fix with the default configuration
  */
 export async function fix(options: Options): Promise<void> {
+  lint(true, options);
+
+  // TODO: move this code into a format.ts file.
   const gtsRootDir = path.join(__dirname, '../..');
-  const pkgDir = path.relative(options.targetRootDir, gtsRootDir);
-  const tslintPath = path.join(gtsRootDir, '../tslint/bin/tslint');
   let platform = os.platform();
   if (platform === 'darwin' || platform === 'linux') {
     platform += ('_' + os.arch());
@@ -36,10 +38,6 @@ export async function fix(options: Options): Promise<void> {
   }
   const clangPath =
       path.join(gtsRootDir, `../clang-format/bin/${platform}/clang-format`);
-  const lintArgs = [
-    '-c', path.join(pkgDir, 'tslint.json'), '-p', options.targetRootDir, '-t',
-    'codeFrame', '--fix'
-  ];
 
   const tsconfig = await TSConfig.get(options.targetRootDir);
   const srcFiles = await tsconfig.getInputFiles();
@@ -48,6 +46,5 @@ export async function fix(options: Options): Promise<void> {
     '{Language: JavaScript, BasedOnStyle: Google, ColumnLimit: 80}'
   ];
   const clangArgs = initClangArgs.concat(srcFiles);
-  cp.spawnSync(tslintPath, lintArgs, {stdio: 'inherit'});
   cp.spawnSync(clangPath, clangArgs, {stdio: 'inherit'});
 }
