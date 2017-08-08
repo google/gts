@@ -68,5 +68,10 @@
   },
   "peerDependencies": {
     "typescript": "^2.4.1"
+  },
+  "ava": {
+    "require": [
+      "source-map-support"
+    ]
   }
 }
