@@ -15,6 +15,7 @@
  */
 import * as path from 'path';
 import {Configuration, Linter} from 'tslint';
+import * as ts from 'typescript';
 
 import {Options} from './cli';
 
@@ -24,14 +25,14 @@ import {Options} from './cli';
  * @param options google-ts-style options
  */
 export function lint(fix: boolean, options: Options): boolean {
-  const tsconfigPath = path.join(options.targetRootDir, 'tsconfig.json');
   const tslintConfigPath = path.join(options.gtsRootDir, 'tslint.json');
 
-  const program = Linter.createProgram(tsconfigPath);
+  const program = createProgram(options);
   const configuration =
       Configuration.findConfiguration(tslintConfigPath, '').results;
   const linter = new Linter({fix: fix, formatter: 'codeFrame'}, program);
   const files = Linter.getFileNames(program);
+  console.log(files);
   files.forEach(file => {
     const fileContents = program.getSourceFile(file).getFullText();
     linter.lint(file, fileContents, configuration);
@@ -42,4 +43,9 @@ export function lint(fix: boolean, options: Options): boolean {
     return false;
   }
   return true;
+}
+
+export function createProgram(options: Options): ts.Program {
+  const tsconfigPath = path.join(options.targetRootDir, 'tsconfig.json');
+  return Linter.createProgram(tsconfigPath);
 }

@@ -40,7 +40,6 @@
   "dependencies": {
     "chalk": "^2.0.1",
     "clang-format": "^1.0.53",
-    "glob": "^7.1.2",
     "inquirer": "^3.2.1",
     "meow": "^3.7.0",
     "pify": "^3.0.0",
