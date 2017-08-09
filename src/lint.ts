@@ -13,19 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as cp from 'child_process';
 import * as path from 'path';
+import {Configuration, Linter} from 'tslint';
+
 import {Options} from './cli';
 
 /**
- * Run tslint with the default configuration
+ * Run tslint with the default configuration. Returns true on success.
+ * @param fix automatically fix linter errors
+ * @param options google-ts-style options
  */
-export async function lint(options: Options): Promise<void> {
-  const tslintPath = path.join(options.gtsRootDir, '../tslint/bin/tslint');
-  const pkgDir = path.relative(options.targetRootDir, options.gtsRootDir);
-  const args = [
-    '-c', path.join(pkgDir, 'tslint.json'), '-p', options.targetRootDir, '-t',
-    'codeFrame', '--type-check'
-  ];
-  cp.spawn(tslintPath, args, {stdio: 'inherit'});
+export function lint(fix: boolean, options: Options): boolean {
+  const tsconfigPath = path.join(options.targetRootDir, 'tsconfig.json');
+  const tslintConfigPath = path.join(options.gtsRootDir, 'tslint.json');
+
+  const program = Linter.createProgram(tsconfigPath);
+  const configuration =
+      Configuration.findConfiguration(tslintConfigPath, '').results;
+  const linter = new Linter({fix: fix, formatter: 'codeFrame'}, program);
+  const files = Linter.getFileNames(program);
+  files.forEach(file => {
+    const fileContents = program.getSourceFile(file).getFullText();
+    linter.lint(file, fileContents, configuration);
+  });
+  const result = linter.getResult();
+  if (result.errorCount || result.warningCount) {
+    console.log(result.output);
+    return false;
+  }
+  return true;
 }
