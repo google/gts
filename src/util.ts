@@ -15,12 +15,25 @@
  */
 
 import * as fs from 'fs';
-import * as glob from 'glob';
+import * as path from 'path';
 import * as pify from 'pify';
 import * as rimraf from 'rimraf';
 
-export const globp = pify(glob);
 export const readFilep = pify(fs.readFile);
 export const readJsonp = pify(require('read-package-json'));
 export const rimrafp = pify(rimraf);
 export const writeFileAtomicp = pify(require('write-file-atomic'));
+
+export interface ReadFileP { (path: string, encoding: string): Promise<any>; }
+
+/**
+ * Find the tsconfig.json, read it, and return parsed contents.
+ * @param rootDir Directory where the tsconfig.json should be found.
+ */
+export async function getTSConfig(
+    rootDir: string, parmReadFilep?: ReadFileP): Promise<any> {
+  const tsconfigPath = path.join(rootDir, 'tsconfig.json');
+  const json = await(parmReadFilep || readFilep)(tsconfigPath, 'utf8');
+  const contents = JSON.parse(json);
+  return contents;
+}
