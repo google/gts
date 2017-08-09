@@ -58,7 +58,7 @@
     "@types/ncp": "^2.0.0",
     "@types/node": "^8.0.17",
     "@types/pify": "0.0.28",
-    "@types/rimraf": "0.0.28",
+    "@types/rimraf": "2.0.0",
     "@types/update-notifier": "^1.0.1",
     "ava": "^0.21.0",
     "ncp": "^2.0.0",
