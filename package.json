@@ -28,7 +28,7 @@
     "lint": "tslint -c tslint.json  --project . --type-check -t codeFrame",
     "lint-fix": "tslint -c tslint.json --project .  --type-check -t codeFrame --fix",
     "release": "standard-version",
-    "test": "npm run build && ava build/test/",
+    "test": "npm run compile && ava build/test/test*.js",
     "posttest": "npm run lint && npm run format-check"
   },
   "engines": {
