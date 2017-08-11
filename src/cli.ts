@@ -76,7 +76,7 @@ switch (verb) {
     init(options);
     break;
   case 'lint':
-    lint(false, options);
+    lint(options);
     break;
   case 'fix':
     fix(options);
