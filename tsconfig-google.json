@@ -9,8 +9,6 @@
     "noFallthroughCasesInSwitch": true,
     "noEmitOnError": true,
     "noImplicitReturns": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
     "pretty": true,
     "strict": true,
     "module": "commonjs",
