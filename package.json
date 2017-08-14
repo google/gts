@@ -1,6 +1,6 @@
 {
   "name": "google-ts-style",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Google TypeScript Style",
   "repository": "google/ts-style",
   "main": "build/src/index.js",
