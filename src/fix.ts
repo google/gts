@@ -22,5 +22,5 @@ import {lint} from './lint';
  * Run tslint fix and clang fix with the default configuration
  */
 export async function fix(options: Options): Promise<boolean> {
-  return lint(true, options) && await format(true, options);
+  return lint(options, true /*fix*/) && await format(true, options);
 }

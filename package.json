@@ -28,7 +28,7 @@
     "lint": "tslint -c tslint.json  --project . --type-check -t codeFrame",
     "lint-fix": "tslint -c tslint.json --project .  --type-check -t codeFrame --fix",
     "release": "standard-version",
-    "test": "npm run build && ava build/test/",
+    "test": "npm run compile && ava build/test/test*.js",
     "posttest": "npm run lint && npm run format-check"
   },
   "engines": {
@@ -53,16 +53,20 @@
     "@types/chalk": "^0.4.31",
     "@types/glob": "^5.0.30",
     "@types/inquirer": "0.0.35",
+    "@types/make-dir": "^1.0.1",
     "@types/meow": "^3.6.2",
     "@types/ncp": "^2.0.0",
     "@types/node": "^8.0.17",
     "@types/pify": "0.0.28",
     "@types/rimraf": "2.0.0",
+    "@types/tmp": "0.0.33",
     "@types/update-notifier": "^1.0.1",
     "ava": "^0.21.0",
+    "make-dir": "^1.0.0",
     "ncp": "^2.0.0",
     "source-map-support": "^0.4.15",
     "standard-version": "^4.2.0",
+    "tmp": "0.0.31",
     "typescript": "^2.4.1"
   },
   "peerDependencies": {
@@ -70,7 +74,7 @@
   },
   "ava": {
     "require": [
-      "source-map-support"
+      "source-map-support/register"
     ]
   }
 }

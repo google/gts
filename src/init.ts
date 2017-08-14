@@ -143,10 +143,14 @@ async function generateTsConfig(options: Options): Promise<void> {
     }
   }
 
-  const pkgDir = path.relative(options.targetRootDir, options.gtsRootDir);
+  // typescript expects relative paths to start with './'.
+  const baseConfig = './' +
+      path.relative(
+          options.targetRootDir,
+          path.resolve(options.gtsRootDir, 'tsconfig-google.json'));
   const tsconfig = JSON.stringify(
       {
-        extends: `${path.join(pkgDir, 'tsconfig-google.json')}`,
+        extends: baseConfig,
         compilerOptions: {rootDir: '.', outDir: 'build'},
         include: ['src/*.ts', 'src/**/*.ts', 'test/*.ts', 'test/**/*.ts'],
         exclude: ['node_modules']

@@ -20,9 +20,7 @@ import {getTSConfig} from '../src/util';
 
 test('get should parse the correct tsconfig file', async t => {
   const FAKE_DIRECTORY = '/some/fake/directory';
-  const FAKE_CONFIG = {
-    a: 'b'
-  };
+  const FAKE_CONFIG = {a: 'b'};
   function fakeReadFilep(configPath: string, encoding: string): Promise<any> {
     t.is(configPath, path.join(FAKE_DIRECTORY, 'tsconfig.json'));
     t.is(encoding, 'utf8');

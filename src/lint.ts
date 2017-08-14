@@ -24,7 +24,7 @@ import {Options} from './cli';
  * @param fix automatically fix linter errors
  * @param options google-ts-style options
  */
-export function lint(fix: boolean, options: Options): boolean {
+export function lint(options: Options, fix = false, silent = false): boolean {
   const tslintConfigPath = path.join(options.gtsRootDir, 'tslint.json');
 
   const program = createProgram(options);
@@ -32,14 +32,15 @@ export function lint(fix: boolean, options: Options): boolean {
       Configuration.findConfiguration(tslintConfigPath, '').results;
   const linter = new Linter({fix: fix, formatter: 'codeFrame'}, program);
   const files = Linter.getFileNames(program);
-  console.log(files);
   files.forEach(file => {
     const fileContents = program.getSourceFile(file).getFullText();
     linter.lint(file, fileContents, configuration);
   });
   const result = linter.getResult();
   if (result.errorCount || result.warningCount) {
-    console.log(result.output);
+    if (!silent) {
+      console.log(result.output);
+    }
     return false;
   }
   return true;
