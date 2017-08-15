@@ -61,7 +61,7 @@
     "@types/rimraf": "2.0.0",
     "@types/tmp": "0.0.33",
     "@types/update-notifier": "^1.0.1",
-    "ava": "^0.21.0",
+    "ava": "^0.22.0",
     "make-dir": "^1.0.0",
     "ncp": "^2.0.0",
     "source-map-support": "^0.4.15",
