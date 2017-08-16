@@ -23,10 +23,10 @@ const baseArgs =
 
 /**
  * Run tslint fix and clang fix with the default configuration
- * @param fix whether to automatically fix the format
  * @param options
+ * @param fix whether to automatically fix the format
  */
-export function format(fix: boolean, options: Options): Promise<boolean> {
+export function format(options: Options, fix = false): Promise<boolean> {
   const program = createProgram(options);
   const srcFiles = program.getSourceFiles()
                        .map(sourceFile => sourceFile.fileName)
