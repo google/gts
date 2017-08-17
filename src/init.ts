@@ -49,11 +49,13 @@ async function addScripts(
     packageJson: any, options: Options): Promise<boolean> {
   let edits = false;
   const scripts: Bag<string> = {
-    build: 'npm run compile',
+    check: `gts check`,
     clean: 'gts clean',
     compile: `tsc -p .`,
     fix: `gts fix`,
-    lint: `gts lint`
+    prepare: `npm run compile`,
+    pretest: `npm run compile`,
+    posttest: `npm run check`
   };
 
   if (!packageJson.scripts) {
@@ -180,7 +182,7 @@ async function generateTsConfig(options: Options): Promise<void> {
   }
 }
 
-export async function init(options: Options): Promise<void> {
+export async function init(options: Options): Promise<boolean> {
   let packageJson;
   try {
     packageJson = await readJson('./package.json', noop, true /*strict*/);
@@ -194,7 +196,7 @@ export async function init(options: Options): Promise<void> {
 
     if (!generate) {
       console.log('Please run from a directory with your package.json.');
-      return;
+      return false;
     }
 
     try {
@@ -214,4 +216,5 @@ export async function init(options: Options): Promise<void> {
     console.log('No edits needed in package.json.');
   }
   await generateTsConfig(options);
+  return true;
 }

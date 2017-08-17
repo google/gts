@@ -21,13 +21,18 @@ Still on an older version of npm? We got ya! In a directory with your `package.j
 
 ```sh
 npm install --save-dev google-ts-style typescript@2.x tslint@5.x clang-format@1.x
-$(npm bin)/gts init
+$(npm bin)/google-ts-style init
 ```
 
 # How this works
-- Adds a `tsconfig.json` file to your project that inherits from the Google TS Style.
-- Adds the necessary devDependencies to your package.json.
-- Adds the `compile`, `format`, and `lint` scripts to your package.json.
+- Adds a `tsconfig.json` file to your project that uses the Google TS Style.
+- Adds the necessary devDependencies to your `package.json`.
+- Adds scripts to your `package.json`:
+  - `check`: Lints and checks for formatting problems.
+  - `fix`: Automatically fixes formatting and linting problems (if possible).
+  - `clean`: Removes output files.
+  - `compile`: Compiles the source code using TypeScript compiler.
+  - `pretest`, `posttest` and `prepare`: convenience integrations.
 
 # License
 See [LICENSE.md](LICENSE.md)
