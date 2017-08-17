@@ -24,7 +24,7 @@ import {Options} from './cli';
  * @param fix automatically fix linter errors
  * @param options google-ts-style options
  */
-export function lint(options: Options, fix = false, silent = false): boolean {
+export function lint(options: Options, fix = false): boolean {
   const tslintConfigPath = path.join(options.gtsRootDir, 'tslint.json');
 
   const program = createProgram(options);
@@ -38,9 +38,7 @@ export function lint(options: Options, fix = false, silent = false): boolean {
   });
   const result = linter.getResult();
   if (result.errorCount || result.warningCount) {
-    if (!silent) {
-      console.log(result.output);
-    }
+    options.logger.log(result.output);
     return false;
   }
   return true;

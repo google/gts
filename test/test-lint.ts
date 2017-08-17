@@ -18,6 +18,7 @@ import test from 'ava';
 
 import {Options} from '../src/cli';
 import * as lint from '../src/lint';
+import {nop} from '../src/util';
 
 import {withFixtures} from './fixtures';
 
@@ -25,7 +26,12 @@ const OPTIONS: Options = {
   gtsRootDir: './',
   targetRootDir: './',
   dryRun: false,
-  yes: false
+  yes: false,
+  logger: {
+    log: nop,
+    error: nop,
+    dir: nop
+  }
 };
 
 const GOOD_CODE = `
@@ -80,7 +86,7 @@ test.serial('lint should return false on bad code', async t => {
         'a.ts': BAD_CODE,
       },
       async () => {
-        const okay = lint.lint(OPTIONS, false, true /*silent*/);
+        const okay = lint.lint(OPTIONS, false);
         t.is(okay, false);
       });
 });
@@ -110,7 +116,7 @@ test.serial(
             'b.ts': BAD_CODE
           },
           async () => {
-            const okay = lint.lint(OPTIONS, false, true /*silent*/);
+            const okay = lint.lint(OPTIONS, false);
             t.is(okay, false);
           });
     });
@@ -138,7 +144,7 @@ test.serial('lint should lint globs listed in include', async t => {
         dirb: {'b.ts': BAD_CODE}
       },
       async () => {
-        const okay = lint.lint(OPTIONS, false, true /*silent*/);
+        const okay = lint.lint(OPTIONS, false);
         t.is(okay, false);
       });
 });

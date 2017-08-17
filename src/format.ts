@@ -63,7 +63,6 @@ function checkFormat(srcFiles: string[]): Promise<boolean> {
   return new Promise<boolean>((resolve, reject) => {
     let output = '';
     const args = baseArgs.concat(['-output-replacements-xml'], srcFiles);
-    console.log('spawning clang for formatting');
     const out = clangFormat
                     .spawnClangFormat(
                         args,

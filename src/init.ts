@@ -37,7 +37,7 @@ async function query(
   }
 
   if (message) {
-    console.log(message);
+    options.logger.log(message);
   }
 
   const answers = await inquirer.prompt(
@@ -118,7 +118,7 @@ async function addDependencies(
 
 async function writePackageJson(
     packageJson: any, options: Options): Promise<void> {
-  console.log('Writing package.json...');
+  options.logger.log('Writing package.json...');
   if (!options.dryRun) {
     try {
       await write('./package.json', JSON.stringify(packageJson, null, '  '));
@@ -130,7 +130,7 @@ async function writePackageJson(
     scripts: packageJson.scripts,
     devDependencies: packageJson.devDependencies
   };
-  console.dir(preview);
+  options.logger.dir(preview);
 }
 
 async function generateTsConfig(options: Options): Promise<void> {
@@ -161,7 +161,7 @@ async function generateTsConfig(options: Options): Promise<void> {
 
   let writeTsConfig = true;
   if (existing && existing === tsconfig) {
-    console.log('No edits needed in tsconfig.json.');
+    options.logger.log('No edits needed in tsconfig.json.');
     return;
   } else if (existing) {
     writeTsConfig = await query(
@@ -170,7 +170,7 @@ async function generateTsConfig(options: Options): Promise<void> {
   }
 
   if (writeTsConfig) {
-    console.log('Writing tsconfig.json...');
+    options.logger.log('Writing tsconfig.json...');
     if (!options.dryRun) {
       try {
         await write('./tsconfig.json', tsconfig);
@@ -178,7 +178,7 @@ async function generateTsConfig(options: Options): Promise<void> {
         throw err;
       }
     }
-    console.dir(JSON.parse(tsconfig));
+    options.logger.dir(JSON.parse(tsconfig));
   }
 }
 
@@ -195,7 +195,7 @@ export async function init(options: Options): Promise<boolean> {
         options);
 
     if (!generate) {
-      console.log('Please run from a directory with your package.json.');
+      options.logger.log('Please run from a directory with your package.json.');
       return false;
     }
 
@@ -213,7 +213,7 @@ export async function init(options: Options): Promise<boolean> {
   if (addedDeps || addedScripts) {
     await writePackageJson(packageJson, options);
   } else {
-    console.log('No edits needed in package.json.');
+    options.logger.log('No edits needed in package.json.');
   }
   await generateTsConfig(options);
   return true;

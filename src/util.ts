@@ -26,6 +26,10 @@ export const writeFileAtomicp = pify(require('write-file-atomic'));
 
 export interface ReadFileP { (path: string, encoding: string): Promise<any>; }
 
+export function nop() {
+  /* empty */
+}
+
 /**
  * Find the tsconfig.json, read it, and return parsed contents.
  * @param rootDir Directory where the tsconfig.json should be found.
