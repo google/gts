@@ -87,8 +87,7 @@ async function addScripts(
 async function addDependencies(
     packageJson: any, options: Options): Promise<boolean> {
   let edits = false;
-  const deps:
-      Bag<string> = {'google-ts-style': 'latest', 'typescript': '^2.4.1'};
+  const deps: Bag<string> = {'gts': 'latest', 'typescript': '^2.4.1'};
 
   if (!packageJson.devDependencies) {
     packageJson.devDependencies = {};

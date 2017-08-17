@@ -31,7 +31,7 @@ test.before(async () => {
   try {
     await execp('npm pack');
     const tarball = `${pkg.name}-${pkg.version}.tgz`;
-    await renamep(tarball, `${stagingPath}/google-ts-style.tgz`);
+    await renamep(tarball, `${stagingPath}/gts.tgz`);
     await ncpp('test/fixtures', `${stagingPath}/`);
     await execp('npm install', execOpts);
   } catch (e) {
@@ -42,7 +42,7 @@ test.before(async () => {
 });
 
 test.serial('init', async t => {
-  await execp('./node_modules/.bin/google-ts-style init -y', execOpts);
+  await execp('./node_modules/.bin/gts init -y', execOpts);
   fs.accessSync(`${stagingPath}/kitchen/tsconfig.json`);
   t.pass();
 });

@@ -17,9 +17,11 @@
 import test from 'ava';
 import * as fs from 'fs';
 import * as path from 'path';
+
 import {clean} from '../src/clean';
-import {nop} from '../src/util';
 import {Options} from '../src/cli';
+import {nop} from '../src/util';
+
 import {withFixtures} from './fixtures';
 
 const OPTIONS: Options = {
@@ -27,11 +29,7 @@ const OPTIONS: Options = {
   targetRootDir: './',
   dryRun: false,
   yes: false,
-  logger: {
-    log: nop,
-    error: nop,
-    dir: nop
-  }
+  logger: {log: nop, error: nop, dir: nop}
 };
 
 test.failing.serial(
@@ -60,31 +58,35 @@ test.serial('should avoid deleting .', async t => {
       });
 });
 
-test.failing.serial('should ensure that outDir is local to targetRoot', async t => {
-  await withFixtures(
-    {'tsconfig.json': JSON.stringify({compilerOptions: {outDir: '../out'}})},
-    async () => {
-      const deleted = await clean(OPTIONS);
-      t.is(deleted, false);
+test.failing.serial(
+    'should ensure that outDir is local to targetRoot', async t => {
+      await withFixtures(
+          {
+            'tsconfig.json':
+                JSON.stringify({compilerOptions: {outDir: '../out'}})
+          },
+          async () => {
+            const deleted = await clean(OPTIONS);
+            t.is(deleted, false);
+          });
     });
-});
 
 test.serial('should remove outDir', async t => {
   const OUT = 'outputDirectory';
   await withFixtures(
-    {
-      'tsconfig.json': JSON.stringify({compilerOptions: {outDir: OUT}}),
-      [OUT]: {}
-    },
-    async (dir) => {
-      const outputPath = path.join(dir, OUT);
-      // make sure the output directory exists.
-      fs.accessSync(outputPath);
-      const deleted = await clean(OPTIONS);
-      t.is(deleted, true);
-      // make sure the directory has been deleted.
-      t.throws(() => {
+      {
+        'tsconfig.json': JSON.stringify({compilerOptions: {outDir: OUT}}),
+        [OUT]: {}
+      },
+      async (dir) => {
+        const outputPath = path.join(dir, OUT);
+        // make sure the output directory exists.
         fs.accessSync(outputPath);
+        const deleted = await clean(OPTIONS);
+        t.is(deleted, true);
+        // make sure the directory has been deleted.
+        t.throws(() => {
+          fs.accessSync(outputPath);
+        });
       });
-    });
 });

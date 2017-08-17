@@ -1,4 +1,4 @@
-# google-ts-style
+# gts - Google TypeScript style
 
 [![NPM Version][npm-image]][npm-url]
 [![Build Status][travis-image]][travis-url]
@@ -14,14 +14,14 @@ This repository is Google's default TypeScript configuration. Made with ❤️ b
 
 If you're already using npm@5.3+ (bundled with Node 8.3+), run:
 ```sh
-npx google-ts-style init
+npx gts init
 ```
 
 Still on an older version of npm? We got ya! In a directory with your `package.json` run:
 
 ```sh
-npm install --save-dev google-ts-style typescript@2.x tslint@5.x clang-format@1.x
-$(npm bin)/google-ts-style init
+npm install --save-dev gts typescript@2.x tslint@5.x clang-format@1.x
+$(npm bin)/gts init
 ```
 
 # How this works
@@ -37,8 +37,8 @@ $(npm bin)/google-ts-style init
 # License
 See [LICENSE.md](LICENSE.md)
 
-[npm-image]: https://img.shields.io/npm/v/google-ts-style.svg
-[npm-url]: https://npmjs.org/package/google-ts-style
+[npm-image]: https://img.shields.io/npm/v/gts.svg
+[npm-url]: https://npmjs.org/package/gts
 [travis-image]: https://travis-ci.org/google/ts-style.svg?branch=master
 [travis-url]: https://travis-ci.org/google/ts-style
 [david-image]: https://david-dm.org/google/ts-style.svg
