@@ -21,12 +21,21 @@ import {lint} from './lint';
 import {format} from './format';
 import {clean} from './clean';
 
+export interface Logger {
+  log: (...args: any[]) => void;
+  error: (...args: any[]) => void;
+  dir: (obj: any, options?: any) => void;
+}
+
 export interface Options {
   dryRun: boolean;
   gtsRootDir: string;
   targetRootDir: string;
   yes: boolean;
+  logger: Logger;
 }
+
+const logger: Logger = console;
 
 const cli = meow(`
 	Usage
@@ -52,7 +61,7 @@ const cli = meow(`
 
 function usage(msg?: string): void {
   if (msg) {
-    console.error(msg);
+    logger.error(msg);
   }
   cli.showHelp(1);
 }
@@ -62,7 +71,8 @@ async function run(verb: string): Promise<boolean> {
     dryRun: cli.flags.dryRun || false,
     gtsRootDir: `${process.cwd()}/node_modules/google-ts-style`,
     targetRootDir: process.cwd(),
-    yes: cli.flags.yes || cli.flags.y || false
+    yes: cli.flags.yes || cli.flags.y || false,
+    logger: logger
   };
   switch (verb) {
     case 'init':

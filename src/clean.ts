@@ -26,17 +26,17 @@ export async function clean(options: Options): Promise<boolean> {
   if (tsconfig.compilerOptions && tsconfig.compilerOptions.outDir) {
     const outDir = tsconfig.compilerOptions.outDir;
     if (outDir === '.') {
-      console.error(
+      options.logger.error(
           `${chalk.red('ERROR:')} ${chalk.gray('compilerOptions.outDir')} ` +
           `cannot use the value '.'.  That would delete all of our sources.`);
       return false;
     }
     const message = `${chalk.red('Removing')} ${outDir} ...`;
-    console.log(message);
+    options.logger.log(message);
     await rimrafp(outDir);
     return true;
   } else {
-    console.error(
+    options.logger.error(
         `${chalk.red('ERROR:')} The ${chalk.gray('clean')} command` +
         ` requires ${chalk.gray('compilerOptions.outDir')} to be defined in ` +
         `tsconfig.json.`);
