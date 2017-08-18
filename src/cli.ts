@@ -69,7 +69,7 @@ function usage(msg?: string): void {
 async function run(verb: string): Promise<boolean> {
   const options: Options = {
     dryRun: cli.flags.dryRun || false,
-    gtsRootDir: `${process.cwd()}/node_modules/google-ts-style`,
+    gtsRootDir: `${process.cwd()}/node_modules/gts`,
     targetRootDir: process.cwd(),
     yes: cli.flags.yes || cli.flags.y || false,
     logger: logger

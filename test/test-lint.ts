@@ -27,11 +27,7 @@ const OPTIONS: Options = {
   targetRootDir: './',
   dryRun: false,
   yes: false,
-  logger: {
-    log: nop,
-    error: nop,
-    dir: nop
-  }
+  logger: {log: nop, error: nop, dir: nop}
 };
 
 const GOOD_CODE = `

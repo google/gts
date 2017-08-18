@@ -1,11 +1,10 @@
 {
-  "name": "google-ts-style",
+  "name": "gts",
   "version": "0.2.0",
   "description": "Google TypeScript Style",
   "repository": "google/ts-style",
   "main": "build/src/index.js",
   "bin": {
-    "google-ts-style": "build/src/cli.js",
     "gts": "build/src/cli.js"
   },
   "files": [
@@ -23,11 +22,10 @@
     "build": "npm run compile",
     "clean": "rm -rf ./build/",
     "compile": "tsc -p .",
-    "format-check": "echo \"TODO\"",
+    "format-check": "./bin/format-check.sh",
     "format": "clang-format -i -style='{Language: JavaScript, BasedOnStyle: Google, ColumnLimit: 80}' src/*.ts test/*.ts",
     "lint": "tslint -c tslint.json  --project . --type-check -t codeFrame",
     "lint-fix": "tslint -c tslint.json --project .  --type-check -t codeFrame --fix",
-    "release": "standard-version",
     "test": "npm run compile && ava build/test/test*.js",
     "posttest": "npm run lint && npm run format-check"
   },
@@ -65,7 +63,6 @@
     "make-dir": "^1.0.0",
     "ncp": "^2.0.0",
     "source-map-support": "^0.4.15",
-    "standard-version": "^4.2.0",
     "tmp": "0.0.31",
     "typescript": "^2.4.1"
   },

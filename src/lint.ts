@@ -22,7 +22,7 @@ import {Options} from './cli';
 /**
  * Run tslint with the default configuration. Returns true on success.
  * @param fix automatically fix linter errors
- * @param options google-ts-style options
+ * @param options gts options
  */
 export function lint(options: Options, fix = false): boolean {
   const tslintConfigPath = path.join(options.gtsRootDir, 'tslint.json');
