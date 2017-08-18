@@ -44,6 +44,7 @@
     "read-package-json": "^2.0.10",
     "rimraf": "^2.6.1",
     "tslint": "^5.5.0",
+    "typescript": "^2.4.1",
     "update-notifier": "^2.2.0",
     "write-file-atomic": "^2.1.0"
   },
@@ -63,11 +64,7 @@
     "make-dir": "^1.0.0",
     "ncp": "^2.0.0",
     "source-map-support": "^0.4.15",
-    "tmp": "0.0.31",
-    "typescript": "^2.4.1"
-  },
-  "peerDependencies": {
-    "typescript": "^2.4.1"
+    "tmp": "0.0.31"
   },
   "ava": {
     "require": [
