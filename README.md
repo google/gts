@@ -20,7 +20,7 @@ npx gts init
 Still on an older version of npm? We got ya! In a directory with your `package.json` run:
 
 ```sh
-npm install --save-dev gts typescript@2.x tslint@5.x clang-format@1.x
+npm install --save-dev gts typescript@2.x
 $(npm bin)/gts init
 ```
 
