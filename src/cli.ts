@@ -17,7 +17,6 @@
 import * as meow from 'meow';
 import * as updateNotifier from 'update-notifier';
 import {init} from './init';
-import {lint} from './lint';
 import {format} from './format';
 import {clean} from './clean';
 
@@ -74,9 +73,12 @@ async function run(verb: string): Promise<boolean> {
     yes: cli.flags.yes || cli.flags.y || false,
     logger: logger
   };
+  // See: https://github.com/google/ts-style/issues/48
+  if (verb === 'init') {
+    return await init(options);
+  }
+  const lint: (options: Options, fix?: boolean) => boolean = require('./lint');
   switch (verb) {
-    case 'init':
-      return await init(options);
     case 'check':
       return (await lint(options) && await format(options));
     case 'fix':
