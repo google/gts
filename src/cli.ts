@@ -33,8 +33,8 @@ export interface Options {
   logger: Logger;
 }
 
-export type VerbFunction =
-  (options: Options, fix?: boolean) => Promise<boolean>;
+export type VerbFunction = (options: Options, fix?: boolean) =>
+    Promise<boolean>;
 
 const logger: Logger = console;
 
