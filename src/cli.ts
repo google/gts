@@ -17,7 +17,6 @@
 import * as meow from 'meow';
 import * as updateNotifier from 'update-notifier';
 import {init} from './init';
-import {format} from './format';
 import {clean} from './clean';
 
 export interface Logger {
@@ -33,6 +32,9 @@ export interface Options {
   yes: boolean;
   logger: Logger;
 }
+
+export type VerbFunction =
+  (options: Options, fix?: boolean) => Promise<boolean>;
 
 const logger: Logger = console;
 
@@ -77,7 +79,8 @@ async function run(verb: string): Promise<boolean> {
   if (verb === 'init') {
     return await init(options);
   }
-  const lint: (options: Options, fix?: boolean) => boolean = require('./lint');
+  const lint: VerbFunction = require('./lint');
+  const format: VerbFunction = require('./format');
   switch (verb) {
     case 'check':
       return (await lint(options) && await format(options));
