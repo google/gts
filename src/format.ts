@@ -82,5 +82,3 @@ function checkFormat(srcFiles: string[]): Promise<boolean> {
     });
   });
 }
-
-module.exports = {format};
