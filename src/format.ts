@@ -83,4 +83,4 @@ function checkFormat(srcFiles: string[]): Promise<boolean> {
   });
 }
 
-module.exports = { format };
+module.exports = {format};

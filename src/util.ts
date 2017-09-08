@@ -37,7 +37,7 @@ export function nop() {
 export async function getTSConfig(
     rootDir: string, parmReadFilep?: ReadFileP): Promise<any> {
   const tsconfigPath = path.join(rootDir, 'tsconfig.json');
-  const json = await (parmReadFilep || readFilep)(tsconfigPath, 'utf8');
+  const json = await(parmReadFilep || readFilep)(tsconfigPath, 'utf8');
   const contents = JSON.parse(json);
   return contents;
 }

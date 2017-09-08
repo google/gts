@@ -53,10 +53,14 @@ test.serial('check before fix', async t => {
 });
 
 test.serial('fix', async t => {
-  const preFix = fs.readFileSync(`${stagingPath}/kitchen/src/server.ts`, 'utf8').split('\n');
+  const preFix = fs.readFileSync(`${stagingPath}/kitchen/src/server.ts`, 'utf8')
+                     .split('\n');
   await execp('npm run fix', execOpts);
-  const postFix = fs.readFileSync(`${stagingPath}/kitchen/src/server.ts`, 'utf8').split('\n');
-  t.deepEqual(preFix[0] + ';', postFix[0]); // fix should have added a semi-colon
+  const postFix =
+      fs.readFileSync(`${stagingPath}/kitchen/src/server.ts`, 'utf8')
+          .split('\n');
+  t.deepEqual(
+      preFix[0] + ';', postFix[0]);  // fix should have added a semi-colon
   t.pass();
 });
 
