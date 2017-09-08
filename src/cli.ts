@@ -55,7 +55,7 @@ const cli = meow(`
 
 	Examples
     $ gts init -y
-    $ gts lint
+    $ gts check
     $ gts fix
     $ gts clean
 `);
@@ -81,8 +81,8 @@ async function run(verb: string): Promise<boolean> {
   if (verb === 'init') {
     return await init(options);
   }
-  const lint: VerbFunction = require('./lint');
-  const format: VerbFunction = require('./format');
+  const lint: VerbFunction = require('./lint').lint;
+  const format: VerbFunction = require('./format').format;
   switch (verb) {
     case 'check':
       return (await lint(options) && await format(options));

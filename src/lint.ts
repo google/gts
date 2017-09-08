@@ -48,3 +48,8 @@ export function createProgram(options: Options): ts.Program {
   const tsconfigPath = path.join(options.targetRootDir, 'tsconfig.json');
   return Linter.createProgram(tsconfigPath);
 }
+
+module.exports = {
+  lint,
+  createProgram
+};
