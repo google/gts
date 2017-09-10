@@ -35,12 +35,10 @@ export function nop() {
  * @param rootDir Directory where the tsconfig.json should be found.
  */
 export async function getTSConfig(
-    rootDir: string, paramReadFilep?: ReadFileP): Promise<any> {
+    rootDir: string, customReadFilep?: ReadFileP): Promise<any> {
   const tsconfigPath = path.join(rootDir, 'tsconfig.json');
-  if (!paramReadFilep) {
-    paramReadFilep = readFilep;
-  }
-  const json = await paramReadFilep(tsconfigPath, 'utf8');
+  customReadFilep = customReadFilep || readFilep;
+  const json = await customReadFilep(tsconfigPath, 'utf8');
   const contents = JSON.parse(json);
   return contents;
 }
