@@ -47,6 +47,28 @@ test.serial('init', async t => {
   t.pass();
 });
 
+test.serial('check before fix', async t => {
+  await t.throws(execp('npm run check', execOpts));
+  t.pass();
+});
+
+test.serial('fix', async t => {
+  const preFix = fs.readFileSync(`${stagingPath}/kitchen/src/server.ts`, 'utf8')
+                     .split('\n');
+  await execp('npm run fix', execOpts);
+  const postFix =
+      fs.readFileSync(`${stagingPath}/kitchen/src/server.ts`, 'utf8')
+          .split('\n');
+  t.deepEqual(
+      preFix[0] + ';', postFix[0]);  // fix should have added a semi-colon
+  t.pass();
+});
+
+test.serial('check after fix', async t => {
+  await execp('npm run check', execOpts);
+  t.pass();
+});
+
 test.serial('build', async t => {
   await execp('npm run compile', execOpts);
   fs.accessSync(`${stagingPath}/kitchen/build/src/server.js`);
