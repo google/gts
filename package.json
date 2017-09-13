@@ -21,13 +21,14 @@
   "scripts": {
     "build": "npm run compile",
     "clean": "rm -rf ./build/",
+    "codecov": "nyc report --reporter=json && codecov -f coverage/*.json",
     "compile": "tsc -p .",
     "format-check": "./bin/format-check.sh",
     "format": "clang-format -i -style='{Language: JavaScript, BasedOnStyle: Google, ColumnLimit: 80}' src/*.ts test/*.ts",
     "lint": "tslint -c tslint.json  --project . --type-check -t codeFrame",
     "lint-fix": "tslint -c tslint.json --project .  --type-check -t codeFrame --fix",
     "prepare": "npm run compile",
-    "test": "npm run compile && ava build/test/test*.js",
+    "test": "npm run compile && nyc ava build/test/test*.js",
     "posttest": "npm run lint && npm run format-check"
   },
   "engines": {
@@ -61,8 +62,10 @@
     "@types/tmp": "0.0.33",
     "@types/update-notifier": "^1.0.1",
     "ava": "^0.22.0",
+    "codecov": "^2.3.0",
     "make-dir": "^1.0.0",
     "ncp": "^2.0.0",
+    "nyc": "^11.2.1",
     "source-map-support": "^0.4.15",
     "tmp": "0.0.31",
     "typescript": "^2.4.1"
