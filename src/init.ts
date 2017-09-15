@@ -25,10 +25,6 @@ interface Bag<T> {
   [script: string]: T;
 }
 
-function noop() {
-  /* empty */
-}
-
 async function query(
     message: string, question: string, defaultVal: boolean,
     options: Options): Promise<boolean> {
@@ -184,7 +180,7 @@ async function generateTsConfig(options: Options): Promise<void> {
 export async function init(options: Options): Promise<boolean> {
   let packageJson;
   try {
-    packageJson = await readJson('./package.json', noop, true /*strict*/);
+    packageJson = await readJson('./package.json');
   } catch (err) {
     if (err.code !== 'ENOENT') {
       throw new Error(`Unable to open package.json file: ${err.message}`);
@@ -201,7 +197,7 @@ export async function init(options: Options): Promise<boolean> {
     try {
       // TODO(ofrobots): add proper error handling.
       cp.spawnSync('npm', ['init', '-y']);
-      packageJson = await readJson('./package.json', noop, true /* strict */);
+      packageJson = await readJson('./package.json');
     } catch (err2) {
       throw err2;
     }
