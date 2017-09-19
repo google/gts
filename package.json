@@ -43,7 +43,6 @@
     "inquirer": "^3.2.1",
     "meow": "^3.7.0",
     "pify": "^3.0.0",
-    "read-package-json": "^2.0.10",
     "rimraf": "^2.6.1",
     "tslint": "^5.5.0",
     "update-notifier": "^2.2.0",

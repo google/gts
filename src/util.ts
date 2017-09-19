@@ -20,9 +20,12 @@ import * as pify from 'pify';
 import * as rimraf from 'rimraf';
 
 export const readFilep = pify(fs.readFile);
-export const readJsonp = pify(require('read-package-json'));
 export const rimrafp = pify(rimraf);
 export const writeFileAtomicp = pify(require('write-file-atomic'));
+
+export async function readJsonp(jsonPath: string) {
+  return JSON.parse(await readFilep(jsonPath));
+}
 
 export interface ReadFileP { (path: string, encoding: string): Promise<any>; }
 
