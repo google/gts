@@ -5,6 +5,7 @@
 [![Dependency Status][david-image]][david-url]
 [![devDependency Status][david-dev-image]][david-dev-url]
 [![Known Vulnerabilities][snyk-image]][snyk-url]
+[![codecov][codecov-image]][codecov-url]
 
 > ***NOTE: This repo is a work-in-progress and is not ready for general use just yet. This is not an official Google product.***
 
@@ -37,13 +38,15 @@ $(npm bin)/gts init
 # License
 See [LICENSE.md](LICENSE.md)
 
-[npm-image]: https://img.shields.io/npm/v/gts.svg
-[npm-url]: https://npmjs.org/package/gts
-[travis-image]: https://travis-ci.org/google/ts-style.svg?branch=master
-[travis-url]: https://travis-ci.org/google/ts-style
-[david-image]: https://david-dm.org/google/ts-style.svg
-[david-url]: https://david-dm.org/google/ts-style
+[codecov-image]: https://codecov.io/gh/google/ts-style/branch/master/graph/badge.svg
+[codecov-url]: https://codecov.io/gh/google/ts-style
 [david-dev-image]: https://david-dm.org/google/ts-style/dev-status.svg
 [david-dev-url]: https://david-dm.org/google/ts-style?type=dev
+[david-image]: https://david-dm.org/google/ts-style.svg
+[david-url]: https://david-dm.org/google/ts-style
+[npm-image]: https://img.shields.io/npm/v/gts.svg
+[npm-url]: https://npmjs.org/package/gts
 [snyk-image]: https://snyk.io/test/github/google/ts-style/badge.svg
 [snyk-url]: https://snyk.io/test/github/google/ts-style
+[travis-image]: https://travis-ci.org/google/ts-style.svg?branch=master
+[travis-url]: https://travis-ci.org/google/ts-style
