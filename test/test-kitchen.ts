@@ -23,22 +23,18 @@ const execOpts = {
   cwd: `${stagingPath}/kitchen`
 };
 
+console.log(`${chalk.blue(`${__filename} staging area: ${stagingPath}`)}`);
+
 /**
  * Create a staging directory with temp fixtures used
  * to test on a fresh application.
  */
 test.before(async () => {
-  try {
-    await execp('npm pack');
-    const tarball = `${pkg.name}-${pkg.version}.tgz`;
-    await renamep(tarball, `${stagingPath}/gts.tgz`);
-    await ncpp('test/fixtures', `${stagingPath}/`);
-    await execp('npm install', execOpts);
-  } catch (e) {
-    console.error('Failed to prepare test staging sandbox.');
-    console.error(e);
-    throw e;
-  }
+  await execp('npm pack');
+  const tarball = `${pkg.name}-${pkg.version}.tgz`;
+  await renamep(tarball, `${stagingPath}/gts.tgz`);
+  await ncpp('test/fixtures', `${stagingPath}/`);
+  await execp('npm install', execOpts);
 });
 
 test.serial('init', async t => {
@@ -95,7 +91,5 @@ test.serial('clean', async t => {
 test.after.always('cleanup staging', async () => {
   if (!keep) {
     stagingDir.removeCallback();
-  } else {
-    console.log(`${chalk.blue(`${__filename} staging area: ${stagingPath}`)}`);
   }
 });
