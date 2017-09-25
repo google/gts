@@ -36,7 +36,6 @@ test.failing.serial(
     'should gracefully error if tsconfig is missing', async t => {
       await withFixtures({}, async () => {
         await clean(OPTIONS);
-        t.pass();
       });
     });
 

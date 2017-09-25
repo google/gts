@@ -64,16 +64,3 @@ export async function withFixtures(
 
   return result;
 }
-
-// Problem: the following doesn't quite work with Ava. Ava expects direct calls
-// to `test`, and if it doesn't find them, it thinks that there do not exist
-// any tests in a file.
-// TODO: figure out a solution. Without this, the users of withFixtures have to
-// remember to use test.serial rather than test.
-export async function testWithFixtures(
-    name: string, fixtures: Fixtures, testFn: Test) {
-  return await withFixtures(fixtures, async () => {
-    // The tests are run serially because we chdir to temp directory.
-    return await test.serial(name, testFn);
-  });
-}
