@@ -25,12 +25,16 @@ const baseArgs =
  * Run tslint fix and clang fix with the default configuration
  * @param options
  * @param fix whether to automatically fix the format
+ * @param files files to format
  */
-export function format(options: Options, fix = false): Promise<boolean> {
+export function format(
+    options: Options, files: string[] = [], fix = false): Promise<boolean> {
   const program = createProgram(options);
-  const srcFiles = program.getSourceFiles()
-                       .map(sourceFile => sourceFile.fileName)
-                       .filter(f => !f.endsWith('.d.ts'));
+  const srcFiles = files.length > 0 ?
+      files :
+      program.getSourceFiles()
+          .map(sourceFile => sourceFile.fileName)
+          .filter(f => !f.endsWith('.d.ts'));
 
   return fix ? fixFormat(srcFiles) : checkFormat(srcFiles);
 }

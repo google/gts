@@ -21,18 +21,20 @@ import {Options} from './cli';
 
 /**
  * Run tslint with the default configuration. Returns true on success.
- * @param fix automatically fix linter errors
  * @param options gts options
+ * @param files files to run linter on
+ * @param fix automatically fix linter errors
  */
-export function lint(options: Options, fix = false): boolean {
+export function lint(
+    options: Options, files: string[] = [], fix = false): boolean {
   const tslintConfigPath = path.join(options.gtsRootDir, 'tslint.json');
 
   const program = createProgram(options);
   const configuration =
       Configuration.findConfiguration(tslintConfigPath, '').results;
   const linter = new Linter({fix: fix, formatter: 'codeFrame'}, program);
-  const files = Linter.getFileNames(program);
-  files.forEach(file => {
+  const srcFiles = files.length > 0 ? files : Linter.getFileNames(program);
+  srcFiles.forEach(file => {
     const fileContents = program.getSourceFile(file).getFullText();
     linter.lint(file, fileContents, configuration);
   });
