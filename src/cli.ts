@@ -33,14 +33,14 @@ export interface Options {
   logger: Logger;
 }
 
-export type VerbFunction = (options: Options, fix?: boolean) =>
-    Promise<boolean>;
+export type VerbFilesFunction =
+    (options: Options, files: string[], fix?: boolean) => Promise<boolean>;
 
 const logger: Logger = console;
 
 const cli = meow(`
 	Usage
-	  $ gts <verb> [options]
+	  $ gts <verb> [<file>...] [options]
 
     Verb can be:
       init        Adds default npm scripts to your package.json.
@@ -57,6 +57,7 @@ const cli = meow(`
     $ gts init -y
     $ gts check
     $ gts fix
+    $ gts fix src/file1.ts src/file2.ts
     $ gts clean
 `);
 
@@ -67,7 +68,7 @@ function usage(msg?: string): void {
   cli.showHelp(1);
 }
 
-async function run(verb: string): Promise<boolean> {
+async function run(verb: string, files: string[]): Promise<boolean> {
   const options: Options = {
     dryRun: cli.flags.dryRun || false,
     gtsRootDir: `${process.cwd()}/node_modules/gts`,
@@ -81,13 +82,15 @@ async function run(verb: string): Promise<boolean> {
   if (verb === 'init') {
     return await init(options);
   }
-  const lint: VerbFunction = require('./lint').lint;
-  const format: VerbFunction = require('./format').format;
+  const lint: VerbFilesFunction = require('./lint').lint;
+  const format: VerbFilesFunction = require('./format').format;
   switch (verb) {
     case 'check':
-      return (await lint(options) && await format(options));
+      return (await lint(options, files) && await format(options, files));
     case 'fix':
-      return (await lint(options, true) && await format(options, true));
+      return (
+          await lint(options, files, true) &&
+          await format(options, files, true));
     case 'clean':
       return await clean(options);
     default:
@@ -98,11 +101,11 @@ async function run(verb: string): Promise<boolean> {
 
 updateNotifier({pkg: cli.pkg}).notify();
 
-if (cli.input.length !== 1) {
+if (cli.input.length < 1) {
   usage();
 }
 
-run(cli.input[0]).then(success => {
+run(cli.input[0], cli.input.slice(1)).then(success => {
   if (!success) {
     process.exit(1);
   }

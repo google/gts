@@ -82,7 +82,7 @@ test.serial('lint should return false on bad code', async t => {
         'a.ts': BAD_CODE,
       },
       async () => {
-        const okay = lint.lint(OPTIONS, false);
+        const okay = lint.lint(OPTIONS);
         t.is(okay, false);
       });
 });
@@ -112,7 +112,7 @@ test.serial(
             'b.ts': BAD_CODE
           },
           async () => {
-            const okay = lint.lint(OPTIONS, false);
+            const okay = lint.lint(OPTIONS);
             t.is(okay, false);
           });
     });
@@ -140,8 +140,24 @@ test.serial('lint should lint globs listed in include', async t => {
         dirb: {'b.ts': BAD_CODE}
       },
       async () => {
-        const okay = lint.lint(OPTIONS, false);
+        const okay = lint.lint(OPTIONS);
         t.is(okay, false);
+      });
+});
+
+test.serial('lint should lint only specified files', async t => {
+  await withFixtures(
+      {
+        'tsconfig.json': JSON.stringify({}),
+        'tslint.json': JSON.stringify(TSLINT_CONFIG),
+        dira: {'a.ts': GOOD_CODE},
+        dirb: {'b.ts': BAD_CODE}
+      },
+      async () => {
+        const aOkay = lint.lint(OPTIONS, ['dira/a.ts']);
+        t.is(aOkay, true);
+        const bOkay = lint.lint(OPTIONS, ['dirb/b.ts']);
+        t.is(bOkay, false);
       });
 });
 
