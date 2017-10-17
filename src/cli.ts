@@ -86,7 +86,9 @@ async function run(verb: string, files: string[]): Promise<boolean> {
   const format: VerbFilesFunction = require('./format').format;
   switch (verb) {
     case 'check':
-      return (await lint(options, files) && await format(options, files));
+      const passLint = await lint(options, files);
+      const passFormat = await format(options, files);
+      return passLint && passFormat;
     case 'fix':
       return (
           await lint(options, files, true) &&

@@ -41,7 +41,7 @@ export async function format(
   } else {
     const result = await checkFormat(srcFiles);
     if (!result) {
-      options.logger.error(
+      options.logger.log(
           'clang-format reported errors... run `gts fix` to address.');
     }
     return result;
