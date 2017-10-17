@@ -26,7 +26,7 @@
     "format-check": "./bin/format-check.sh",
     "format": "clang-format -i -style='{Language: JavaScript, BasedOnStyle: Google, ColumnLimit: 80}' src/*.ts test/*.ts",
     "lint": "tslint -c tslint.json  --project . --type-check -t codeFrame",
-    "lint-fix": "tslint -c tslint.json --project .  --type-check -t codeFrame --fix",
+    "lint-fix": "tslint -c tslint.json --project . --type-check -t codeFrame --fix",
     "prepare": "npm run compile",
     "test": "npm run compile && nyc ava build/test/test*.js",
     "posttest": "npm run lint && npm run format-check"

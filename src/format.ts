@@ -42,7 +42,7 @@ export async function format(
     const result = await checkFormat(srcFiles);
     if (!result) {
       options.logger.error(
-        'clang-format reported errors... run `gts fix` to address.');
+          'clang-format reported errors... run `gts fix` to address.');
     }
     return result;
   }
