@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as chalk from 'chalk';
+import chalk from 'chalk';
 
 import {Options} from './cli';
 import {getTSConfig, rimrafp} from './util';

@@ -1,5 +1,5 @@
 import test from 'ava';
-import * as chalk from 'chalk';
+import chalk from 'chalk';
 import * as cp from 'child_process';
 import * as fs from 'fs';
 import * as ncp from 'ncp';
