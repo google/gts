@@ -1,5 +1,5 @@
 import test from 'ava';
-import * as chalk from 'chalk';
+import chalk from 'chalk';
 import * as cp from 'child_process';
 import * as fs from 'fs';
 import * as ncp from 'ncp';
@@ -8,13 +8,35 @@ import * as pify from 'pify';
 import * as rimraf from 'rimraf';
 import * as tmp from 'tmp';
 
+interface ExecResult {
+  exitCode: number;
+  stdout: string;
+  stderr: string;
+}
+
 const pkg = require('../../package.json');
 
 const rimrafp = pify(rimraf);
 const mkdirp = pify(fs.mkdir);
-const execp = pify(cp.exec);
+const simpleExecp = pify(cp.exec);
 const renamep = pify(fs.rename);
 const ncpp = pify(ncp.ncp);
+
+// cp.exec doesn't fit the (err ^ result) pattern because a process can write
+// to stdout/stderr and still exit with error code != 0.
+// In most cases simply promisifying cp.exec is adequate, but it's not if we
+// need to see console output for a process that exited with a non-zero exit
+// code, so we define a more exhaustive promsified cp.exec here.
+const execp =
+    (command: string, execOptions?: cp.ExecOptions): Promise<ExecResult> => {
+      return new Promise((resolve) => {
+        cp.exec(
+            command, execOptions || {},
+            (err: Error&{code: number}, stdout, stderr) => {
+              resolve({exitCode: err ? err.code : 0, stdout, stderr});
+            });
+      });
+    };
 
 const keep = !!process.env.GTS_KEEP_TEMPDIRS;
 const stagingDir = tmp.dirSync({keep: keep, unsafeCleanup: true});
@@ -30,43 +52,46 @@ console.log(`${chalk.blue(`${__filename} staging area: ${stagingPath}`)}`);
  * to test on a fresh application.
  */
 test.before(async () => {
-  await execp('npm pack');
+  await simpleExecp('npm pack');
   const tarball = `${pkg.name}-${pkg.version}.tgz`;
   await renamep(tarball, `${stagingPath}/gts.tgz`);
   await ncpp('test/fixtures', `${stagingPath}/`);
-  await execp('npm install', execOpts);
+  await simpleExecp('npm install', execOpts);
 });
 
 test.serial('init', async t => {
-  await execp('./node_modules/.bin/gts init -y', execOpts);
+  await simpleExecp('./node_modules/.bin/gts init -y', execOpts);
   fs.accessSync(`${stagingPath}/kitchen/tsconfig.json`);
   t.pass();
 });
 
 test.serial('check before fix', async t => {
-  await t.throws(execp('npm run check', execOpts));
+  const {exitCode, stdout} = await execp('npm run check', execOpts);
+  t.deepEqual(exitCode, 1);
+  t.notDeepEqual(stdout.indexOf('clang-format reported errors'), -1);
   t.pass();
 });
 
 test.serial('fix', async t => {
   const preFix = fs.readFileSync(`${stagingPath}/kitchen/src/server.ts`, 'utf8')
                      .split('\n');
-  await execp('npm run fix', execOpts);
+  await simpleExecp('npm run fix', execOpts);
   const postFix =
       fs.readFileSync(`${stagingPath}/kitchen/src/server.ts`, 'utf8')
           .split('\n');
   t.deepEqual(
-      preFix[0] + ';', postFix[0]);  // fix should have added a semi-colon
+      preFix[0].trim() + ';',
+      postFix[0]);  // fix should have added a semi-colon
   t.pass();
 });
 
 test.serial('check after fix', async t => {
-  await execp('npm run check', execOpts);
+  await simpleExecp('npm run check', execOpts);
   t.pass();
 });
 
 test.serial('build', async t => {
-  await execp('npm run compile', execOpts);
+  await simpleExecp('npm run compile', execOpts);
   fs.accessSync(`${stagingPath}/kitchen/build/src/server.js`);
   fs.accessSync(`${stagingPath}/kitchen/build/src/server.js.map`);
   fs.accessSync(`${stagingPath}/kitchen/build/src/server.d.ts`);
@@ -78,7 +103,7 @@ test.serial('build', async t => {
  * output dir
  */
 test.serial('clean', async t => {
-  await execp('npm run clean', execOpts);
+  await simpleExecp('npm run clean', execOpts);
   t.throws(() => {
     fs.accessSync(`${stagingPath}/kitchen/build`);
   });

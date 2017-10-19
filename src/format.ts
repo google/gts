@@ -27,7 +27,7 @@ const baseArgs =
  * @param fix whether to automatically fix the format
  * @param files files to format
  */
-export function format(
+export async function format(
     options: Options, files: string[] = [], fix = false): Promise<boolean> {
   const program = createProgram(options);
   const srcFiles = files.length > 0 ?
@@ -36,7 +36,16 @@ export function format(
           .map(sourceFile => sourceFile.fileName)
           .filter(f => !f.endsWith('.d.ts'));
 
-  return fix ? fixFormat(srcFiles) : checkFormat(srcFiles);
+  if (fix) {
+    return fixFormat(srcFiles);
+  } else {
+    const result = await checkFormat(srcFiles);
+    if (!result) {
+      options.logger.log(
+          'clang-format reported errors... run `gts fix` to address.');
+    }
+    return result;
+  }
 }
 
 /**

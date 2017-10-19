@@ -26,7 +26,7 @@
     "format-check": "./bin/format-check.sh",
     "format": "clang-format -i -style='{Language: JavaScript, BasedOnStyle: Google, ColumnLimit: 80}' src/*.ts test/*.ts",
     "lint": "tslint -c tslint.json  --project . --type-check -t codeFrame",
-    "lint-fix": "tslint -c tslint.json --project .  --type-check -t codeFrame --fix",
+    "lint-fix": "tslint -c tslint.json --project . --type-check -t codeFrame --fix",
     "prepare": "npm run compile",
     "test": "npm run compile && nyc ava build/test/test*.js",
     "posttest": "npm run lint && npm run format-check"
@@ -38,7 +38,7 @@
   "author": "Google Inc.",
   "license": "Apache-2.0",
   "dependencies": {
-    "chalk": "^2.0.1",
+    "chalk": "^2.2.0",
     "clang-format": "^1.0.53",
     "inquirer": "^3.2.1",
     "meow": "^3.7.0",
@@ -49,7 +49,6 @@
     "write-file-atomic": "^2.1.0"
   },
   "devDependencies": {
-    "@types/chalk": "^0.4.31",
     "@types/glob": "^5.0.30",
     "@types/inquirer": "0.0.35",
     "@types/make-dir": "^1.0.1",
