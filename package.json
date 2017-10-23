@@ -60,7 +60,7 @@
     "@types/tmp": "0.0.33",
     "@types/update-notifier": "^1.0.1",
     "ava": "^0.22.0",
-    "codecov": "^2.3.0",
+    "codecov": "^3.0.0",
     "make-dir": "^1.0.0",
     "ncp": "^2.0.0",
     "nyc": "^11.2.1",
