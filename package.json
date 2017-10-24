@@ -59,7 +59,7 @@
     "@types/rimraf": "2.0.2",
     "@types/tmp": "0.0.33",
     "@types/update-notifier": "^1.0.1",
-    "ava": "^0.22.0",
+    "ava": "^0.23.0",
     "codecov": "^3.0.0",
     "make-dir": "^1.0.0",
     "ncp": "^2.0.0",
