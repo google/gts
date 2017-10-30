@@ -111,15 +111,17 @@ async function addDependencies(
   return edits;
 }
 
+function formatJson(object: any) {
+  // TODO: preserve the indent from the input file.
+  const json = JSON.stringify(object, null, '  ');
+  return `${json}\n`;
+}
+
 async function writePackageJson(
     packageJson: any, options: Options): Promise<void> {
   options.logger.log('Writing package.json...');
   if (!options.dryRun) {
-    try {
-      await write('./package.json', JSON.stringify(packageJson, null, '  '));
-    } catch (err) {
-      throw err;
-    }
+    await write('./package.json', formatJson(packageJson));
   }
   const preview = {
     scripts: packageJson.scripts,
@@ -145,14 +147,12 @@ async function generateTsConfig(options: Options): Promise<void> {
       path.relative(
           options.targetRootDir,
           path.resolve(options.gtsRootDir, 'tsconfig-google.json'));
-  const tsconfig = JSON.stringify(
-      {
-        extends: baseConfig,
-        compilerOptions: {rootDir: '.', outDir: 'build'},
-        include: ['src/*.ts', 'src/**/*.ts', 'test/*.ts', 'test/**/*.ts'],
-        exclude: ['node_modules']
-      },
-      null, '  ');  // TODO: preserve the indent from the input file.
+  const tsconfig = formatJson({
+    extends: baseConfig,
+    compilerOptions: {rootDir: '.', outDir: 'build'},
+    include: ['src/*.ts', 'src/**/*.ts', 'test/*.ts', 'test/**/*.ts'],
+    exclude: ['node_modules']
+  });
 
   let writeTsConfig = true;
   if (existing && existing === tsconfig) {
@@ -167,11 +167,7 @@ async function generateTsConfig(options: Options): Promise<void> {
   if (writeTsConfig) {
     options.logger.log('Writing tsconfig.json...');
     if (!options.dryRun) {
-      try {
-        await write('./tsconfig.json', tsconfig);
-      } catch (err) {
-        throw err;
-      }
+      await write('./tsconfig.json', tsconfig);
     }
     options.logger.dir(JSON.parse(tsconfig));
   }
