@@ -22,18 +22,33 @@ const simpleExecp = pify(cp.exec);
 const renamep = pify(fs.rename);
 const ncpp = pify(ncp.ncp);
 
+// TODO: improve the typedefinitions in @types/node. Right now they specify
+// the return type to be Error.
+interface ExecError extends Error {
+  code: number;
+}
+
+function isExecError(err: Error|ExecError): err is ExecError {
+  return (<ExecError>err).code !== undefined;
+}
+
 // cp.exec doesn't fit the (err ^ result) pattern because a process can write
 // to stdout/stderr and still exit with error code != 0.
 // In most cases simply promisifying cp.exec is adequate, but it's not if we
 // need to see console output for a process that exited with a non-zero exit
 // code, so we define a more exhaustive promsified cp.exec here.
+// TODO: replace this code with a npm modules that promisifies exec.
 const execp =
     (command: string, execOptions?: cp.ExecOptions): Promise<ExecResult> => {
       return new Promise((resolve) => {
         cp.exec(
             command, execOptions || {},
-            (err: Error&{code: number}, stdout, stderr) => {
-              resolve({exitCode: err ? err.code : 0, stdout, stderr});
+            (err: Error|ExecError|null, stdout, stderr) => {
+              resolve({
+                exitCode: err && isExecError(err) ? err.code : 0,
+                stdout,
+                stderr
+              });
             });
       });
     };

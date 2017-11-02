@@ -38,7 +38,7 @@
   "author": "Google Inc.",
   "license": "Apache-2.0",
   "dependencies": {
-    "chalk": "^2.2.0",
+    "chalk": "^2.3.0",
     "clang-format": "^1.0.53",
     "inquirer": "^3.2.1",
     "meow": "^3.7.0",
@@ -54,7 +54,7 @@
     "@types/make-dir": "^1.0.1",
     "@types/meow": "^3.6.2",
     "@types/ncp": "^2.0.0",
-    "@types/node": "^8.0.17",
+    "@types/node": "^8.0.47",
     "@types/pify": "3.0.0",
     "@types/rimraf": "2.0.2",
     "@types/tmp": "0.0.33",
@@ -66,7 +66,7 @@
     "nyc": "^11.2.1",
     "source-map-support": "^0.5.0",
     "tmp": "0.0.31",
-    "typescript": "~2.4.1"
+    "typescript": "~2.6.1"
   },
   "peerDependencies": {
     "typescript": "^2.4.1"
