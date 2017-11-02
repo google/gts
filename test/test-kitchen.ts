@@ -65,6 +65,14 @@ test.serial('init', async t => {
   t.pass();
 });
 
+test.serial('generated json files should terminate with newline', async t => {
+  await simpleExecp('./node_modules/.bin/gts init -y', execOpts);
+  t.truthy(fs.readFileSync(`${stagingPath}/kitchen/package.json`, 'utf8')
+               .endsWith('\n'));
+  t.truthy(fs.readFileSync(`${stagingPath}/kitchen/tsconfig.json`, 'utf8')
+               .endsWith('\n'));
+});
+
 test.serial('check before fix', async t => {
   const {exitCode, stdout} = await execp('npm run check', execOpts);
   t.deepEqual(exitCode, 1);
