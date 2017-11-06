@@ -32,7 +32,7 @@ export function lint(
   const program = createProgram(options);
   const configuration =
       Configuration.findConfiguration(tslintConfigPath, '').results;
-  const linter = new Linter({fix: fix, formatter: 'codeFrame'}, program);
+  const linter = new Linter({fix, formatter: 'codeFrame'}, program);
   const srcFiles = files.length > 0 ? files : Linter.getFileNames(program);
   srcFiles.forEach(file => {
     const fileContents = program.getSourceFile(file).getFullText();
