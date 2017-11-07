@@ -29,7 +29,7 @@ interface ExecError extends Error {
 }
 
 function isExecError(err: Error|ExecError): err is ExecError {
-  return (<ExecError>err).code !== undefined;
+  return (err as ExecError).code !== undefined;
 }
 
 // cp.exec doesn't fit the (err ^ result) pattern because a process can write
@@ -54,7 +54,7 @@ const execp =
     };
 
 const keep = !!process.env.GTS_KEEP_TEMPDIRS;
-const stagingDir = tmp.dirSync({keep: keep, unsafeCleanup: true});
+const stagingDir = tmp.dirSync({keep, unsafeCleanup: true});
 const stagingPath = stagingDir.name;
 const execOpts = {
   cwd: `${stagingPath}/kitchen`

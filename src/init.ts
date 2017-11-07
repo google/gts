@@ -21,8 +21,16 @@ import * as path from 'path';
 import {Options} from './cli';
 import {readFilep as read, readJsonp as readJson, writeFileAtomicp as write} from './util';
 
-interface Bag<T> {
-  [script: string]: T;
+const pkg = require('../../package.json') as PackageJson;
+
+export interface Bag<T> { [script: string]: T; }
+
+// TODO: is this type available from definitelytyped.org? Find it, and drop the
+// local definition.
+export interface PackageJson {
+  version?: string;
+  devDependencies?: Bag<string>;
+  scripts?: Bag<string>;
 }
 
 async function query(
@@ -42,7 +50,7 @@ async function query(
 }
 
 async function addScripts(
-    packageJson: any, options: Options): Promise<boolean> {
+    packageJson: PackageJson, options: Options): Promise<boolean> {
   let edits = false;
   const scripts: Bag<string> = {
     check: `gts check`,
@@ -81,9 +89,9 @@ async function addScripts(
 }
 
 async function addDependencies(
-    packageJson: any, options: Options): Promise<boolean> {
+    packageJson: PackageJson, options: Options): Promise<boolean> {
   let edits = false;
-  const deps: Bag<string> = {'gts': 'latest', 'typescript': '^2.4.1'};
+  const deps: Bag<string> = {'gts': `^${pkg.version}`, 'typescript': '^2.6.1'};
 
   if (!packageJson.devDependencies) {
     packageJson.devDependencies = {};
@@ -111,14 +119,14 @@ async function addDependencies(
   return edits;
 }
 
-function formatJson(object: any) {
+function formatJson(object: {}) {
   // TODO: preserve the indent from the input file.
   const json = JSON.stringify(object, null, '  ');
   return `${json}\n`;
 }
 
 async function writePackageJson(
-    packageJson: any, options: Options): Promise<void> {
+    packageJson: PackageJson, options: Options): Promise<void> {
   options.logger.log('Writing package.json...');
   if (!options.dryRun) {
     await write('./package.json', formatJson(packageJson));

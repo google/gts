@@ -33,7 +33,7 @@ export interface Fixtures {
 async function setupFixtures(dir: string, fixtures: Fixtures) {
   await makeDir(dir);
   const keys = Object.keys(fixtures);
-  for (let key of keys) {
+  for (const key of keys) {
     const filePath = path.join(dir, key);
     if (typeof fixtures[key] === 'string') {
       const contents = fixtures[key] as string;
@@ -46,9 +46,9 @@ async function setupFixtures(dir: string, fixtures: Fixtures) {
 }
 
 export async function withFixtures(
-    fixtures: Fixtures, fn: (fixturesDir: string) => Promise<any>) {
+    fixtures: Fixtures, fn: (fixturesDir: string) => Promise<{}|void>) {
   const keep = !!process.env.GTS_KEEP_TEMPDIRS;
-  const dir = tmp.dirSync({keep: keep, unsafeCleanup: true});
+  const dir = tmp.dirSync({keep, unsafeCleanup: true});
 
   await setupFixtures(dir.name, fixtures);
 

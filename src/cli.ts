@@ -20,9 +20,9 @@ import {init} from './init';
 import {clean} from './clean';
 
 export interface Logger {
-  log: (...args: any[]) => void;
-  error: (...args: any[]) => void;
-  dir: (obj: any, options?: any) => void;
+  log: (...args: Array<{}>) => void;
+  error: (...args: Array<{}>) => void;
+  dir: (obj: {}, options?: {}) => void;
 }
 
 export interface Options {
@@ -74,7 +74,7 @@ async function run(verb: string, files: string[]): Promise<boolean> {
     gtsRootDir: `${process.cwd()}/node_modules/gts`,
     targetRootDir: process.cwd(),
     yes: cli.flags.yes || cli.flags.y || false,
-    logger: logger
+    logger
   };
   // Linting/formatting depend on typescript. We don't want to load the
   // typescript module during init, since it might not exist.
@@ -82,6 +82,7 @@ async function run(verb: string, files: string[]): Promise<boolean> {
   if (verb === 'init') {
     return await init(options);
   }
+
   const lint: VerbFilesFunction = require('./lint').lint;
   const format: VerbFilesFunction = require('./format').format;
   switch (verb) {
