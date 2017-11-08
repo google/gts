@@ -30,11 +30,8 @@ const OPTIONS: Options = {
   logger: {log: nop, error: nop, dir: nop}
 };
 
-const GOOD_CODE = `
-console.log('hello world');
-`;
-
-const BAD_CODE = `console.log('hello world');`;  // no newline.
+const BAD_CODE = `throw 'hello world';`;
+const GOOD_CODE = `throw new Error('hello world');`;
 
 const TSLINT_CONFIG = require('../../tslint.json');
 
