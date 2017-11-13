@@ -9,7 +9,13 @@
 
 > ***NOTE: This repo is a work-in-progress and is not ready for general use just yet. This is not an official Google product.***
 
-This repository is Google's default TypeScript configuration. Made with ❤️ by the Google Node.js team.
+[gts][npm-url] is Google's TypeScript style guide, formatter, linter, and automatic code fixer. No lint rules to edit, no configuration to update, no more bike shedding over syntax. To borrow from standardjs:
+
+- **No configuration**. The easiest way to enforce consistent style in your project. Just drop it in.
+- **Automatically format code**. Just run `gts fix` and say goodbye to messy or inconsistent code.
+- **Catch style issues & programmer errors early.** Save precious code review time by eliminating back-and-forth between reviewer & contributor.
+
+Made with ❤️ by the Google Node.js team.
 
 # Getting Started
 
@@ -25,8 +31,9 @@ npm install --save-dev gts typescript@2.x
 $(npm bin)/gts init
 ```
 
-# How this works
-- Adds a `tsconfig.json` file to your project that uses the Google TS Style.
+# How it works
+When you run the `npx gts init` command, it's going to do a few things for you:
+- Adds an opinionated `tsconfig.json` file to your project that uses the Google TypeScript Style.
 - Adds the necessary devDependencies to your `package.json`.
 - Adds scripts to your `package.json`:
   - `check`: Lints and checks for formatting problems.
@@ -34,6 +41,15 @@ $(npm bin)/gts init
   - `clean`: Removes output files.
   - `compile`: Compiles the source code using TypeScript compiler.
   - `pretest`, `posttest` and `prepare`: convenience integrations.
+
+## Individual files
+The commands above will all run in the scope of the current folder.  Some commands can be run on individual files:
+
+```js
+$ gts check index.ts
+$ gts check one.ts two.ts three.ts
+$ gts check *.ts
+```
 
 # License
 See [LICENSE.md](LICENSE.md)
