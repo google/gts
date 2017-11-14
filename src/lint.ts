@@ -35,8 +35,11 @@ export function lint(
   const linter = new Linter({fix, formatter: 'codeFrame'}, program);
   const srcFiles = files.length > 0 ? files : Linter.getFileNames(program);
   srcFiles.forEach(file => {
-    const fileContents = program.getSourceFile(file).getFullText();
-    linter.lint(file, fileContents, configuration);
+    const sourceFile = program.getSourceFile(file);
+    if (sourceFile) {
+      const fileContents = sourceFile.getFullText();
+      linter.lint(file, fileContents, configuration);
+    }
   });
   const result = linter.getResult();
   if (result.errorCount || result.warningCount) {
