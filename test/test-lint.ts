@@ -158,4 +158,17 @@ test.serial('lint should lint only specified files', async t => {
       });
 });
 
+test.serial('lint should not throw for unrecognized files', async t => {
+  await withFixtures(
+      {
+        'tsconfig.json': JSON.stringify({}),
+        'tslint.json': JSON.stringify(TSLINT_CONFIG),
+        'a.ts': GOOD_CODE,
+      },
+      async () => {
+        lint.lint(OPTIONS, ['z.ts']);
+        t.pass();
+      });
+});
+
 // TODO: test for when tsconfig.json is missing.
