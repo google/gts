@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import * as path from 'path';
 import * as meow from 'meow';
 import * as updateNotifier from 'update-notifier';
 import {init} from './init';
@@ -71,7 +72,7 @@ function usage(msg?: string): void {
 async function run(verb: string, files: string[]): Promise<boolean> {
   const options: Options = {
     dryRun: cli.flags.dryRun || false,
-    gtsRootDir: `${process.cwd()}/node_modules/gts`,
+    gtsRootDir: path.resolve(__dirname, '../..'),
     targetRootDir: process.cwd(),
     yes: cli.flags.yes || cli.flags.y || false,
     logger
