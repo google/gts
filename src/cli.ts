@@ -72,6 +72,7 @@ function usage(msg?: string): void {
 async function run(verb: string, files: string[]): Promise<boolean> {
   const options: Options = {
     dryRun: cli.flags.dryRun || false,
+    // Paths are relative to the transpiled output files.
     gtsRootDir: path.resolve(__dirname, '../..'),
     targetRootDir: process.cwd(),
     yes: cli.flags.yes || cli.flags.y || false,
