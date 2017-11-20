@@ -15,7 +15,7 @@
 - **Automatically format code**. Just run `gts fix` and say goodbye to messy or inconsistent code.
 - **Catch style issues & programmer errors early.** Save precious code review time by eliminating back-and-forth between reviewer & contributor.
 
-Under the covers, we use [tslint][tslint] to enforce the style guide and provide automated fixes, and [clang-format][clang-format-url] to re-format code.
+Under the covers, we use [tslint][tslint-url] to enforce the style guide and provide automated fixes, and [clang-format][clang-format-url] to re-format code.
 
 Made with ❤️ by the Google Node.js team.
 
