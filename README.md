@@ -15,7 +15,7 @@
 - **Automatically format code**. Just run `gts fix` and say goodbye to messy or inconsistent code.
 - **Catch style issues & programmer errors early.** Save precious code review time by eliminating back-and-forth between reviewer & contributor.
 
-Under the covers, we use [tslint] https://github.com/palantir/tslint/ to enforce the style guide and provide automated fixes, and [clang-format] to re-format code.
+Under the covers, we use [tslint][tslint] to enforce the style guide and provide automated fixes, and [clang-format][clang-format-url] to re-format code.
 
 Made with ❤️ by the Google Node.js team.
 
@@ -56,6 +56,7 @@ $ gts check *.ts
 # License
 See [LICENSE.md](LICENSE.md)
 
+[clang-format-url]: https://github.com/angular/clang-format
 [codecov-image]: https://codecov.io/gh/google/ts-style/branch/master/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/google/ts-style
 [david-dev-image]: https://david-dm.org/google/ts-style/dev-status.svg
@@ -68,5 +69,5 @@ See [LICENSE.md](LICENSE.md)
 [snyk-url]: https://snyk.io/test/github/google/ts-style
 [travis-image]: https://travis-ci.org/google/ts-style.svg?branch=master
 [travis-url]: https://travis-ci.org/google/ts-style
-[tslint]: https://palantir.github.io/tslint/
-[clang-format]: https://github.com/angular/clang-format
+[tslint-url]: https://palantir.github.io/tslint/
+
