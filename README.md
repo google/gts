@@ -9,11 +9,13 @@
 
 > ***NOTE: This repo is a work-in-progress and is not ready for general use just yet. This is not an official Google product.***
 
-[gts][npm-url] is Google's TypeScript style guide, formatter, linter, and automatic code fixer. No lint rules to edit, no configuration to update, no more bike shedding over syntax. To borrow from standardjs:
+[gts][npm-url] is Google's TypeScript style guide, and the configuration for our formatter, linter, and automatic code fixer. No lint rules to edit, no configuration to update, no more bike shedding over syntax. To borrow from standardjs:
 
 - **No configuration**. The easiest way to enforce consistent style in your project. Just drop it in.
 - **Automatically format code**. Just run `gts fix` and say goodbye to messy or inconsistent code.
 - **Catch style issues & programmer errors early.** Save precious code review time by eliminating back-and-forth between reviewer & contributor.
+
+Under the covers, we use [tslint][tslint-url] to enforce the style guide and provide automated fixes, and [clang-format][clang-format-url] to re-format code.
 
 Made with ❤️ by the Google Node.js team.
 
@@ -54,6 +56,7 @@ $ gts check *.ts
 # License
 See [LICENSE.md](LICENSE.md)
 
+[clang-format-url]: https://github.com/angular/clang-format
 [codecov-image]: https://codecov.io/gh/google/ts-style/branch/master/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/google/ts-style
 [david-dev-image]: https://david-dm.org/google/ts-style/dev-status.svg
@@ -66,3 +69,5 @@ See [LICENSE.md](LICENSE.md)
 [snyk-url]: https://snyk.io/test/github/google/ts-style
 [travis-image]: https://travis-ci.org/google/ts-style.svg?branch=master
 [travis-url]: https://travis-ci.org/google/ts-style
+[tslint-url]: https://palantir.github.io/tslint/
+
