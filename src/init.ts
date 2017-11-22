@@ -38,6 +38,8 @@ async function query(
     options: Options): Promise<boolean> {
   if (options.yes) {
     return true;
+  } else if (options.no) {
+    return false;
   }
 
   if (message) {
@@ -215,5 +217,11 @@ export async function init(options: Options): Promise<boolean> {
     options.logger.log('No edits needed in package.json.');
   }
   await generateTsConfig(options);
+
+  // Run `npm install` after initial setup so `npm run check` works right away.
+  if (!options.dryRun) {
+    cp.spawnSync('npm', ['install'], {stdio: 'inherit'});
+  }
+
   return true;
 }
