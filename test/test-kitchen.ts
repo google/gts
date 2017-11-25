@@ -74,6 +74,20 @@ test.before(async () => {
   await simpleExecp('npm install', execOpts);
 });
 
+test.serial('use as a non-locally installed module', async t => {
+  // Use from a directory different from where we have locally installed. This
+  // simulates use as a globally installed module.
+  const GTS = `${stagingPath}/kitchen/node_modules/.bin/gts`;
+  const tmpDir = tmp.dirSync({keep, unsafeCleanup: true});
+  await ncpp('test/fixtures', `${tmpDir.name}/`);
+  await simpleExecp(
+      `${GTS} check kitchen/src/server.ts`, {cwd: `${tmpDir.name}/kitchen`});
+  if (!keep) {
+    tmpDir.removeCallback();
+  }
+  t.pass();
+});
+
 test.serial('init', async t => {
   await simpleExecp('./node_modules/.bin/gts init -y', execOpts);
   fs.accessSync(`${stagingPath}/kitchen/tsconfig.json`);
