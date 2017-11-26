@@ -31,6 +31,7 @@ export interface Options {
   gtsRootDir: string;
   targetRootDir: string;
   yes: boolean;
+  no: boolean;
   logger: Logger;
 }
 
@@ -52,6 +53,7 @@ const cli = meow(`
   Options
     --help        Prints this help message.
     -y, --yes     Assume a yes answer for every prompt.
+    -n, --no      Assume a no answer for every prompt.
     --dry-run     Don't make any acutal changes.
 
 	Examples
@@ -76,6 +78,7 @@ async function run(verb: string, files: string[]): Promise<boolean> {
     gtsRootDir: path.resolve(__dirname, '../..'),
     targetRootDir: process.cwd(),
     yes: cli.flags.yes || cli.flags.y || false,
+    no: cli.flags.no || cli.flags.n || false,
     logger
   };
   // Linting/formatting depend on typescript. We don't want to load the

@@ -29,6 +29,7 @@ const OPTIONS: Options = {
   targetRootDir: './',
   dryRun: false,
   yes: false,
+  no: false,
   logger: {log: nop, error: nop, dir: nop}
 };
 

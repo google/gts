@@ -71,7 +71,22 @@ test.before(async () => {
   const tarball = `${pkg.name}-${pkg.version}.tgz`;
   await renamep(tarball, `${stagingPath}/gts.tgz`);
   await ncpp('test/fixtures', `${stagingPath}/`);
-  await simpleExecp('npm install', execOpts);
+});
+
+test.serial('init', async t => {
+  const nodeVersion = Number(process.version.slice(1).split('.')[0]);
+  if (nodeVersion < 8) {
+    await simpleExecp('npm install', execOpts);
+    await simpleExecp('./node_modules/.bin/gts init -y', execOpts);
+  } else {
+    // It's important to use `-n` here because we don't want to overwrite
+    // the version of gts installed, as it will trigger the npm install.
+    await simpleExecp(
+        `npx -p ${stagingPath}/gts.tgz --ignore-existing gts init -n`,
+        execOpts);
+  }
+  fs.accessSync(`${stagingPath}/kitchen/tsconfig.json`);
+  t.pass();
 });
 
 test.serial('use as a non-locally installed module', async t => {
@@ -85,12 +100,6 @@ test.serial('use as a non-locally installed module', async t => {
   if (!keep) {
     tmpDir.removeCallback();
   }
-  t.pass();
-});
-
-test.serial('init', async t => {
-  await simpleExecp('./node_modules/.bin/gts init -y', execOpts);
-  fs.accessSync(`${stagingPath}/kitchen/tsconfig.json`);
   t.pass();
 });
 
