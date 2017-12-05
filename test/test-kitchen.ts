@@ -114,7 +114,7 @@ test.serial('generated json files should terminate with newline', async t => {
 test.serial('check before fix', async t => {
   const {exitCode, stdout} = await execp('npm run check', execOpts);
   t.deepEqual(exitCode, 1);
-  t.regex(stdout, /clang-format \d+.\d+.\d+ reported errors/);
+  t.regex(stdout, /clang-format \d+\.\d+\.\d+ reported errors/);
   t.pass();
 });
 
