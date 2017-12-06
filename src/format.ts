@@ -31,13 +31,10 @@ export async function format(
     options: Options, files: string[] = [], fix = false): Promise<boolean> {
   const program = createProgram(options);
   const srcFiles = files.length > 0 ?
-      files :
-      program.getSourceFiles()
-          .map(sourceFile => sourceFile.fileName)
-          .filter(f => !f.endsWith('.d.ts'));
+      files : program.getRootFileNames().filter(f => !f.endsWith('.d.ts'));
 
   if (fix) {
-    return fixFormat(srcFiles);
+    return await fixFormat(srcFiles);
   } else {
     const result = await checkFormat(srcFiles);
     if (!result) {
