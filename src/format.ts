@@ -17,6 +17,7 @@ import {Options} from './cli';
 import {createProgram} from './lint';
 
 const clangFormat = require('clang-format');
+const {version: clangFormatVersion} = require('clang-format/package.json');
 
 const baseArgs =
     ['-style', '{Language: JavaScript, BasedOnStyle: Google, ColumnLimit: 80}'];
@@ -41,8 +42,8 @@ export async function format(
   } else {
     const result = await checkFormat(srcFiles);
     if (!result) {
-      options.logger.log(
-          'clang-format reported errors... run `gts fix` to address.');
+      options.logger.log(`clang-format ${
+          clangFormatVersion} reported errors... run \`gts fix\` to address.`);
     }
     return result;
   }
