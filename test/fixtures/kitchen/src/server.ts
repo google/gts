@@ -1,1 +1,1 @@
-  export const isThisTypeScript = true
+  const isThisTypeScript = true

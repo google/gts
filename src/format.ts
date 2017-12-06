@@ -71,7 +71,6 @@ function fixFormat(srcFiles: string[]): Promise<boolean> {
  * @param srcFiles list of source files
  */
 function checkFormat(srcFiles: string[]): Promise<boolean> {
-  console.log(srcFiles);
   return new Promise<boolean>((resolve, reject) => {
     let output = '';
     const args = baseArgs.concat(['-output-replacements-xml'], srcFiles);

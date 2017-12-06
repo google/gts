@@ -48,7 +48,7 @@ test.serial('format should only look in root files', async t => {
       {
         'tsconfig.json': JSON.stringify({files: ['a.ts']}),
         'a.ts': 'import {foo} from \'./b\';\n',
-        'b.ts': 'export const foo = 2;  '
+        'b.ts': 'export const foo = 2;  '  // trailing spaces
       },
       async () => {
         const result = await format.format(OPTIONS, [], false);
