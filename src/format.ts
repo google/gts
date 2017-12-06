@@ -31,7 +31,8 @@ export async function format(
     options: Options, files: string[] = [], fix = false): Promise<boolean> {
   const program = createProgram(options);
   const srcFiles = files.length > 0 ?
-      files : program.getRootFileNames().filter(f => !f.endsWith('.d.ts'));
+      files :
+      program.getRootFileNames().filter(f => !f.endsWith('.d.ts'));
 
   if (fix) {
     return await fixFormat(srcFiles);
@@ -70,6 +71,7 @@ function fixFormat(srcFiles: string[]): Promise<boolean> {
  * @param srcFiles list of source files
  */
 function checkFormat(srcFiles: string[]): Promise<boolean> {
+  console.log(srcFiles);
   return new Promise<boolean>((resolve, reject) => {
     let output = '';
     const args = baseArgs.concat(['-output-replacements-xml'], srcFiles);
