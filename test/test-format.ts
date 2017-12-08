@@ -22,6 +22,9 @@ import {nop} from '../src/util';
 
 import {withFixtures} from './fixtures';
 
+// clang-format won't pass this code because of trailing spaces.
+const BAD_CODE = 'export const foo = 2;  ';
+
 const OPTIONS: Options = {
   gtsRootDir: './',
   targetRootDir: './',
@@ -35,7 +38,7 @@ test.serial('format should return false for ill-formatted files', async t => {
   await withFixtures(
       {
         'tsconfig.json': JSON.stringify({files: ['a.ts']}),
-        'a.ts': 'export const foo = 2;  '
+        'a.ts': BAD_CODE
       },
       async () => {
         const result = await format.format(OPTIONS, [], false);
@@ -48,7 +51,7 @@ test.serial('format should only look in root files', async t => {
       {
         'tsconfig.json': JSON.stringify({files: ['a.ts']}),
         'a.ts': 'import {foo} from \'./b\';\n',
-        'b.ts': 'export const foo = 2;  '  // trailing spaces
+        'b.ts': BAD_CODE
       },
       async () => {
         const result = await format.format(OPTIONS, [], false);
