@@ -36,10 +36,7 @@ const OPTIONS: Options = {
 
 test.serial('format should return false for ill-formatted files', async t => {
   await withFixtures(
-      {
-        'tsconfig.json': JSON.stringify({files: ['a.ts']}),
-        'a.ts': BAD_CODE
-      },
+      {'tsconfig.json': JSON.stringify({files: ['a.ts']}), 'a.ts': BAD_CODE},
       async () => {
         const result = await format.format(OPTIONS, [], false);
         t.false(result);
