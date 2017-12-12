@@ -30,14 +30,18 @@ const baseArgs =
 export async function format(
     options: Options, files: string[] = [], fix = false): Promise<boolean> {
   const program = createProgram(options);
+  // Obtain a list of source files to format.
+  // We use program.getRootFileNames to get only the files that match the
+  // include patterns specified in the given tsconfig.json file (as specified
+  // through options). This is necessary because we only want to format files
+  // over which the developer has control (i.e. not auto-generated or
+  // third-party source files).
   const srcFiles = files.length > 0 ?
       files :
-      program.getSourceFiles()
-          .map(sourceFile => sourceFile.fileName)
-          .filter(f => !f.endsWith('.d.ts'));
+      program.getRootFileNames().filter(f => !f.endsWith('.d.ts'));
 
   if (fix) {
-    return fixFormat(srcFiles);
+    return await fixFormat(srcFiles);
   } else {
     const result = await checkFormat(srcFiles);
     if (!result) {
