@@ -1,7 +1,7 @@
 # gts - Google TypeScript style
 
 [![NPM Version][npm-image]][npm-url]
-[![Build Status][travis-image]][travis-url]
+[![CircleCI][circle-image]][circle-url]
 [![Dependency Status][david-image]][david-url]
 [![devDependency Status][david-dev-image]][david-dev-url]
 [![Known Vulnerabilities][snyk-image]][snyk-url]
@@ -56,6 +56,8 @@ $ gts check *.ts
 # License
 See [LICENSE.md](LICENSE.md)
 
+[circle-image]: https://circleci.com/gh/google/ts-style.svg?style=svg
+[circle-url]: https://circleci.com/gh/google/ts-style
 [clang-format-url]: https://github.com/angular/clang-format
 [codecov-image]: https://codecov.io/gh/google/ts-style/branch/master/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/google/ts-style
@@ -67,7 +69,5 @@ See [LICENSE.md](LICENSE.md)
 [npm-url]: https://npmjs.org/package/gts
 [snyk-image]: https://snyk.io/test/github/google/ts-style/badge.svg
 [snyk-url]: https://snyk.io/test/github/google/ts-style
-[travis-image]: https://travis-ci.org/google/ts-style.svg?branch=master
-[travis-url]: https://travis-ci.org/google/ts-style
 [tslint-url]: https://palantir.github.io/tslint/
 
