@@ -62,7 +62,7 @@
     "@types/update-notifier": "^1.0.1",
     "ava": "^0.24.0",
     "codecov": "^3.0.0",
-    "js-green-licenses": "^0.1.1",
+    "js-green-licenses": "^0.1.2",
     "make-dir": "^1.0.0",
     "ncp": "^2.0.0",
     "nyc": "^11.2.1",
