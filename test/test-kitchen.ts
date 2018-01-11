@@ -85,13 +85,8 @@ test.serial('init', async t => {
         `npx -p ${stagingPath}/gts.tgz --ignore-existing gts init -n`,
         execOpts);
   }
-  const tsconfigPath = `${stagingPath}/kitchen/tsconfig.json`;
-  fs.accessSync(tsconfigPath);
-
-  // The `extends` field must use the local gts path.
-  const tsconfigJson = fs.readFileSync(tsconfigPath, 'utf8');
-  const tsconfig = JSON.parse(tsconfigJson);
-  t.deepEqual(tsconfig.extends, './node_modules/gts/tsconfig-google.json');
+  fs.accessSync(`${stagingPath}/kitchen/tsconfig.json`);
+  t.pass();
 });
 
 test.serial('use as a non-locally installed module', async t => {
@@ -100,10 +95,15 @@ test.serial('use as a non-locally installed module', async t => {
   const GTS = `${stagingPath}/kitchen/node_modules/.bin/gts`;
   const tmpDir = tmp.dirSync({keep, unsafeCleanup: true});
   await ncpp('test/fixtures', `${tmpDir.name}/`);
+
   const opts = {cwd: `${tmpDir.name}/kitchen`};
-  // It's important to use `-n` here because we don't want to overwrite
-  // the version of gts installed, as it will trigger the npm install.
-  await simpleExecp(`${GTS} init -n`, opts);
+  await simpleExecp(`${GTS} init -y`, opts);
+  // The `extends` field must use the local gts path.
+  const tsconfigJson =
+      fs.readFileSync(`${tmpDir.name}/kitchen/tsconfig.json`, 'utf8');
+  const tsconfig = JSON.parse(tsconfigJson);
+  t.deepEqual(tsconfig.extends, './node_modules/gts/tsconfig-google.json');
+
   await simpleExecp(`${GTS} check kitchen/src/server.ts`, opts);
   if (!keep) {
     tmpDir.removeCallback();
