@@ -85,8 +85,13 @@ test.serial('init', async t => {
         `npx -p ${stagingPath}/gts.tgz --ignore-existing gts init -n`,
         execOpts);
   }
-  fs.accessSync(`${stagingPath}/kitchen/tsconfig.json`);
-  t.pass();
+  const tsconfigPath = `${stagingPath}/kitchen/tsconfig.json`;
+  fs.accessSync(tsconfigPath);
+
+  // The `extends` field must use the local gts path.
+  const tsconfigJson = fs.readFileSync(tsconfigPath, 'utf8');
+  const tsconfig = JSON.parse(tsconfigJson);
+  t.deepEqual(tsconfig.extends, './node_modules/gts/tsconfig-google.json');
 });
 
 test.serial('use as a non-locally installed module', async t => {
