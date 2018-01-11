@@ -95,8 +95,11 @@ test.serial('use as a non-locally installed module', async t => {
   const GTS = `${stagingPath}/kitchen/node_modules/.bin/gts`;
   const tmpDir = tmp.dirSync({keep, unsafeCleanup: true});
   await ncpp('test/fixtures', `${tmpDir.name}/`);
-  await simpleExecp(
-      `${GTS} check kitchen/src/server.ts`, {cwd: `${tmpDir.name}/kitchen`});
+  const opts = {cwd: `${tmpDir.name}/kitchen`};
+  // It's important to use `-n` here because we don't want to overwrite
+  // the version of gts installed, as it will trigger the npm install.
+  await simpleExecp(`${GTS} init -n`, opts);
+  await simpleExecp(`${GTS} check kitchen/src/server.ts`, opts);
   if (!keep) {
     tmpDir.removeCallback();
   }
