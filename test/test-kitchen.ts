@@ -4,8 +4,8 @@ import * as cp from 'child_process';
 import * as fs from 'fs';
 import * as ncp from 'ncp';
 import * as path from 'path';
-import * as pify from 'pify';
-import * as rimraf from 'rimraf';
+import pify from 'pify';
+import rimraf from 'rimraf';
 import * as tmp from 'tmp';
 
 interface ExecResult {

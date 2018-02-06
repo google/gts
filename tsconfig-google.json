@@ -1,19 +1,20 @@
 {
   "compilerOptions": {
-    "allowSyntheticDefaultImports": false,
+    "allowSyntheticDefaultImports": true,
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
     "declaration": true,
+    "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "lib": ["es2015"],
-    "noFallthroughCasesInSwitch": true,
+    "module": "commonjs",
     "noEmitOnError": true,
+    "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
     "pretty": true,
+    "sourceMap": true,
     "strict": true,
-    "module": "commonjs",
-    "target": "es5",
-    "sourceMap": true
+    "target": "es5"
   },
   "exclude": [
     "node_modules"
