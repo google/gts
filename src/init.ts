@@ -93,7 +93,7 @@ async function addScripts(
 async function addDependencies(
     packageJson: PackageJson, options: Options): Promise<boolean> {
   let edits = false;
-  const deps: Bag<string> = {'gts': `^${pkg.version}`, 'typescript': '~2.6.1'};
+  const deps: Bag<string> = {'gts': `^${pkg.version}`, 'typescript': '~2.7.1'};
 
   if (!packageJson.devDependencies) {
     packageJson.devDependencies = {};

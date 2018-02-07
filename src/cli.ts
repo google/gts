@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 import * as path from 'path';
-import * as meow from 'meow';
-import * as updateNotifier from 'update-notifier';
+import meow from 'meow';
+import updateNotifier from 'update-notifier';
 import {init} from './init';
 import {clean} from './clean';
 

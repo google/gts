@@ -16,8 +16,8 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import * as pify from 'pify';
-import * as rimraf from 'rimraf';
+import pify from 'pify';
+import rimraf from 'rimraf';
 
 export const readFilep = pify(fs.readFile);
 export const rimrafp = pify(rimraf);
