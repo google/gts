@@ -20,6 +20,8 @@ import * as updateNotifier from 'update-notifier';
 import {init} from './init';
 import {clean} from './clean';
 
+const packageJson = require('../../package.json');
+
 export interface Logger {
   log: (...args: Array<{}>) => void;
   error: (...args: Array<{}>) => void;
@@ -107,7 +109,7 @@ async function run(verb: string, files: string[]): Promise<boolean> {
   }
 }
 
-updateNotifier({pkg: cli.pkg}).notify();
+updateNotifier({pkg: packageJson}).notify();
 
 if (cli.input.length < 1) {
   usage();
