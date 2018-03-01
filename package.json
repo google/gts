@@ -20,7 +20,7 @@
   ],
   "scripts": {
     "build": "npm run compile",
-    "clean": "rm -rf ./build/",
+    "clean": "rimraf ./build/",
     "codecov": "nyc report --reporter=json && codecov -f coverage/*.json",
     "compile": "tsc -p .",
     "format-check": "./bin/format-check.sh",
