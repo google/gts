@@ -94,17 +94,25 @@ test.serial('use as a non-locally installed module', async t => {
   // simulates use as a globally installed module.
   const GTS = `${stagingPath}/kitchen/node_modules/.bin/gts`;
   const tmpDir = tmp.dirSync({keep, unsafeCleanup: true});
-  await ncpp('test/fixtures', `${tmpDir.name}/`);
-
   const opts = {cwd: `${tmpDir.name}/kitchen`};
-  await simpleExecp(`${GTS} init -y`, opts);
+
+  // Copy test files.
+  await ncpp('test/fixtures', `${tmpDir.name}/`);
+  // Test package.json expects a gts tarball from ../gts.tgz.
+  await ncpp(`${stagingPath}/gts.tgz`, `${tmpDir.name}/gts.tgz`);
+  // It's important to use `-n` here because we don't want to overwrite
+  // the version of gts installed, as it will trigger the npm install.
+  await simpleExecp(`${GTS} init -n`, opts);
+
   // The `extends` field must use the local gts path.
   const tsconfigJson =
       fs.readFileSync(`${tmpDir.name}/kitchen/tsconfig.json`, 'utf8');
   const tsconfig = JSON.parse(tsconfigJson);
   t.deepEqual(tsconfig.extends, './node_modules/gts/tsconfig-google.json');
 
-  await simpleExecp(`${GTS} check kitchen/src/server.ts`, opts);
+  // server.ts has a lint error. Should error.
+  await t.throws(simpleExecp(`${GTS} check src/server.ts`, opts));
+
   if (!keep) {
     tmpDir.removeCallback();
   }
