@@ -1,11 +1,12 @@
 ---
+release_tags: &release_tags
+  tags:
+    only: /^v\d+(\.\d+){2}(-.*)?$/
+
 # "Include" for unit tests definition.
 unit_tests: &unit_tests
   steps:
     - checkout
-    - run:
-        name: Configure npm to allow running scripts as root.
-        command: npm config set unsafe-perm true
     - run:
         name: Install modules and dependencies.
         command: npm install
@@ -22,10 +23,14 @@ workflows:
   version: 2
   tests:
     jobs:
-      - node4
-      - node6
-      - node8
-      - node9
+      - node4:
+          filters: *release_tags
+      - node6:
+          filters: *release_tags
+      - node8:
+          filters: *release_tags
+      - node9:
+          filters: *release_tags
       - publish_npm:
           requires:
             - node4
@@ -35,35 +40,42 @@ workflows:
           filters:
             branches:
               ignore: /.*/
-            tags:
-              only: /^v[\d.]+$/
+            <<: *release_tags
 
 jobs:
   node4:
     docker:
       - image: node:4
+        user: node
     <<: *unit_tests
   node6:
     docker:
       - image: node:6
+        user: node
     <<: *unit_tests
   node8:
     docker:
       - image: node:8
+        user: node
     <<: *unit_tests
   node9:
     docker:
       - image: node:9
+        user: node
     <<: *unit_tests
 
   publish_npm:
     docker:
       - image: node:8
+        user: node
     steps:
       - checkout
       - run:
           name: Set NPM authentication.
           command: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
       - run:
-         name: Publish the module to npm.
-         command: npm publish
+          name: Install modules and dependencies.
+          command: npm install
+      - run:
+          name: Publish the module to npm.
+          command: npm publish
