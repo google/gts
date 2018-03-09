@@ -46,7 +46,7 @@ async function query(
     options.logger.log(message);
   }
 
-  const answers = await inquirer.prompt(
+  const answers: inquirer.Answers = await inquirer.prompt(
       {type: 'confirm', name: 'query', message: question, default: defaultVal});
   return answers.query;
 }
