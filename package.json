@@ -51,7 +51,7 @@
   },
   "devDependencies": {
     "@types/glob": "^5.0.30",
-    "@types/inquirer": "^0.0.39",
+    "@types/inquirer": "^0.0.40",
     "@types/make-dir": "^1.0.1",
     "@types/meow": "^4.0.0",
     "@types/ncp": "^2.0.0",
