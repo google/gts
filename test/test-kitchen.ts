@@ -86,6 +86,11 @@ test.serial('init', async t => {
         execOpts);
   }
   fs.accessSync(`${stagingPath}/kitchen/tsconfig.json`);
+
+  // Compilation shouldn't have happened. Hence no `build` directory.
+  const dirContents = fs.readdirSync(`${stagingPath}/kitchen`);
+  t.is(dirContents.indexOf('build'), -1);
+
   t.pass();
 });
 
