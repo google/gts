@@ -40,7 +40,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "chalk": "^2.3.0",
-    "clang-format": "1.2.2",
+    "clang-format": "1.2.3",
     "inquirer": "^5.1.0",
     "meow": "^4.0.0",
     "pify": "^3.0.0",
