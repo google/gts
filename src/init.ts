@@ -215,7 +215,9 @@ export async function init(options: Options): Promise<boolean> {
 
   // Run `npm install` after initial setup so `npm run check` works right away.
   if (!options.dryRun) {
-    cp.spawnSync('npm', ['install'], {stdio: 'inherit'});
+    // --ignore-scripts so that compilation doesn't happen because there's no
+    // source files yet.
+    cp.spawnSync('npm', ['install', '--ignore-scripts'], {stdio: 'inherit'});
   }
 
   return true;
