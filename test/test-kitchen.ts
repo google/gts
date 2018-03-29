@@ -86,6 +86,11 @@ test.serial('init', async t => {
         execOpts);
   }
   fs.accessSync(`${stagingPath}/kitchen/tsconfig.json`);
+
+  // Compilation shouldn't have happened. Hence no `build` directory.
+  const dirContents = fs.readdirSync(`${stagingPath}/kitchen`);
+  t.is(dirContents.indexOf('build'), -1);
+
   t.pass();
 });
 
@@ -112,10 +117,6 @@ test.serial('use as a non-locally installed module', async t => {
 
   // server.ts has a lint error. Should error.
   await t.throws(simpleExecp(`${GTS} check src/server.ts`, opts));
-
-  // Compilation shouldn't have happened. Hence no `build` directory.
-  const dirContents = fs.readdirSync(`${tmpDir.name}/kitchen`);
-  t.is(dirContents.indexOf('build'), -1);
 
   if (!keep) {
     tmpDir.removeCallback();
