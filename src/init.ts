@@ -155,8 +155,7 @@ async function generateTsConfig(options: Options): Promise<void> {
   const tsconfig = formatJson({
     extends: './node_modules/gts/tsconfig-google.json',
     compilerOptions: {rootDir: '.', outDir: 'build'},
-    include: ['src/*.ts', 'src/**/*.ts', 'test/*.ts', 'test/**/*.ts'],
-    exclude: ['node_modules']
+    include: ['src/*.ts', 'src/**/*.ts', 'test/*.ts', 'test/**/*.ts']
   });
 
   let writeTsConfig = true;
