@@ -7,9 +7,7 @@
 [![Known Vulnerabilities][snyk-image]][snyk-url]
 [![codecov][codecov-image]][codecov-url]
 
-> ***NOTE: This repo is a work-in-progress and is not ready for general use just yet. This is not an official Google product.***
-
-[gts][npm-url] is Google's TypeScript style guide, and the configuration for our formatter, linter, and automatic code fixer. No lint rules to edit, no configuration to update, no more bike shedding over syntax. To borrow from standardjs:
+[gts][npm-url] is Google's TypeScript style guide, and the configuration for our formatter, linter, and automatic code fixer. No lint rules to edit, no configuration to update, no more bike shedding over syntax. To borrow from [standardjs][standardjs-url]:
 
 - **No configuration**. The easiest way to enforce consistent style in your project. Just drop it in.
 - **Automatically format code**. Just run `gts fix` and say goodbye to messy or inconsistent code.
@@ -56,6 +54,8 @@ $ gts check *.ts
 # License
 See [LICENSE.md](LICENSE.md)
 
+> ***NOTE: This is not an official Google product.***
+
 [circle-image]: https://circleci.com/gh/google/ts-style.svg?style=svg
 [circle-url]: https://circleci.com/gh/google/ts-style
 [clang-format-url]: https://github.com/angular/clang-format
@@ -69,5 +69,6 @@ See [LICENSE.md](LICENSE.md)
 [npm-url]: https://npmjs.org/package/gts
 [snyk-image]: https://snyk.io/test/github/google/ts-style/badge.svg
 [snyk-url]: https://snyk.io/test/github/google/ts-style
+[standardjs-url]: https://www.npmjs.com/package/standard
 [tslint-url]: https://palantir.github.io/tslint/
 
