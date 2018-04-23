@@ -33,7 +33,7 @@
     "license-check": "jsgl --local ."
   },
   "engines": {
-    "node": ">6"
+    "node": ">=6"
   },
   "keywords": [],
   "author": "Google Inc.",
