@@ -23,7 +23,9 @@ import {readFilep as read, readJsonp as readJson, writeFileAtomicp as write} fro
 
 const pkg = require('../../package.json') as PackageJson;
 
-export interface Bag<T> { [script: string]: T; }
+export interface Bag<T> {
+  [script: string]: T;
+}
 
 // TODO: is this type available from definitelytyped.org? Find it, and drop the
 // local definition.
