@@ -11,7 +11,8 @@
 
 - **No configuration**. The easiest way to enforce consistent style in your project. Just drop it in.
 - **Automatically format code**. Just run `gts fix` and say goodbye to messy or inconsistent code.
-- **Catch style issues & programmer errors early.** Save precious code review time by eliminating back-and-forth between reviewer & contributor.
+- **Catch style issues & programmer errors early**. Save precious code review time by eliminating back-and-forth between reviewer & contributor.
+- **Opinionated, but not to a fault**. We recommend you use the default configuration, but if you *need* to customize compiler or linter config, you can.
 
 Under the covers, we use [tslint][tslint-url] to enforce the style guide and provide automated fixes, and [clang-format][clang-format-url] to re-format code.
 
@@ -41,6 +42,8 @@ When you run the `npx gts init` command, it's going to do a few things for you:
   - `clean`: Removes output files.
   - `compile`: Compiles the source code using TypeScript compiler.
   - `pretest`, `posttest` and `prepare`: convenience integrations.
+
+We strongly recommend you use the default style config, but if you must tweak, you can edit the generated `tsconfig.json`. For linter, we use the default `tslint.json` unless we find that file in your project directory.
 
 ## Individual files
 The commands above will all run in the scope of the current folder.  Some commands can be run on individual files:
