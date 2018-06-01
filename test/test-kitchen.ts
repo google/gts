@@ -85,7 +85,12 @@ test.serial('init', async t => {
         `npx -p ${stagingPath}/gts.tgz --ignore-existing gts init -n`,
         execOpts);
   }
+
+  // Ensure tsconfig.json got generated.
   fs.accessSync(`${stagingPath}/kitchen/tsconfig.json`);
+
+  // Ensure tslint.json got generated.
+  fs.accessSync(`${stagingPath}/kitchen/tslint.json`);
 
   // Compilation shouldn't have happened. Hence no `build` directory.
   const dirContents = fs.readdirSync(`${stagingPath}/kitchen`);
@@ -129,6 +134,8 @@ test.serial('generated json files should terminate with newline', async t => {
   t.truthy(fs.readFileSync(`${stagingPath}/kitchen/package.json`, 'utf8')
                .endsWith('\n'));
   t.truthy(fs.readFileSync(`${stagingPath}/kitchen/tsconfig.json`, 'utf8')
+               .endsWith('\n'));
+  t.truthy(fs.readFileSync(`${stagingPath}/kitchen/tslint.json`, 'utf8')
                .endsWith('\n'));
 });
 
