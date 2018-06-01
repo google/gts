@@ -15,6 +15,7 @@
  */
 
 import test from 'ava';
+import * as path from 'path';
 
 import {Options} from '../src/cli';
 import * as format from '../src/format';
@@ -26,7 +27,7 @@ import {withFixtures} from './fixtures';
 const BAD_CODE = 'export const foo = 2;  ';
 
 const OPTIONS: Options = {
-  gtsRootDir: './',
+  gtsRootDir: path.resolve(__dirname, '../..'),
   targetRootDir: './',
   dryRun: false,
   yes: false,
