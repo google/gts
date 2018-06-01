@@ -43,8 +43,6 @@ When you run the `npx gts init` command, it's going to do a few things for you:
   - `compile`: Compiles the source code using TypeScript compiler.
   - `pretest`, `posttest` and `prepare`: convenience integrations.
 
-We strongly recommend you use the default style config, but if you must tweak, you can edit the generated `tsconfig.json`. For linter, we use the default `tslint.json` unless we find that file in your project directory.
-
 ## Individual files
 The commands above will all run in the scope of the current folder.  Some commands can be run on individual files:
 
