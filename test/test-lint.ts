@@ -42,7 +42,6 @@ test.serial('createProgram should return an object', async t => {
   });
 });
 
-
 test.serial('lint should return true on good code', async t => {
   await withFixtures(
       {
@@ -145,6 +144,33 @@ test.serial('lint should not throw for unrecognized files', async t => {
       async () => {
         lint.lint(OPTIONS, ['z.ts']);
         t.pass();
+      });
+});
+
+test.serial('lint should prefer user config file over default', async t => {
+  const CUSTOM_LINT_CODE = 'const t: Object;';
+
+  // By defualt the above should fail lint.
+  await withFixtures(
+      {
+        'tsconfig.json': JSON.stringify({files: ['a.ts']}),
+        'a.ts': CUSTOM_LINT_CODE
+      },
+      async () => {
+        const okay = lint.lint(OPTIONS);
+        t.is(okay, false);
+      });
+
+  // User should be able to override the default config.
+  await withFixtures(
+      {
+        'tsconfig.json': JSON.stringify({files: ['a.ts']}),
+        'tslint.json': JSON.stringify({}),
+        'a.ts': CUSTOM_LINT_CODE
+      },
+      async () => {
+        const okay = lint.lint(OPTIONS);
+        t.is(okay, true);
       });
 });
 

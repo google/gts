@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import * as fs from 'fs';
 import * as path from 'path';
 import {Configuration, Linter} from 'tslint';
 import * as ts from 'typescript';
@@ -27,11 +28,13 @@ import {Options} from './cli';
  */
 export function lint(
     options: Options, files: string[] = [], fix = false): boolean {
-  const tslintConfigPath = path.join(options.gtsRootDir, 'tslint.json');
+  const configPath =
+      fs.existsSync(path.join(options.targetRootDir, 'tslint.json')) ?
+      path.join(options.targetRootDir, 'tslint.json') :
+      path.join(options.gtsRootDir, 'tslint.json');
 
   const program = createProgram(options);
-  const configuration =
-      Configuration.findConfiguration(tslintConfigPath, '').results;
+  const configuration = Configuration.findConfiguration(configPath, '').results;
   const linter = new Linter({fix, formatter: 'codeFrame'}, program);
   const srcFiles = files.length > 0 ? files : Linter.getFileNames(program);
   srcFiles.forEach(file => {
