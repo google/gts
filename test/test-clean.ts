@@ -25,7 +25,7 @@ import {nop} from '../src/util';
 import {withFixtures} from './fixtures';
 
 const OPTIONS: Options = {
-  gtsRootDir: './',
+  gtsRootDir: path.resolve(__dirname, '../..'),
   targetRootDir: './',
   dryRun: false,
   yes: false,

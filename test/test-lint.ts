@@ -15,6 +15,7 @@
  */
 
 import test from 'ava';
+import * as path from 'path';
 
 import {Options} from '../src/cli';
 import * as lint from '../src/lint';
@@ -23,7 +24,7 @@ import {nop} from '../src/util';
 import {withFixtures} from './fixtures';
 
 const OPTIONS: Options = {
-  gtsRootDir: './',
+  gtsRootDir: path.resolve(__dirname, '../..'),
   targetRootDir: './',
   dryRun: false,
   yes: false,
@@ -34,8 +35,6 @@ const OPTIONS: Options = {
 const BAD_CODE = `throw 'hello world';`;
 const GOOD_CODE = `throw new Error('hello world');`;
 
-const TSLINT_CONFIG = require('../../tslint.json');
-
 test.serial('createProgram should return an object', async t => {
   await withFixtures({'tsconfig.json': '{}'}, async () => {
     const program = lint.createProgram(OPTIONS);
@@ -43,27 +42,11 @@ test.serial('createProgram should return an object', async t => {
   });
 });
 
-// TODO: make the error friendlier. This error implies that our module messed
-// up, or is not installed/integrated properly.
-test.serial('lint should throw error if tslint is missing', async t => {
-  await withFixtures(
-      {
-        'tsconfig.json': JSON.stringify({files: ['a.ts']}),
-        'a.ts': GOOD_CODE,
-      },
-      async () => {
-        const err = t.throws(() => {
-          lint.lint(OPTIONS);
-        });
-        t.truthy(err.message.match('Could not find config.*tslint\.json'));
-      });
-});
 
 test.serial('lint should return true on good code', async t => {
   await withFixtures(
       {
         'tsconfig.json': JSON.stringify({files: ['a.ts']}),
-        'tslint.json': JSON.stringify(TSLINT_CONFIG),
         'a.ts': GOOD_CODE,
       },
       async () => {
@@ -76,7 +59,6 @@ test.serial('lint should return false on bad code', async t => {
   await withFixtures(
       {
         'tsconfig.json': JSON.stringify({files: ['a.ts']}),
-        'tslint.json': JSON.stringify(TSLINT_CONFIG),
         'a.ts': BAD_CODE,
       },
       async () => {
@@ -89,7 +71,6 @@ test.serial('lint should lint files listed in tsconfig.files', async t => {
   await withFixtures(
       {
         'tsconfig.json': JSON.stringify({files: ['a.ts']}),
-        'tslint.json': JSON.stringify(TSLINT_CONFIG),
         'a.ts': GOOD_CODE,
         'b.ts': BAD_CODE
       },
@@ -105,7 +86,6 @@ test.serial(
       await withFixtures(
           {
             'tsconfig.json': JSON.stringify({}),
-            'tslint.json': JSON.stringify(TSLINT_CONFIG),
             'a.ts': GOOD_CODE,
             'b.ts': BAD_CODE
           },
@@ -119,7 +99,6 @@ test.serial('lint should not lint files listed in exclude', async t => {
   await withFixtures(
       {
         'tsconfig.json': JSON.stringify({exclude: ['b.*']}),
-        'tslint.json': JSON.stringify(TSLINT_CONFIG),
         'a.ts': GOOD_CODE,
         'b.ts': BAD_CODE
       },
@@ -133,7 +112,6 @@ test.serial('lint should lint globs listed in include', async t => {
   await withFixtures(
       {
         'tsconfig.json': JSON.stringify({include: ['dirb/*']}),
-        'tslint.json': JSON.stringify(TSLINT_CONFIG),
         dira: {'a.ts': GOOD_CODE},
         dirb: {'b.ts': BAD_CODE}
       },
@@ -147,7 +125,6 @@ test.serial('lint should lint only specified files', async t => {
   await withFixtures(
       {
         'tsconfig.json': JSON.stringify({}),
-        'tslint.json': JSON.stringify(TSLINT_CONFIG),
         dira: {'a.ts': GOOD_CODE},
         dirb: {'b.ts': BAD_CODE}
       },
@@ -163,7 +140,6 @@ test.serial('lint should not throw for unrecognized files', async t => {
   await withFixtures(
       {
         'tsconfig.json': JSON.stringify({}),
-        'tslint.json': JSON.stringify(TSLINT_CONFIG),
         'a.ts': GOOD_CODE,
       },
       async () => {
