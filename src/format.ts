@@ -18,8 +18,7 @@ import {createProgram} from './lint';
 
 const clangFormat = require('clang-format');
 
-const baseArgs =
-    ['-style', '{Language: JavaScript, BasedOnStyle: Google, ColumnLimit: 80}'];
+const baseArgs = ['-style=file'];
 
 /**
  * Run tslint fix and clang fix with the default configuration

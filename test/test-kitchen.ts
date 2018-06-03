@@ -86,11 +86,10 @@ test.serial('init', async t => {
         execOpts);
   }
 
-  // Ensure tsconfig.json got generated.
+  // Ensure config files got generated.
   fs.accessSync(`${stagingPath}/kitchen/tsconfig.json`);
-
-  // Ensure tslint.json got generated.
   fs.accessSync(`${stagingPath}/kitchen/tslint.json`);
+  fs.accessSync(`${stagingPath}/kitchen/.clang-format`);
 
   // Compilation shouldn't have happened. Hence no `build` directory.
   const dirContents = fs.readdirSync(`${stagingPath}/kitchen`);
