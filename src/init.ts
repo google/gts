@@ -142,40 +142,48 @@ async function writePackageJson(
   options.logger.dir(preview);
 }
 
-async function generateTsConfig(options: Options): Promise<void> {
-  let existing;
-  try {
-    existing = await read('./tsconfig.json', 'utf8');
-  } catch (err) {
-    if (err.code === 'ENOENT') {
-      /* not found, create it. */
-    } else {
-      throw new Error(`Unknown error reading tsconfig.json: ${err.message}`);
-    }
-  }
+async function generateTsLintConfig(options: Options): Promise<void> {
+  const config = formatJson({extends: 'gts/tslint.json'});
+  return generateConfigFile(options, './tslint.json', config);
+}
 
-  const tsconfig = formatJson({
+async function generateTsConfig(options: Options): Promise<void> {
+  const config = formatJson({
     extends: './node_modules/gts/tsconfig-google.json',
     compilerOptions: {rootDir: '.', outDir: 'build'},
     include: ['src/*.ts', 'src/**/*.ts', 'test/*.ts', 'test/**/*.ts']
   });
+  return generateConfigFile(options, './tsconfig.json', config);
+}
 
-  let writeTsConfig = true;
-  if (existing && existing === tsconfig) {
-    options.logger.log('No edits needed in tsconfig.json.');
-    return;
-  } else if (existing) {
-    writeTsConfig = await query(
-        `${chalk.bold('tsconfig.json')} already exists`, 'Overwrite', false,
-        options);
+async function generateConfigFile(
+    options: Options, filename: string, contents: string) {
+  let existing;
+  try {
+    existing = await read(filename, 'utf8');
+  } catch (err) {
+    if (err.code === 'ENOENT') {
+      /* not found, create it. */
+    } else {
+      throw new Error(`Unknown error reading ${filename}: ${err.message}`);
+    }
   }
 
-  if (writeTsConfig) {
-    options.logger.log('Writing tsconfig.json...');
+  let writeFile = true;
+  if (existing && existing === contents) {
+    options.logger.log(`No edits needed in ${filename}`);
+    return;
+  } else if (existing) {
+    writeFile = await query(
+        `${chalk.bold(filename)} already exists`, 'Overwrite', false, options);
+  }
+
+  if (writeFile) {
+    options.logger.log(`Writing ${filename}...`);
     if (!options.dryRun) {
-      await write('./tsconfig.json', tsconfig);
+      await write(filename, contents);
     }
-    options.logger.dir(JSON.parse(tsconfig));
+    options.logger.dir(JSON.parse(contents));
   }
 }
 
@@ -213,6 +221,7 @@ export async function init(options: Options): Promise<boolean> {
     options.logger.log('No edits needed in package.json.');
   }
   await generateTsConfig(options);
+  await generateTsLintConfig(options);
 
   // Run `npm install` after initial setup so `npm run check` works right away.
   if (!options.dryRun) {
