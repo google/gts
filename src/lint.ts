@@ -28,28 +28,54 @@ import {Options} from './cli';
  */
 export function lint(
     options: Options, files: string[] = [], fix = false): boolean {
-  const configPath =
-      fs.existsSync(path.join(options.targetRootDir, 'tslint.json')) ?
-      path.resolve(options.targetRootDir, 'tslint.json') :
-      path.resolve(options.gtsRootDir, 'tslint.json');
+  if (files.length > 0) {  // manually provided filenames.
+    const rcs = files.map(file => {
+      // Different config files may apply to each file.
+      const configPath = Configuration.findConfigurationPath(null, file) ||
+          path.join(options.gtsRootDir, 'tslint.json');
 
-  const program = createProgram(options);
-  const configuration = Configuration.findConfiguration(configPath, '').results;
-  const linter = new Linter({fix, formatter: 'codeFrame'}, program);
-  const srcFiles = files.length > 0 ? files : Linter.getFileNames(program);
-  srcFiles.forEach(file => {
-    const sourceFile = program.getSourceFile(file);
-    if (sourceFile) {
-      const fileContents = sourceFile.getFullText();
-      linter.lint(file, fileContents, configuration);
+      const configuration =
+          Configuration.loadConfigurationFromPath(configPath, '');
+      const source = fs.readFileSync(file, 'utf8');
+
+      const linter = new Linter({fix, formatter: 'codeFrame'});
+      linter.lint(file, source, configuration);
+      const result = linter.getResult();
+      if (result.errorCount || result.warningCount) {
+        options.logger.log(result.output);
+        return false;
+      }
+      return true;
+    });
+
+    return rcs.every(rc => rc);  // if all files succeeded.
+  } else {
+    // Lint the set of files specified by the typescript program config.
+    const program = createProgram(options);
+    files = Linter.getFileNames(program);
+
+    const configPath =
+        fs.existsSync(path.join(options.targetRootDir, 'tslint.json')) ?
+        path.resolve(options.targetRootDir, 'tslint.json') :
+        path.resolve(options.gtsRootDir, 'tslint.json');
+
+    const configuration = Configuration.loadConfigurationFromPath(configPath);
+    const linter = new Linter({fix, formatter: 'codeFrame'}, program);
+
+    files.forEach(file => {
+      const sourceFile = program.getSourceFile(file);
+      if (sourceFile) {
+        const fileContents = sourceFile.getFullText();
+        linter.lint(file, fileContents, configuration);
+      }
+    });
+    const result = linter.getResult();
+    if (result.errorCount || result.warningCount) {
+      options.logger.log(result.output);
+      return false;
     }
-  });
-  const result = linter.getResult();
-  if (result.errorCount || result.warningCount) {
-    options.logger.log(result.output);
-    return false;
+    return true;
   }
-  return true;
 }
 
 export function createProgram(options: Options): ts.Program {
