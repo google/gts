@@ -30,8 +30,8 @@ export function lint(
     options: Options, files: string[] = [], fix = false): boolean {
   const configPath =
       fs.existsSync(path.join(options.targetRootDir, 'tslint.json')) ?
-      path.join(options.targetRootDir, 'tslint.json') :
-      path.join(options.gtsRootDir, 'tslint.json');
+      path.resolve(options.targetRootDir, 'tslint.json') :
+      path.resolve(options.gtsRootDir, 'tslint.json');
 
   const program = createProgram(options);
   const configuration = Configuration.findConfiguration(configPath, '').results;
