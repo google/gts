@@ -42,7 +42,8 @@ export type VerbFilesFunction =
 
 const logger: Logger = console;
 
-const cli = meow(`
+const cli = meow({
+  help: `
 	Usage
 	  $ gts <verb> [<file>...] [options]
 
@@ -63,8 +64,14 @@ const cli = meow(`
     $ gts check
     $ gts fix
     $ gts fix src/file1.ts src/file2.ts
-    $ gts clean
-`);
+    $ gts clean`,
+  flags: {
+    help: {type: 'boolean'},
+    yes: {type: 'boolean', alias: 'y'},
+    no: {type: 'boolean', alias: 'n'},
+    'dry-run': {type: 'boolean'}
+  }
+});
 
 function usage(msg?: string): void {
   if (msg) {
