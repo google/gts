@@ -156,6 +156,11 @@ async function generateTsConfig(options: Options): Promise<void> {
   return generateConfigFile(options, './tsconfig.json', config);
 }
 
+async function generateClangFormat(options: Options): Promise<void> {
+  const style = await read(path.join(__dirname, '../../.clang-format'), 'utf8');
+  return generateConfigFile(options, './.clang-format', style);
+}
+
 async function generateConfigFile(
     options: Options, filename: string, contents: string) {
   let existing;
@@ -183,7 +188,7 @@ async function generateConfigFile(
     if (!options.dryRun) {
       await write(filename, contents);
     }
-    options.logger.dir(JSON.parse(contents));
+    options.logger.log(contents);
   }
 }
 
@@ -222,6 +227,7 @@ export async function init(options: Options): Promise<boolean> {
   }
   await generateTsConfig(options);
   await generateTsLintConfig(options);
+  await generateClangFormat(options);
 
   // Run `npm install` after initial setup so `npm run check` works right away.
   if (!options.dryRun) {
