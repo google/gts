@@ -135,20 +135,21 @@ test.serial('lint should lint only specified files', async t => {
       });
 });
 
-test.serial('lint should not throw for unrecognized files', async t => {
+test.serial('lint should throw for unrecognized files', async t => {
   await withFixtures(
       {
         'tsconfig.json': JSON.stringify({}),
         'a.ts': GOOD_CODE,
       },
       async () => {
-        lint.lint(OPTIONS, ['z.ts']);
-        t.pass();
+        t.throws(() => {
+          lint.lint(OPTIONS, ['z.ts']);
+        });
       });
 });
 
 test.serial('lint should prefer user config file over default', async t => {
-  const CUSTOM_LINT_CODE = 'const t: Object;';
+  const CUSTOM_LINT_CODE = 'debugger;';
 
   // By defualt the above should fail lint.
   await withFixtures(
@@ -158,7 +159,7 @@ test.serial('lint should prefer user config file over default', async t => {
       },
       async () => {
         const okay = lint.lint(OPTIONS);
-        t.is(okay, false);
+        t.false(okay);
       });
 
   // User should be able to override the default config.
@@ -170,8 +171,40 @@ test.serial('lint should prefer user config file over default', async t => {
       },
       async () => {
         const okay = lint.lint(OPTIONS);
-        t.is(okay, true);
+        t.true(okay);
       });
 });
+
+test.serial(
+    'lint for specific files should use file-specific config', async t => {
+      const CODE_WITH_PARSEINT = 'parseInt(42);';
+      let logBuffer = '';
+      const optionsWithLog = Object.assign({}, OPTIONS, {
+        logger: {
+          log: (...args: string[]) => {
+            logBuffer += (args.join(' '));
+          },
+          error: nop,
+          dir: nop
+        }
+      });
+      await withFixtures(
+          {
+            dira: {
+              'a.ts': CODE_WITH_PARSEINT,
+              // no tslint, so default should apply.
+            },
+            dirb: {
+              'b.ts': CODE_WITH_PARSEINT,
+              'tslint.json': JSON.stringify({})
+            }
+          },
+          async () => {
+            const okay = lint.lint(optionsWithLog, ['dira/a.ts', 'dirb/b.ts']);
+            t.false(okay);
+            t.regex(logBuffer, /dira\/a\.ts/);
+            t.notRegex(logBuffer, /dirb\/b\.ts/);
+          });
+    });
 
 // TODO: test for when tsconfig.json is missing.
