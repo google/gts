@@ -28,6 +28,11 @@ const baseArgs = ['-style=file'];
  */
 export async function format(
     options: Options, files: string[] = [], fix = false): Promise<boolean> {
+  if (options.dryRun && fix) {
+    options.logger.log('format: skipping auto fix since --dry-run was passed');
+    fix = false;
+  }
+
   const program = createProgram(options);
   // Obtain a list of source files to format.
   // We use program.getRootFileNames to get only the files that match the
