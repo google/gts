@@ -24,10 +24,16 @@ import {Options} from './cli';
  * Run tslint with the default configuration. Returns true on success.
  * @param options gts options
  * @param files files to run linter on
- * @param fix automatically fix linter errors
+ * @param fix automatically fix linter errors. Ignored when options.dryRun is
+ *            set.
  */
 export function lint(
     options: Options, files: string[] = [], fix = false): boolean {
+  if (options.dryRun && fix) {
+    options.logger.log('lint: skipping auto fix since --dry-run was passed');
+    fix = false;
+  }
+
   if (files.length > 0) {  // manually provided filenames.
     const rcs = files.map(file => {
       // Different config files may apply to each file.
