@@ -86,7 +86,7 @@ test.serial('lint should auto fix fixable errors', async t => {
       });
 });
 
-test.serial('lint should auto fix fixable errors unless dry-run', async t => {
+test.serial('lint should not auto fix on dry-run', async t => {
   await withFixtures(
       {
         'tsconfig.json': JSON.stringify({files: ['a.ts']}),
