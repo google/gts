@@ -80,8 +80,25 @@ test.serial('lint should auto fix fixable errors', async t => {
       async (fixturesDir) => {
         const okay = lint.lint(OPTIONS, [], true);
         t.is(okay, true);
-        const contents = fs.readFileSync(path.join(fixturesDir, 'a.ts'), 'utf8');
+        const contents =
+            fs.readFileSync(path.join(fixturesDir, 'a.ts'), 'utf8');
         t.deepEqual(contents, FIXABLE_CODE_FIXED);
+      });
+});
+
+test.serial('lint should auto fix fixable errors unless dry-run', async t => {
+  await withFixtures(
+      {
+        'tsconfig.json': JSON.stringify({files: ['a.ts']}),
+        'a.ts': FIXABLE_CODE
+      },
+      async (fixturesDir) => {
+        const optionsWithDryRun = Object.assign({}, OPTIONS, {dryRun: true});
+        const okay = lint.lint(optionsWithDryRun, [], true);
+        t.is(okay, false);
+        const contents =
+            fs.readFileSync(path.join(fixturesDir, 'a.ts'), 'utf8');
+        t.deepEqual(contents, FIXABLE_CODE);
       });
 });
 
@@ -113,20 +130,23 @@ test.serial(
           });
     });
 
-test.serial('lint should lint files listed in tsconfig.files when empty list is provided', async t => {
-  await withFixtures(
-      {
-        'tsconfig.json': JSON.stringify({files: ['a.ts']}),
-        'a.ts': FIXABLE_CODE,
-        'b.ts': BAD_CODE
-      },
-      async (fixturesDir) => {
-        const okay = lint.lint(OPTIONS, [], true);
-        t.is(okay, true);
-        const contents = fs.readFileSync(path.join(fixturesDir, 'a.ts'), 'utf8');
-        t.deepEqual(contents, FIXABLE_CODE_FIXED);
-      });
-});
+test.serial(
+    'lint should lint files listed in tsconfig.files when empty list is provided',
+    async t => {
+      await withFixtures(
+          {
+            'tsconfig.json': JSON.stringify({files: ['a.ts']}),
+            'a.ts': FIXABLE_CODE,
+            'b.ts': BAD_CODE
+          },
+          async (fixturesDir) => {
+            const okay = lint.lint(OPTIONS, [], true);
+            t.is(okay, true);
+            const contents =
+                fs.readFileSync(path.join(fixturesDir, 'a.ts'), 'utf8');
+            t.deepEqual(contents, FIXABLE_CODE_FIXED);
+          });
+    });
 
 
 test.serial('lint should not lint files listed in exclude', async t => {
