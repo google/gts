@@ -40,15 +40,15 @@ const GOOD_CODE = `throw new Error('hello world');`;
 const FIXABLE_CODE = 'const x : Array<string> = []';
 const FIXABLE_CODE_FIXED = 'const x : string[] = [];';
 
-test.serial('createProgram should return an object', async t => {
-  await withFixtures({'tsconfig.json': '{}'}, async () => {
+test.serial('createProgram should return an object', t => {
+  return withFixtures({'tsconfig.json': '{}'}, async () => {
     const program = lint.createProgram(OPTIONS);
     t.truthy(program);
   });
 });
 
-test.serial('lint should return true on good code', async t => {
-  await withFixtures(
+test.serial('lint should return true on good code', t => {
+  return withFixtures(
       {
         'tsconfig.json': JSON.stringify({files: ['a.ts']}),
         'a.ts': GOOD_CODE,
@@ -59,8 +59,8 @@ test.serial('lint should return true on good code', async t => {
       });
 });
 
-test.serial('lint should return false on bad code', async t => {
-  await withFixtures(
+test.serial('lint should return false on bad code', t => {
+  return withFixtures(
       {
         'tsconfig.json': JSON.stringify({files: ['a.ts']}),
         'a.ts': BAD_CODE,
@@ -71,8 +71,8 @@ test.serial('lint should return false on bad code', async t => {
       });
 });
 
-test.serial('lint should auto fix fixable errors', async t => {
-  await withFixtures(
+test.serial('lint should auto fix fixable errors', t => {
+  return withFixtures(
       {
         'tsconfig.json': JSON.stringify({files: ['a.ts']}),
         'a.ts': FIXABLE_CODE
@@ -86,8 +86,8 @@ test.serial('lint should auto fix fixable errors', async t => {
       });
 });
 
-test.serial('lint should not auto fix on dry-run', async t => {
-  await withFixtures(
+test.serial('lint should not auto fix on dry-run', t => {
+  return withFixtures(
       {
         'tsconfig.json': JSON.stringify({files: ['a.ts']}),
         'a.ts': FIXABLE_CODE
@@ -102,8 +102,8 @@ test.serial('lint should not auto fix on dry-run', async t => {
       });
 });
 
-test.serial('lint should lint files listed in tsconfig.files', async t => {
-  await withFixtures(
+test.serial('lint should lint files listed in tsconfig.files', t => {
+  return withFixtures(
       {
         'tsconfig.json': JSON.stringify({files: ['a.ts']}),
         'a.ts': GOOD_CODE,
@@ -118,7 +118,7 @@ test.serial('lint should lint files listed in tsconfig.files', async t => {
 test.serial(
     'lint should lint *.ts files when no files or inlcude has been specified',
     async t => {
-      await withFixtures(
+      return withFixtures(
           {
             'tsconfig.json': JSON.stringify({}),
             'a.ts': GOOD_CODE,
@@ -133,7 +133,7 @@ test.serial(
 test.serial(
     'lint should lint files listed in tsconfig.files when empty list is provided',
     async t => {
-      await withFixtures(
+      return withFixtures(
           {
             'tsconfig.json': JSON.stringify({files: ['a.ts']}),
             'a.ts': FIXABLE_CODE,
@@ -149,8 +149,8 @@ test.serial(
     });
 
 
-test.serial('lint should not lint files listed in exclude', async t => {
-  await withFixtures(
+test.serial('lint should not lint files listed in exclude', t => {
+  return withFixtures(
       {
         'tsconfig.json': JSON.stringify({exclude: ['b.*']}),
         'a.ts': GOOD_CODE,
@@ -162,8 +162,8 @@ test.serial('lint should not lint files listed in exclude', async t => {
       });
 });
 
-test.serial('lint should lint globs listed in include', async t => {
-  await withFixtures(
+test.serial('lint should lint globs listed in include', t => {
+  return withFixtures(
       {
         'tsconfig.json': JSON.stringify({include: ['dirb/*']}),
         dira: {'a.ts': GOOD_CODE},
@@ -175,8 +175,8 @@ test.serial('lint should lint globs listed in include', async t => {
       });
 });
 
-test.serial('lint should lint only specified files', async t => {
-  await withFixtures(
+test.serial('lint should lint only specified files', t => {
+  return withFixtures(
       {
         'tsconfig.json': JSON.stringify({}),
         dira: {'a.ts': GOOD_CODE},
@@ -190,8 +190,8 @@ test.serial('lint should lint only specified files', async t => {
       });
 });
 
-test.serial('lint should throw for unrecognized files', async t => {
-  await withFixtures(
+test.serial('lint should throw for unrecognized files', t => {
+  return withFixtures(
       {
         'tsconfig.json': JSON.stringify({}),
         'a.ts': GOOD_CODE,
@@ -218,7 +218,7 @@ test.serial('lint should prefer user config file over default', async t => {
       });
 
   // User should be able to override the default config.
-  await withFixtures(
+  return withFixtures(
       {
         'tsconfig.json': JSON.stringify({files: ['a.ts']}),
         'tslint.json': JSON.stringify({}),
@@ -230,36 +230,32 @@ test.serial('lint should prefer user config file over default', async t => {
       });
 });
 
-test.serial(
-    'lint for specific files should use file-specific config', async t => {
-      const CODE_WITH_PARSEINT = 'parseInt(42);';
-      let logBuffer = '';
-      const optionsWithLog = Object.assign({}, OPTIONS, {
-        logger: {
-          log: (...args: string[]) => {
-            logBuffer += (args.join(' '));
-          },
-          error: nop,
-          dir: nop
-        }
+test.serial('lint for specific files should use file-specific config', t => {
+  const CODE_WITH_PARSEINT = 'parseInt(42);';
+  let logBuffer = '';
+  const optionsWithLog = Object.assign({}, OPTIONS, {
+    logger: {
+      log: (...args: string[]) => {
+        logBuffer += (args.join(' '));
+      },
+      error: nop,
+      dir: nop
+    }
+  });
+  return withFixtures(
+      {
+        dira: {
+          'a.ts': CODE_WITH_PARSEINT,
+          // no tslint, so default should apply.
+        },
+        dirb: {'b.ts': CODE_WITH_PARSEINT, 'tslint.json': JSON.stringify({})}
+      },
+      async () => {
+        const okay = lint.lint(optionsWithLog, ['dira/a.ts', 'dirb/b.ts']);
+        t.false(okay);
+        t.regex(logBuffer, /dira\/a\.ts/);
+        t.notRegex(logBuffer, /dirb\/b\.ts/);
       });
-      await withFixtures(
-          {
-            dira: {
-              'a.ts': CODE_WITH_PARSEINT,
-              // no tslint, so default should apply.
-            },
-            dirb: {
-              'b.ts': CODE_WITH_PARSEINT,
-              'tslint.json': JSON.stringify({})
-            }
-          },
-          async () => {
-            const okay = lint.lint(optionsWithLog, ['dira/a.ts', 'dirb/b.ts']);
-            t.false(okay);
-            t.regex(logBuffer, /dira\/a\.ts/);
-            t.notRegex(logBuffer, /dirb\/b\.ts/);
-          });
-    });
+});
 
 // TODO: test for when tsconfig.json is missing.
