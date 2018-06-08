@@ -33,24 +33,22 @@ const OPTIONS: Options = {
   logger: {log: nop, error: nop, dir: nop}
 };
 
-test.failing.serial(
-    'should gracefully error if tsconfig is missing', async t => {
-      await withFixtures({}, async () => {
-        await clean(OPTIONS);
-      });
-    });
+test.failing.serial('should gracefully error if tsconfig is missing', t => {
+  return withFixtures({}, async () => {
+    await clean(OPTIONS);
+  });
+});
 
 test.serial(
-    'should gracefully error if tsconfig does not have valid outDir',
-    async t => {
-      await withFixtures({'tsconfig.json': JSON.stringify({})}, async () => {
+    'should gracefully error if tsconfig does not have valid outDir', t => {
+      return withFixtures({'tsconfig.json': JSON.stringify({})}, async () => {
         const deleted = await clean(OPTIONS);
         t.is(deleted, false);
       });
     });
 
-test.serial('should avoid deleting .', async t => {
-  await withFixtures(
+test.serial('should avoid deleting .', t => {
+  return withFixtures(
       {'tsconfig.json': JSON.stringify({compilerOptions: {outDir: '.'}})},
       async () => {
         const deleted = await clean(OPTIONS);
@@ -58,22 +56,18 @@ test.serial('should avoid deleting .', async t => {
       });
 });
 
-test.failing.serial(
-    'should ensure that outDir is local to targetRoot', async t => {
-      await withFixtures(
-          {
-            'tsconfig.json':
-                JSON.stringify({compilerOptions: {outDir: '../out'}})
-          },
-          async () => {
-            const deleted = await clean(OPTIONS);
-            t.is(deleted, false);
-          });
-    });
+test.failing.serial('should ensure that outDir is local to targetRoot', t => {
+  return withFixtures(
+      {'tsconfig.json': JSON.stringify({compilerOptions: {outDir: '../out'}})},
+      async () => {
+        const deleted = await clean(OPTIONS);
+        t.is(deleted, false);
+      });
+});
 
-test.serial('should remove outDir', async t => {
+test.serial('should remove outDir', t => {
   const OUT = 'outputDirectory';
-  await withFixtures(
+  return withFixtures(
       {
         'tsconfig.json': JSON.stringify({compilerOptions: {outDir: OUT}}),
         [OUT]: {}

@@ -35,8 +35,8 @@ const OPTIONS: Options = {
   logger: {log: console.log, error: console.error, dir: nop}
 };
 
-test.serial('format should return false for ill-formatted files', async t => {
-  await withFixtures(
+test.serial('format should return false for ill-formatted files', t => {
+  return withFixtures(
       {'tsconfig.json': JSON.stringify({files: ['a.ts']}), 'a.ts': BAD_CODE},
       async () => {
         const result = await format.format(OPTIONS, [], false);
@@ -44,8 +44,8 @@ test.serial('format should return false for ill-formatted files', async t => {
       });
 });
 
-test.serial('format should only look in root files', async t => {
-  await withFixtures(
+test.serial('format should only look in root files', t => {
+  return withFixtures(
       {
         'tsconfig.json': JSON.stringify({files: ['a.ts']}),
         'a.ts': 'import {foo} from \'./b\';\n',
