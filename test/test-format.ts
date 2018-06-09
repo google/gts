@@ -89,7 +89,7 @@ test.serial('format should format files listed in tsconfig.files', t => {
       },
       async () => {
         const okay = await format.format(OPTIONS);
-        t.is(okay, true);
+        t.true(okay);
       });
 });
 
@@ -104,7 +104,7 @@ test.serial(
           },
           async () => {
             const okay = await format.format(OPTIONS);
-            t.is(okay, false);
+            t.false(okay);
           });
     });
 
