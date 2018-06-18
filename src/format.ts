@@ -37,7 +37,7 @@ export async function format(
     fix = false;
   }
 
-  // If the project has a .clang-format – use it. Else use the default as a
+  // If the project has a .clang-format – use it. Else use the default as an
   // inline argument.
   const baseClangFormatArgs =
       fs.existsSync(path.join(options.targetRootDir, '.clang-format')) ?

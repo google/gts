@@ -166,12 +166,15 @@ test.serial('format should not auto fix on dry-run', t => {
 });
 
 test.serial('format should use user provided config', t => {
-  return withFixtures({
-    'tsconfig.json': JSON.stringify({files: ['a.ts']}),
-    '.clang-format': 'Language: JavaScript',
-    'a.ts': BAD_CODE // but actually good under the custom JS format config.
-  }, async () => {
-    const result = await format.format(OPTIONS, [], false);
-    t.true(result);
-  });
+  return withFixtures(
+      {
+        'tsconfig.json': JSON.stringify({files: ['a.ts']}),
+        '.clang-format': 'Language: JavaScript',
+        'a.ts':
+            BAD_CODE  // but actually good under the custom JS format config.
+      },
+      async () => {
+        const result = await format.format(OPTIONS, [], false);
+        t.true(result);
+      });
 });
