@@ -13,12 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import * as fs from 'fs';
+import * as path from 'path';
 import {Options} from './cli';
 import {createProgram} from './lint';
 
 const clangFormat = require('clang-format');
 
-const baseArgs = ['-style=file'];
+const BASE_ARGS_FILE = ['-style=file'];
+const BASE_ARGS_INLINE =
+    ['-style', '{Language: JavaScript, BasedOnStyle: Google, ColumnLimit: 80}'];
 
 /**
  * Run tslint fix and clang fix with the default configuration
@@ -33,6 +37,13 @@ export async function format(
     fix = false;
   }
 
+  // If the project has a .clang-format – use it. Else use the default as a
+  // inline argument.
+  const baseClangFormatArgs =
+      fs.existsSync(path.join(options.targetRootDir, '.clang-format')) ?
+      BASE_ARGS_FILE :
+      BASE_ARGS_INLINE;
+
   const program = createProgram(options);
   // Obtain a list of source files to format.
   // We use program.getRootFileNames to get only the files that match the
@@ -45,9 +56,9 @@ export async function format(
       program.getRootFileNames().filter(f => !f.endsWith('.d.ts'));
 
   if (fix) {
-    return await fixFormat(srcFiles);
+    return await fixFormat(srcFiles, baseClangFormatArgs);
   } else {
-    const result = await checkFormat(srcFiles);
+    const result = await checkFormat(srcFiles, baseClangFormatArgs);
     if (!result) {
       options.logger.log(
           'clang-format reported errors... run `gts fix` to address.');
@@ -61,7 +72,7 @@ export async function format(
  *
  * @param srcFiles list of source files
  */
-function fixFormat(srcFiles: string[]): Promise<boolean> {
+function fixFormat(srcFiles: string[], baseArgs: string[]): Promise<boolean> {
   return new Promise<boolean>((resolve, reject) => {
     const args = baseArgs.concat(['-i'], srcFiles);
     clangFormat.spawnClangFormat(args, (err?: Error) => {
@@ -80,7 +91,7 @@ function fixFormat(srcFiles: string[]): Promise<boolean> {
  *
  * @param srcFiles list of source files
  */
-function checkFormat(srcFiles: string[]): Promise<boolean> {
+function checkFormat(srcFiles: string[], baseArgs: string[]): Promise<boolean> {
   return new Promise<boolean>((resolve, reject) => {
     let output = '';
     const args = baseArgs.concat(['-output-replacements-xml'], srcFiles);
