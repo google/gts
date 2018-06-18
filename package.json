@@ -52,7 +52,7 @@
   },
   "devDependencies": {
     "@types/glob": "^5.0.35",
-    "@types/inquirer": "^0.0.41",
+    "@types/inquirer": "^0.0.42",
     "@types/make-dir": "^1.0.3",
     "@types/meow": "^4.0.1",
     "@types/ncp": "^2.0.1",
