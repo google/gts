@@ -25,8 +25,8 @@ import {nop} from '../src/util';
 import {withFixtures} from './fixtures';
 
 // clang-format won't pass this code because of trailing spaces.
-const BAD_CODE = 'export const foo = 2;  ';
-const GOOD_CODE = 'export const foo = 2;';
+const BAD_CODE = 'export const foo = [ 2 ];';
+const GOOD_CODE = 'export const foo = [2];';
 
 const OPTIONS: Options = {
   gtsRootDir: path.resolve(__dirname, '../..'),
@@ -162,5 +162,19 @@ test.serial('format should not auto fix on dry-run', t => {
         const contents =
             fs.readFileSync(path.join(fixturesDir, 'a.ts'), 'utf8');
         t.deepEqual(contents, BAD_CODE);
+      });
+});
+
+test.serial('format should use user provided config', t => {
+  return withFixtures(
+      {
+        'tsconfig.json': JSON.stringify({files: ['a.ts']}),
+        '.clang-format': 'Language: JavaScript',
+        'a.ts':
+            BAD_CODE  // but actually good under the custom JS format config.
+      },
+      async () => {
+        const result = await format.format(OPTIONS, [], false);
+        t.true(result);
       });
 });
