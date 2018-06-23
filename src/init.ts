@@ -229,12 +229,8 @@ export async function init(options: Options): Promise<boolean> {
       return false;
     }
 
-    try {
-      packageJson = DEFUALT_PACKAGE_JSON;
-      generatedPackageJson = true;
-    } catch (err2) {
-      throw err2;
-    }
+    packageJson = DEFUALT_PACKAGE_JSON;
+    generatedPackageJson = true;
   }
 
   const addedDeps = await addDependencies(packageJson, options);
