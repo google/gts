@@ -18,7 +18,8 @@ import * as path from 'path';
 import {Options} from './cli';
 import {createProgram} from './lint';
 
-const clangFormat = require('clang-format');
+// Exported for testing purposes.
+export const clangFormat = require('clang-format');
 
 const BASE_ARGS_FILE = ['-style=file'];
 const BASE_ARGS_INLINE =
@@ -56,7 +57,7 @@ export async function format(
       program.getRootFileNames().filter(f => !f.endsWith('.d.ts'));
 
   if (fix) {
-    return await fixFormat(srcFiles, baseClangFormatArgs);
+    return fixFormat(srcFiles, baseClangFormatArgs);
   } else {
     const result = await checkFormat(srcFiles, baseClangFormatArgs);
     if (!result) {
