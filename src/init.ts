@@ -21,7 +21,19 @@ import * as path from 'path';
 import {Options} from './cli';
 import {readFilep as read, readJsonp as readJson, writeFileAtomicp as write} from './util';
 
-const pkg = require('../../package.json') as PackageJson;
+const pkg = require('../../package.json');
+
+const DEFUALT_PACKAGE_JSON: PackageJson = {
+  name: '',
+  version: '0.0.0',
+  description: '',
+  main: 'build/src/index.js',
+  types: 'build/src/index.d.ts',
+  files: ['build/src'],
+  license: 'Apache-2.0',
+  keywords: [],
+  scripts: {test: 'echo "Error: no test specified" && exit 1'}
+};
 
 export interface Bag<T> {
   [script: string]: T;
@@ -33,6 +45,13 @@ export interface PackageJson {
   version?: string;
   devDependencies?: Bag<string>;
   scripts?: Bag<string>;
+  name: string;
+  description: string;
+  main: string;
+  types: string;
+  files: string[];
+  license: string;
+  keywords: string[];
 }
 
 async function query(
@@ -193,6 +212,7 @@ async function generateConfigFile(
 }
 
 export async function init(options: Options): Promise<boolean> {
+  let generatedPackageJson = false;
   let packageJson;
   try {
     packageJson = await readJson('./package.json');
@@ -209,18 +229,13 @@ export async function init(options: Options): Promise<boolean> {
       return false;
     }
 
-    try {
-      // TODO(ofrobots): add proper error handling.
-      cp.spawnSync('npm', ['init', '-y']);
-      packageJson = await readJson('./package.json');
-    } catch (err2) {
-      throw err2;
-    }
+    packageJson = DEFUALT_PACKAGE_JSON;
+    generatedPackageJson = true;
   }
 
   const addedDeps = await addDependencies(packageJson, options);
   const addedScripts = await addScripts(packageJson, options);
-  if (addedDeps || addedScripts) {
+  if (generatedPackageJson || addedDeps || addedScripts) {
     await writePackageJson(packageJson, options);
   } else {
     options.logger.log('No edits needed in package.json.');
