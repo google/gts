@@ -45,13 +45,13 @@ export interface PackageJson {
   version?: string;
   devDependencies?: Bag<string>;
   scripts?: Bag<string>;
-  name: string;
-  description: string;
-  main: string;
-  types: string;
-  files: string[];
-  license: string;
-  keywords: string[];
+  name?: string;
+  description?: string;
+  main?: string;
+  types?: string;
+  files?: string[];
+  license?: string;
+  keywords?: string[];
 }
 
 async function query(
@@ -72,7 +72,7 @@ async function query(
   return answers.query;
 }
 
-async function addScripts(
+export async function addScripts(
     packageJson: PackageJson, options: Options): Promise<boolean> {
   let edits = false;
   const scripts: Bag<string> = {
@@ -111,7 +111,7 @@ async function addScripts(
   return edits;
 }
 
-async function addDependencies(
+export async function addDependencies(
     packageJson: PackageJson, options: Options): Promise<boolean> {
   let edits = false;
   const deps: Bag<string> = {'gts': `^${pkg.version}`, 'typescript': '~2.8.0'};

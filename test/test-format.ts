@@ -37,7 +37,7 @@ const OPTIONS: Options = {
   logger: {log: console.log, error: console.error, dir: nop}
 };
 
-test.serial('format should return false for well-formatted files', t => {
+test.serial('format should return true for well-formatted files', t => {
   return withFixtures(
       {'tsconfig.json': JSON.stringify({files: ['a.ts']}), 'a.ts': GOOD_CODE},
       async () => {
@@ -176,5 +176,37 @@ test.serial('format should use user provided config', t => {
       async () => {
         const result = await format.format(OPTIONS, [], false);
         t.true(result);
+      });
+});
+
+test.serial('format should prefer the files parameter over options', t => {
+  return withFixtures(
+      {
+        'tsconfig.json': JSON.stringify({files: ['a.ts']}),
+        'a.ts': BAD_CODE,
+        'good.ts': GOOD_CODE
+      },
+      async () => {
+        const result = await format.format(OPTIONS, ['good.ts'], false);
+        t.true(result);
+      });
+});
+
+test.serial('format should return error from failed spawn', async t => {
+  return withFixtures(
+      {'tsconfig.json': JSON.stringify({files: ['a.ts']}), 'a.ts': GOOD_CODE},
+      async () => {
+        const MESSAGE = '🦄';
+        // Mock clangFormat.
+        const original = format.clangFormat.spawnClangFormat;
+        // tslint:disable-next-line:no-any
+        format.clangFormat.spawnClangFormat = (_: any, cb: Function) => {
+          setImmediate(() => {
+            cb(new Error(MESSAGE));
+          });
+        };
+        await t.throws(format.format(OPTIONS, [], true), Error, MESSAGE);
+        await t.throws(format.format(OPTIONS, [], false), Error, MESSAGE);
+        format.clangFormat.spawnClangFormat = original;
       });
 });
