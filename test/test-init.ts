@@ -15,7 +15,7 @@
  */
 
 import test from 'ava';
-import path from 'path';
+import * as path from 'path';
 
 import {Options} from '../src/cli';
 import * as init from '../src/init';
