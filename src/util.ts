@@ -51,7 +51,12 @@ export function nop() {
 //   const contents = JSON.parse(json);
 //   return contents;
 // }
- 
+ interface configFile {
+   files: string[],
+   compilerOptions: {},
+   include: string[],
+   exclude: string[]
+ }
 export async function getTSConfig(
   rootDir: string, customReadFilep ? : ReadFileP): Promise < {} > {
  
@@ -87,8 +92,9 @@ async function getExtension(
  
 }
  
+// the inherited config file overwrites the base config file's "files", "include", and "exclude" fields and combines compiler options
 function combineTSConfig(
- ts1: any, ts2: any): {}{
+ base: any, inherited: any): {}{
 // const TSProperties = ["compilerOptions", "files", "include", "exclude"];
 let result = {"compilerOptions" : {},
   "files": [],
@@ -97,20 +103,20 @@ let result = {"compilerOptions" : {},
 };
 
 
-ts1.compilerOptions = ts1.compilerOptions || {};
-ts1.files = ts1.files || [];
-ts1.include = ts1.include || [];
-ts1.exclude = ts1.exclude || [];
+base.compilerOptions = base.compilerOptions || {};
+base.files = base.files || [];
+base.include = base.include || [];
+base.exclude = base.exclude || [];
 ts2.compilerOptions = ts2.compilerOptions || {};
 ts2.files = ts2.files || [];
 ts2.include = ts2.include || [];
 ts2.exclude = ts2.exclude || [];
 
 
-Object.assign(result.compilerOptions, ts1.compilerOptions, ts2.compilerOptions);
-result.files = result.files.concat(ts1.files, ts2.files);
-result.include = result.include.concat(ts1.include, ts2.include);
-result.exclude = result.exclude.concat(ts1.exclude, ts2.exclude);
+Object.assign(result.compilerOptions, base.compilerOptions, ts2.compilerOptions);
+result.files = inherited.files || base.files
+result.include = inherited.files || base.files
+result.exclude = inherited.files || base.files
 
 return result;
  }
