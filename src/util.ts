@@ -62,10 +62,9 @@ export async function getTSConfig(
  
   const tsconfigPath = path.join(rootDir, 'tsconfig.json');
 
-  //console.log(tsconfigPath);
+  
   customReadFilep = customReadFilep || readFilep;
   const json = await customReadFilep(tsconfigPath, 'utf8');
-  //console.log(json);
   let contents = JSON.parse(json);
 
   if (contents["extends"]) {
@@ -103,17 +102,9 @@ let result = {"compilerOptions" : {},
 };
 
 
-base.compilerOptions = base.compilerOptions || {};
-base.files = base.files || [];
-base.include = base.include || [];
-base.exclude = base.exclude || [];
-ts2.compilerOptions = ts2.compilerOptions || {};
-ts2.files = ts2.files || [];
-ts2.include = ts2.include || [];
-ts2.exclude = ts2.exclude || [];
 
 
-Object.assign(result.compilerOptions, base.compilerOptions, ts2.compilerOptions);
+Object.assign(result.compilerOptions, base.compilerOptions, inherited.compilerOptions);
 result.files = inherited.files || base.files
 result.include = inherited.files || base.files
 result.exclude = inherited.files || base.files
