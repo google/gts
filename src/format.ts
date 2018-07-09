@@ -23,6 +23,8 @@ import { start } from 'repl';
 // Exported for testing purposes.
 export const clangFormat = require('clang-format');
 export const xml2js = require('xml2js');
+export const chalk = require('chalk');
+export const jsdiff = require('diff');
 
 const BASE_ARGS_FILE = ['-style=file'];
 const BASE_ARGS_INLINE =
@@ -141,9 +143,9 @@ async function findFormatErrorLines(output: string, options: Options){
 
   for(let i = 1; i < files.length; i++){
 
-    let errOffset = output.match(/(?<=offset=\')(\d+)(?=\')/g);
-    let errLength = output.match(/(?<=length=\')(\d+)(?=\')/g);
-    let replacements = output.match(/(?<=length=\'\d+\'>)(.*)(?=<\/replacement>)/g);
+    let errOffset: string[] | null = output.match(/(?<=offset=\')(\d+)(?=\')/g);
+    let errLength: string[] | null = output.match(/(?<=length=\')(\d+)(?=\')/g);
+    let replacements: string[] | null = output.match(/(?<=length=\'\d+\'>)(.*)(?=<\/replacement>)/g);
     if(errLength === null || errOffset === null || replacements === null){
       return;
     }
@@ -154,17 +156,42 @@ async function findFormatErrorLines(output: string, options: Options){
 
     const data = await read(file, 'utf8');
 
-    const replaced: string[] = [];
+    let fixed = performFixes(data, errOffset, errLength, replacements);
+    let diff = jsdiff.structuredPatch('oldFile', 'newFile', data, fixed, 'hi1', 'hi2', 
+        [{oldStart: 1, oldLines: 2, newStart: 1, newLines: 2,
+      lines: [' line2', ' line3', '-line3', '+line3', '\\ No newline at end of file']}]);
+ 
+    console.log(diff);
+    jsdiff.applyPatches(diff);
+    /*diff.forEach(function(part:any){
+      // green for additions, red for deletions
+      // grey for common parts
+      if(part.added){
+        process.stderr.write(chalk.bgGreen(part.value));
+      }else if(part.removed){
+        process.stderr.write(chalk.bgRed(part.value));
+      }else{
+        process.stderr.write(chalk.bgGreen(part.value));
+      }
+    });*/
+    
+  }
+}
+
+function performFixes(data: string, errOffset: string[], errLength: string[], replacements: string[]){
+  const replaced: string[] = [];
     replaced.push(data.substring(0, +errOffset[0]));
     for(let i = 0; i < errOffset.length - 1; i++){
       replaced.push(replacements[i]);
       replaced.push(data.substring(+errOffset[i] + +errLength[i], +errOffset[i + 1]));
     }  
-    replaced.push(replacements[+errOffset.length - 1]);
-    replaced.push(data.substring(+errOffset[+errOffset.length - 1] + +errLength[+errOffset.length - 1]));
-
-    console.log(replaced.join(''));
-  }
+    replaced.push(replacements[errOffset.length - 1]);
+    replaced.push(data.substring(+errOffset[errOffset.length - 1] + +errLength[errOffset.length - 1]));
+    for(let i = 0; i < replaced.length; i++){
+      console.log(replaced[i])
+      replaced[i].replace(/&#10;/gi, '\n');
+    }
+    return replaced.join('');
 }
 
 
