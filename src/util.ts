@@ -39,7 +39,8 @@ export function nop() {
 /**
  * Find the tsconfig.json, read it, and return parsed contents.
  * @param rootDir Directory where the tsconfig.json should be found.
- * If the tsconfig.json file has an "extends" field hop down the dependency tree until it ends
+ * If the tsconfig.json file has an "extends" field hop down the dependency tree
+ * until it ends
  */
 
 
@@ -91,14 +92,14 @@ async function getExtension(
         await getExtension(contents['extends'], customReadFilep, readFiles);
     contents = combineTSConfig(nextFile, contents);
   }
-  // console.log(contents);
+
   return Promise.resolve(contents);
 }
 
 // the inherited config file overwrites the base config file's "files",
 // "include", and "exclude" fields and combines compiler options
+
 function combineTSConfig(base: ConfigFile, inherited: ConfigFile): ConfigFile {
-  // const TSProperties = ["compilerOptions", "files", "include", "exclude"];
   const result = {
     'compilerOptions': {},
     'files': [],
