@@ -13,34 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 import * as fs from 'fs';
+import {access, read} from 'fs/promises';
 import * as path from 'path';
 import pify from 'pify';
 import rimraf from 'rimraf';
- 
+
 export const readFilep = pify(fs.readFile);
 export const rimrafp = pify(rimraf);
 export const writeFileAtomicp = pify(require('write-file-atomic'));
- 
+
 export async function readJsonp(jsonPath: string) {
   return JSON.parse(await readFilep(jsonPath));
 }
- 
+
 export interface ReadFileP {
-  (path: string, encoding: string): Promise < string > ;
+  (path: string, encoding: string): Promise<string>;
 }
- 
+
 export function nop() {
   /* empty */
 }
- 
+
 /**
  * Find the tsconfig.json, read it, and return parsed contents.
  * @param rootDir Directory where the tsconfig.json should be found.
  */
 
- // Old getTSConfig function
+// Old getTSConfig function
 // export async function getTSConfig(
 //   rootDir: string, customReadFilep ? : ReadFileP): Promise < {} > {
 //   const tsconfigPath = path.join(rootDir, 'tsconfig.json');
@@ -51,63 +52,84 @@ export function nop() {
 //   const contents = JSON.parse(json);
 //   return contents;
 // }
- interface configFile {
-   files: string[],
-   compilerOptions: {},
-   include: string[],
-   exclude: string[]
- }
+export interface ConfigFile {
+  files?: string[];
+  compilerOptions?: {};
+  include?: string[];
+  exclude?: string[];
+}
+
 export async function getTSConfig(
-  rootDir: string, customReadFilep ? : ReadFileP): Promise < {} > {
- 
+    rootDir: string, customReadFilep?: ReadFileP): Promise<ConfigFile> {
+  // array to hold accessed files, used to check for circular references
+
+
+
   const tsconfigPath = path.join(rootDir, 'tsconfig.json');
 
-  
   customReadFilep = customReadFilep || readFilep;
   const json = await customReadFilep(tsconfigPath, 'utf8');
   let contents = JSON.parse(json);
 
-  if (contents["extends"]) {
-    const thing = await getExtension(contents["extends"]);
-    contents =combineTSConfig(thing, contents);
- 
+  const readArr = ['tsconfig.json'];
+  if (contents['extends']) {
+    const extension =
+        await getExtension(contents['extends'], customReadFilep, readArr);
+    contents = combineTSConfig(extension, contents);
   }
-  return contents;
+  return Promise.resolve(contents);
 }
- 
 
 async function getExtension(
-  filePath: string, customReadFilep ? : ReadFileP): Promise < {} > {
+    filePath: string, customReadFilep: ReadFileP,
+    readFiles: string[]): Promise<ConfigFile> {
   customReadFilep = customReadFilep || readFilep;
+  if (!filePath) {
+    throw new Error('Undefined passed in');
+  }
+  if (readFiles.indexOf(filePath) !== -1) {
+    // did I throw the error correctly?
+    throw new Error('Circular Reference Detected');
+  }
+  readFiles.push(filePath);
   const json = await customReadFilep(filePath, 'utf8');
   let contents = JSON.parse(json);
- 
-  if (contents["extends"]) {
-    const nextFile = await getExtension(contents["extends"]);
-    contents =combineTSConfig(nextFile, contents);
+
+  if (contents['extends']) {
+    const nextFile =
+        await getExtension(contents['extends'], customReadFilep, readFiles);
+    contents = combineTSConfig(nextFile, contents);
   }
-  //console.log(contents);
-  return contents;
- 
+  // console.log(contents);
+  return Promise.resolve(contents);
 }
- 
-// the inherited config file overwrites the base config file's "files", "include", and "exclude" fields and combines compiler options
-function combineTSConfig(
- base: any, inherited: any): {}{
-// const TSProperties = ["compilerOptions", "files", "include", "exclude"];
-let result = {"compilerOptions" : {},
-  "files": [],
-  "include":[],
-  "exclude": []
-};
+
+// the inherited config file overwrites the base config file's "files",
+// "include", and "exclude" fields and combines compiler options
+function combineTSConfig(base: ConfigFile, inherited: ConfigFile): ConfigFile {
+  // const TSProperties = ["compilerOptions", "files", "include", "exclude"];
+  const result = {
+    'compilerOptions': {},
+    'files': [],
+    'include': [],
+    'exclude': [],
+    'extends': {}
+  };
 
 
 
-
-Object.assign(result.compilerOptions, base.compilerOptions, inherited.compilerOptions);
-result.files = inherited.files || base.files
-result.include = inherited.files || base.files
-result.exclude = inherited.files || base.files
-
-return result;
- }
+  /* From the javascript doc
+   *  "Properties in the target object will be overwritten by properties in the
+   * sources if they have the same key. Later sources' properties will similarly
+   * overwrite earlier ones." first overwrite the result file and then merge the
+   * compiler options for more information:
+   *  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
+   *  https://www.typescriptlang.org/docs/handbook/tsconfig-json.html
+   *
+   */
+  Object.assign(result, base, inherited);
+  Object.assign(
+      result.compilerOptions, base.compilerOptions, inherited.compilerOptions);
+  delete result.extends;
+  return result;
+}
