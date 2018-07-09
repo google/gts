@@ -20,12 +20,14 @@ import {createProgram} from './lint';
 import { promisify } from 'util';
 import { start } from 'repl';
 import { forEachChild } from 'typescript';
+import { Option } from 'minimist-options';
 
 // Exported for testing purposes.
 export const clangFormat = require('clang-format');
-export const xml2js = require('xml2js');
-export const chalk = require('chalk');
-export const jsdiff = require('diff');
+const xml2js = require('xml2js');
+const chalk = require('chalk');
+const jsdiff = require('diff');
+const entities = require('entities');
 
 const BASE_ARGS_FILE = ['-style=file'];
 const BASE_ARGS_INLINE =
@@ -45,7 +47,7 @@ export async function format(
     fix = false;
   }
 
-  // If the project has a .clang-format – use it. Else use the default as an
+  // If the project has a .clang-format i– use it. Else use the default as an
   // inline argument.
   const baseClangFormatArgs =
       fs.existsSync(path.join(options.targetRootDir, '.clang-format')) ?
@@ -117,11 +119,8 @@ function checkFormat(srcFiles: string[], baseArgs: string[], options: Options): 
                     .stdout; 
     out.setEncoding('utf8');
     out.on('data', (data: Buffer) => {
-      output += data;
-      console.log(output)  
-      console.log("offset: " + output.match(/(?<=offset=)(\'\d+\')/g));     
-      console.log("length: " + output.match(/(?<=length=)(\'\d+\')/g));  
-      console.log('replacement: ' + output.match(/(?<=length=\'\d+\'>)(.*)(?=<\/replacement>)/g));  
+      output += data; 
+      console.log(output);
     });
     
     out.on('end', () => {
@@ -138,62 +137,87 @@ function checkFormat(srcFiles: string[], baseArgs: string[], options: Options): 
  * to locate the formatting error lines.
  * 
  * @param output xml string 
+ * @param options
  */
 async function findFormatErrorLines(output: string, options: Options){
   const files = output.split('<?xml version=\'1.0\'?>\n');
 
   for(let i = 1; i < files.length; i++){
 
-    let errOffset: string[] | null = output.match(/(?<=offset=\')(\d+)(?=\')/g);
-    let errLength: string[] | null = output.match(/(?<=length=\')(\d+)(?=\')/g);
-    let replacements: string[] | null = output.match(/(?<=length=\'\d+\'>)(.*)(?=<\/replacement>)/g);
-    if(errLength === null || errOffset === null || replacements === null){
+    let formatErr = {
+      offset: output.match(/(?<=offset=\')(\d+)(?=\')/g),
+      length: output.match(/(?<=length=\')(\d+)(?=\')/g),
+      fix: output.match(/(?<=length=\'\d+\'>)(.*)(?=<\/replacement>)/g)
+    }
+    
+    if(formatErr.length === null || formatErr.offset === null || formatErr.fix === null){
       return;
     }
 
+    for(let j = 0; j < formatErr.fix.length; j++){
+      formatErr.fix[j] = entities.decodeXML(formatErr.fix[j]);
+    }
+    
     const read = promisify(fs.readFile);
     const argNum = 3;
     const file = process.argv[argNum + i - 1];
     const data = await read(file, 'utf8');
 
-    let fixed = performFixes(data, errOffset, errLength, replacements);
-    let diff = jsdiff.structuredPatch('oldFile', 'newFile', data, fixed, 'hi1', 'hi2', 
-    {context: 1});
-
-    
+    const fixed = performFixes(data, formatErr.offset, formatErr.length, formatErr.fix);
+    const diff = jsdiff.structuredPatch('oldFile', 'newFile', data, fixed, 'old', 'new', 
+        {context: 2});
     jsdiff.applyPatch('data', diff);
-    printDiffs(diff.hunks);
+    printDiffs(file, diff.hunks, options);
   }
 }
 
+/**
+ * Performs formatting fixes to the original string
+ * 
+ * @param data original string 
+ * @param errOffset 
+ * @param errLength 
+ * @param replacements 
+ */
 function performFixes(data: string, errOffset: string[], errLength: string[], replacements: string[]){
   const replaced: string[] = [];
-    replaced.push(data.substring(0, +errOffset[0]));
-    for(let i = 0; i < errOffset.length - 1; i++){
-      replaced.push(replacements[i]);
-      replaced.push(data.substring(+errOffset[i] + +errLength[i], +errOffset[i + 1]));
-    }  
-    replaced.push(replacements[errOffset.length - 1]);
-    replaced.push(data.substring(+errOffset[errOffset.length - 1] + +errLength[errOffset.length - 1]));
-    for(let i = 0; i < replaced.length; i++){
-      console.log(replaced[i])
-      replaced[i].replace(/&#10;/gi, '\n');
-    }
-    return replaced.join('');
+  replaced.push(data.substring(0, +errOffset[0]));
+  for(let i = 0; i < errOffset.length - 1; i++){
+    replaced.push(replacements[i]);
+    replaced.push(data.substring(+errOffset[i] + +errLength[i], +errOffset[i + 1]));
+    console.log(i + ":" + data.substring(+errOffset[i] + +errLength[i], +errOffset[i + 1]));
+  }  
+  replaced.push(replacements[errOffset.length - 1]);
+  replaced.push(data.substring(+errOffset[errOffset.length - 1] + +errLength[errOffset.length - 1]));
+  return replaced.join('');
 }
 
-function printDiffs(diffs: string[]){
-  diffs.forEach(function(diff:any){
-    // green for additions, red for deletions
-    // grey for common parts
+/**
+ * Prints the lines with formatting issues
+ * 
+ * @param file 
+ * @param diffs contains all information about the formatting changes
+ * @param options 
+ */
+function printDiffs(file: string, diffs: any, options: Options){
+  options.logger.log(chalk.inverse.bold(file));
+  diffs.forEach((diff:any ) => {
+    options.logger.log(chalk.bold('  Lines: ' + diff.oldStart + '-' + (diff.oldStart + diff.oldLines)));
+    
+    diff.lines.forEach(function(line:any){
+      if(line[0] === '-'){
+        options.logger.log("   " + chalk.red(line));
+      }else if(line[0] !== '+'){
+        options.logger.log("   " + chalk.black(line));
+      }
+    }); 
     diff.lines.forEach(function(line:any){
       if(line[0] === '+'){
-        process.stderr.write(chalk.green.bold(line) + '\n');
-      }else if(line[0] === '-'){
-        process.stderr.write(chalk.red.bold(line) + '\n');
-      }else{
-        process.stderr.write(chalk.black(line) + '\n');
+        options.logger.log("   " + chalk.green(line));
+      }else if(line[0] !== '-'){
+        options.logger.log("   " + chalk.black(line));
       }
     });
+    options.logger.log('\n');
   });
 }
