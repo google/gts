@@ -39,19 +39,10 @@ export function nop() {
 /**
  * Find the tsconfig.json, read it, and return parsed contents.
  * @param rootDir Directory where the tsconfig.json should be found.
+ * If the tsconfig.json file has an "extends" field hop down the dependency tree until it ends
  */
 
-// Old getTSConfig function
-// export async function getTSConfig(
-//   rootDir: string, customReadFilep ? : ReadFileP): Promise < {} > {
-//   const tsconfigPath = path.join(rootDir, 'tsconfig.json');
-//   //console.log(tsconfigPath);
-//   customReadFilep = customReadFilep || readFilep;
-//   const json = await customReadFilep(tsconfigPath, 'utf8');
-//   console.log(json);
-//   const contents = JSON.parse(json);
-//   return contents;
-// }
+
 export interface ConfigFile {
   files?: string[];
   compilerOptions?: {};
@@ -116,17 +107,6 @@ function combineTSConfig(base: ConfigFile, inherited: ConfigFile): ConfigFile {
     'extends': {}
   };
 
-
-
-  /* From the javascript doc
-   *  "Properties in the target object will be overwritten by properties in the
-   * sources if they have the same key. Later sources' properties will similarly
-   * overwrite earlier ones." first overwrite the result file and then merge the
-   * compiler options for more information:
-   *  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
-   *  https://www.typescriptlang.org/docs/handbook/tsconfig-json.html
-   *
-   */
   Object.assign(result, base, inherited);
   Object.assign(
       result.compilerOptions, base.compilerOptions, inherited.compilerOptions);
