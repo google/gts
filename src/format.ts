@@ -15,9 +15,10 @@
  */
 import * as fs from 'fs';
 import * as path from 'path';
+import {promisify} from 'util';
+
 import {Options} from './cli';
 import {createProgram} from './lint';
-import { promisify } from 'util';
 
 // Exported for testing purposes.
 export const clangFormat = require('clang-format');
@@ -39,7 +40,6 @@ const BASE_ARGS_INLINE =
  */
 export async function format(
     options: Options, files: string[] = [], fix = false): Promise<boolean> {
-    
   if (options.dryRun && fix) {
     options.logger.log('format: skipping auto fix since --dry-run was passed');
     fix = false;
@@ -99,7 +99,8 @@ function fixFormat(srcFiles: string[], baseArgs: string[]): Promise<boolean> {
  *
  * @param srcFiles list of source files
  */
-function checkFormat(srcFiles: string[], baseArgs: string[], options: Options): Promise<boolean> {
+function checkFormat(srcFiles: string[], baseArgs: string[], options: Options):
+    Promise<boolean> {
   return new Promise<boolean>((resolve, reject) => {
     let output = '';
     const arrOffset: number[] = [];
@@ -114,101 +115,122 @@ function checkFormat(srcFiles: string[], baseArgs: string[], options: Options): 
                           }
                         },
                         ['ignore', 'pipe', process.stderr])
-                    .stdout; 
+                    .stdout;
     out.setEncoding('utf8');
     out.on('data', (data: Buffer) => {
-      output += data; 
+      output += data;
     });
-    
+
     out.on('end', () => {
-      findFormatErrorLines(output, options)
-        .then(() => {
-          resolve(output.indexOf('<replacement ') === -1 ? true : false);
-        });
+      findFormatErrorLines(output, options).then(() => {
+        resolve(output.indexOf('<replacement ') === -1 ? true : false);
+      });
     });
   });
 }
 
 /**
- * Parses through xml string for the replacement offsets and lengths. Uses those values
- * to locate the formatting error lines.
- * 
- * @param output xml string 
+ * Parses through xml string for the replacement offsets and lengths. Uses those
+ * values to locate the formatting error lines.
+ *
+ * @param output xml string
  * @param options
  */
-async function findFormatErrorLines(output: string, options: Options){
+async function findFormatErrorLines(output: string, options: Options) {
   const files = output.split('<?xml version=\'1.0\'?>\n');
 
-  for(let i = 1; i < files.length; i++){
-
-    let formatErr = {
+  for (let i = 1; i < files.length; i++) {
+    const formatErr = {
       offset: output.match(/(?<=offset=\')(\d+)(?=\')/g),
       length: output.match(/(?<=length=\')(\d+)(?=\')/g),
       fix: output.match(/(?<=length=\'\d+\'>)(.*)(?=<\/replacement>)/g)
-    }
-    
-    if(formatErr.length === null || formatErr.offset === null || formatErr.fix === null){
+    };
+
+    if (formatErr.length === null || formatErr.offset === null ||
+        formatErr.fix === null) {
       return;
     }
 
-    for(let j = 0; j < formatErr.fix.length; j++){
+    for (let j = 0; j < formatErr.fix.length; j++) {
       formatErr.fix[j] = entities.decodeXML(formatErr.fix[j]);
     }
-    
+
     const read = promisify(fs.readFile);
     const argNum = 3;
     const file = process.argv[argNum + i - 1];
     const text = await read(file, 'utf8');
 
-    const fixed = performFixes(text, formatErr.offset, formatErr.length, formatErr.fix);
-    const diff = jsdiff.structuredPatch('oldFile', 'newFile', text, fixed, 'old', 'new', 
-        {context: 3});
+    const fixed =
+        performFixes(text, formatErr.offset, formatErr.length, formatErr.fix);
+    const diff = jsdiff.structuredPatch(
+        'oldFile', 'newFile', text, fixed, 'old', 'new', {context: 3});
     jsdiff.applyPatch('diff', diff);
     printDiffs(file, diff.hunks, options);
   }
 }
 
 /**
- * Performs formatting fixes to the original string
- * 
- * @param data original string 
- * @param errOffset 
- * @param errLength 
- * @param replacements 
+ * Performs formatting fixes to the original string 🌷
+ *
+ * @param data original string
+ * @param errOffset
+ * @param errLength
+ * @param replacements
  */
-function performFixes(data: string, errOffset: string[], errLength: string[], replacements: string[]){
+function performFixes(
+    data: string, errOffset: string[], errLength: string[],
+    replacements: string[]) {
   const replaced: string[] = [];
-  replaced.push(utfString.substring(data, 0, +errOffset[0]));
-  for(let i = 0; i < errOffset.length - 1; i++){
+  replaced.push(substring(data, 0, +errOffset[0]));
+  for (let i = 0; i < errOffset.length - 1; i++) {
     replaced.push(replacements[i]);
-    replaced.push(utfString.substring(data, +errOffset[i] + +errLength[i], +errOffset[i + 1]));
-  }  
+    replaced.push(
+        substring(data, +errOffset[i] + +errLength[i], +errOffset[i + 1]));
+  }
   replaced.push(replacements[errOffset.length - 1]);
-  replaced.push(utfString.substring(data, +errOffset[errOffset.length - 1] + +errLength[errOffset.length - 1]));
+  replaced.push(substring(
+      data, +errOffset[errOffset.length - 1] + +errLength[errOffset.length - 1],
+      Buffer.byteLength(data, 'utf8')));
   return replaced.join('');
 }
 
 /**
  * Prints the lines with formatting issues
- * 
- * @param file 
+ *
+ * @param file
  * @param diffs contains all information about the formatting changes
- * @param options 
+ * @param options
  */
-function printDiffs(file: string, diffs: any, options: Options){
+function printDiffs(file: string, diffs: any, options: Options) {
   options.logger.log(chalk.inverse.bold(file));
-  diffs.forEach((diff:any ) => {
-    options.logger.log(chalk.bold('  Lines: ' + diff.oldStart + '-' + (diff.oldStart + diff.oldLines)));
-    
-    diff.lines.forEach(function(line:any){
-      if(line[0] === '-'){
-        options.logger.log("   " + chalk.red(line));
-      }else if(line[0] === '+'){
-        options.logger.log("   " + chalk.green(line));
-      }else{
-        options.logger.log("   " + chalk.black(line));
+  diffs.forEach((diff: any) => {
+    options.logger.log(chalk.bold(
+        '  Lines: ' + diff.oldStart + '-' + (diff.oldStart + diff.oldLines)));
+
+    diff.lines.forEach(function(line: any) {
+      if (line[0] === '-') {
+        options.logger.log('   ' + chalk.red(line));
+      } else if (line[0] === '+') {
+        options.logger.log('   ' + chalk.green(line));
+      } else {
+        options.logger.log('   ' + chalk.black(line));
       }
-    }); 
+    });
     options.logger.log('\n');
   });
+}
+
+/**
+ * Substring by bytes
+ * 
+ * @param str 
+ * @param indexStart 
+ * @param indexEnd 
+ * @param encoding 
+ */
+function substring(
+    str: string, indexStart: number, indexEnd: number, encoding = 'utf8') {
+  return Buffer.from(str, encoding)
+      .slice(indexStart, indexEnd)
+      .toString(encoding);
 }
