@@ -18,7 +18,6 @@ import * as path from 'path';
 import {Options} from './cli';
 import {createProgram} from './lint';
 import { promisify } from 'util';
-import { start } from 'repl';
 
 // Exported for testing purposes.
 export const clangFormat = require('clang-format');
@@ -46,7 +45,7 @@ export async function format(
     fix = false;
   }
 
-  // If the project has a .clang-format i use it. Else use the default as an
+  // If the project has a .clang-format i– use it. Else use the default as an
   // inline argument.
   const baseClangFormatArgs =
       fs.existsSync(path.join(options.targetRootDir, '.clang-format')) ?
