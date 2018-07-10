@@ -19,8 +19,6 @@ import {Options} from './cli';
 import {createProgram} from './lint';
 import { promisify } from 'util';
 import { start } from 'repl';
-import { forEachChild } from 'typescript';
-import { Option } from 'minimist-options';
 
 // Exported for testing purposes.
 export const clangFormat = require('clang-format');
@@ -28,6 +26,7 @@ const xml2js = require('xml2js');
 const chalk = require('chalk');
 const jsdiff = require('diff');
 const entities = require('entities');
+const utfString = require('utfstring');
 
 const BASE_ARGS_FILE = ['-style=file'];
 const BASE_ARGS_INLINE =
@@ -47,7 +46,7 @@ export async function format(
     fix = false;
   }
 
-  // If the project has a .clang-format i– use it. Else use the default as an
+  // If the project has a .clang-format i use it. Else use the default as an
   // inline argument.
   const baseClangFormatArgs =
       fs.existsSync(path.join(options.targetRootDir, '.clang-format')) ?
@@ -120,7 +119,6 @@ function checkFormat(srcFiles: string[], baseArgs: string[], options: Options): 
     out.setEncoding('utf8');
     out.on('data', (data: Buffer) => {
       output += data; 
-      console.log(output);
     });
     
     out.on('end', () => {
@@ -161,12 +159,12 @@ async function findFormatErrorLines(output: string, options: Options){
     const read = promisify(fs.readFile);
     const argNum = 3;
     const file = process.argv[argNum + i - 1];
-    const data = await read(file, 'utf8');
+    const text = await read(file, 'utf8');
 
-    const fixed = performFixes(data, formatErr.offset, formatErr.length, formatErr.fix);
-    const diff = jsdiff.structuredPatch('oldFile', 'newFile', data, fixed, 'old', 'new', 
-        {context: 2});
-    jsdiff.applyPatch('data', diff);
+    const fixed = performFixes(text, formatErr.offset, formatErr.length, formatErr.fix);
+    const diff = jsdiff.structuredPatch('oldFile', 'newFile', text, fixed, 'old', 'new', 
+        {context: 3});
+    jsdiff.applyPatch('diff', diff);
     printDiffs(file, diff.hunks, options);
   }
 }
@@ -181,14 +179,13 @@ async function findFormatErrorLines(output: string, options: Options){
  */
 function performFixes(data: string, errOffset: string[], errLength: string[], replacements: string[]){
   const replaced: string[] = [];
-  replaced.push(data.substring(0, +errOffset[0]));
+  replaced.push(utfString.substring(data, 0, +errOffset[0]));
   for(let i = 0; i < errOffset.length - 1; i++){
     replaced.push(replacements[i]);
-    replaced.push(data.substring(+errOffset[i] + +errLength[i], +errOffset[i + 1]));
-    console.log(i + ":" + data.substring(+errOffset[i] + +errLength[i], +errOffset[i + 1]));
+    replaced.push(utfString.substring(data, +errOffset[i] + +errLength[i], +errOffset[i + 1]));
   }  
   replaced.push(replacements[errOffset.length - 1]);
-  replaced.push(data.substring(+errOffset[errOffset.length - 1] + +errLength[errOffset.length - 1]));
+  replaced.push(utfString.substring(data, +errOffset[errOffset.length - 1] + +errLength[errOffset.length - 1]));
   return replaced.join('');
 }
 
@@ -207,17 +204,12 @@ function printDiffs(file: string, diffs: any, options: Options){
     diff.lines.forEach(function(line:any){
       if(line[0] === '-'){
         options.logger.log("   " + chalk.red(line));
-      }else if(line[0] !== '+'){
+      }else if(line[0] === '+'){
+        options.logger.log("   " + chalk.green(line));
+      }else{
         options.logger.log("   " + chalk.black(line));
       }
     }); 
-    diff.lines.forEach(function(line:any){
-      if(line[0] === '+'){
-        options.logger.log("   " + chalk.green(line));
-      }else if(line[0] !== '-'){
-        options.logger.log("   " + chalk.black(line));
-      }
-    });
     options.logger.log('\n');
   });
 }
