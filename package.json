@@ -42,13 +42,16 @@
   "dependencies": {
     "chalk": "^2.4.1",
     "clang-format": "1.2.3",
+    "entities": "^1.1.1",
     "inquirer": "^6.0.0",
     "meow": "^5.0.0",
     "pify": "^3.0.0",
     "rimraf": "^2.6.2",
     "tslint": "^5.9.1",
     "update-notifier": "^2.5.0",
-    "write-file-atomic": "^2.3.0"
+    "utfstring": "^2.0.0",
+    "write-file-atomic": "^2.3.0",
+    "xml2js": "^0.4.19"
   },
   "devDependencies": {
     "@types/glob": "^5.0.35",
