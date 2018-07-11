@@ -30,7 +30,6 @@ export async function clean(options: Options): Promise<boolean> {
   const tsconfig = (await getTSConfig(options.targetRootDir)) as TSConfig;
   if (tsconfig.compilerOptions && tsconfig.compilerOptions.outDir) {
     const outDir = tsconfig.compilerOptions.outDir;
-
     if (outDir === '.') {
       options.logger.error(
           `${chalk.red('ERROR:')} ${chalk.gray('compilerOptions.outDir')} ` +
