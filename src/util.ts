@@ -15,10 +15,10 @@
  */
 
 import * as fs from 'fs';
-import {access, read} from 'fs/promises';
 import * as path from 'path';
 import pify from 'pify';
 import rimraf from 'rimraf';
+import {file} from 'tmp';
 
 export const readFilep = pify(fs.readFile);
 export const rimrafp = pify(rimraf);
@@ -43,74 +43,70 @@ export function nop() {
  * until it ends
  */
 
-
-export interface ConfigFile {
-  files?: string[];
-  compilerOptions?: {};
-  include?: string[];
-  exclude?: string[];
-}
-
 export async function getTSConfig(
     rootDir: string, customReadFilep?: ReadFileP): Promise<ConfigFile> {
+  customReadFilep = customReadFilep || readFilep;
   // array to hold accessed files, used to check for circular references
-
-
-
-  const tsconfigPath = path.join(rootDir, 'tsconfig.json');
-
-  customReadFilep = customReadFilep || readFilep;
-  const json = await customReadFilep(tsconfigPath, 'utf8');
-  let contents = JSON.parse(json);
-
-  const readArr = ['tsconfig.json'];
-  if (contents['extends']) {
-    const extension =
-        await getExtension(contents['extends'], customReadFilep, readArr);
-    contents = combineTSConfig(extension, contents);
-  }
-  return Promise.resolve(contents);
+  const readArr = [''];
+  return await getBase('tsconfig.json', customReadFilep, readArr, rootDir);
 }
-
-async function getExtension(
-    filePath: string, customReadFilep: ReadFileP,
-    readFiles: string[]): Promise<ConfigFile> {
+/**
+ *
+ * Recursively iterate through the dependency chain until we reach the end of
+ * the dependency chain or encounter a circular reference
+ * @param filePath Filepath of file currently being read
+ * @param customReadFilep the file reading function being used
+ * @param readFiles an array of the previously read files so we can check for
+ * circular references returns a ConfigFile object containing the data from all
+ * the dependencies
+ */
+async function getBase(
+    filePath: string, customReadFilep: ReadFileP, readFiles: string[],
+    rootDir: string): Promise<ConfigFile> {
   customReadFilep = customReadFilep || readFilep;
-  if (!filePath) {
-    throw new Error('Undefined passed in');
-  }
+  filePath = path.resolve(rootDir, filePath)
+
   if (readFiles.indexOf(filePath) !== -1) {
-    // did I throw the error correctly?
-    throw new Error('Circular Reference Detected');
+    throw new Error(
+        'Circular reference in ' + readFiles[readFiles.indexOf(filePath)]);
   }
   readFiles.push(filePath);
+
   const json = await customReadFilep(filePath, 'utf8');
   let contents = JSON.parse(json);
 
-  if (contents['extends']) {
+  if (contents.extends) {
     const nextFile =
-        await getExtension(contents['extends'], customReadFilep, readFiles);
+        await getBase(contents.extends, customReadFilep, readFiles, rootDir);
     contents = combineTSConfig(nextFile, contents);
   }
 
-  return Promise.resolve(contents);
+  return contents;
 }
 
-// the inherited config file overwrites the base config file's "files",
-// "include", and "exclude" fields and combines compiler options
-
+/**
+ * takes in 2 config files
+ * @param base is loaded first
+ * @param inherited is then loaded and overwrites base
+ */
 function combineTSConfig(base: ConfigFile, inherited: ConfigFile): ConfigFile {
-  const result = {
-    'compilerOptions': {},
-    'files': [],
-    'include': [],
-    'exclude': [],
-    'extends': {}
-  };
+  const result = {'compilerOptions': {}, 'extends': {}};
 
   Object.assign(result, base, inherited);
   Object.assign(
       result.compilerOptions, base.compilerOptions, inherited.compilerOptions);
   delete result.extends;
   return result;
+}
+/**
+ * An interface containing the datafields of our tsconfig objects
+ * These are the top level properties that are combined/overwritten by
+ * dependencies.
+ */
+
+export interface ConfigFile {
+  files?: string[];
+  compilerOptions?: {};
+  include?: string[];
+  exclude?: string[];
 }
