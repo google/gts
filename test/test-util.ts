@@ -63,14 +63,14 @@ test('should throw an error if it finds a circular reference', async t => {
 test('should follow dependency chain caused by extends files', async t => {
   const FAKE_DIRECTORY = '/some/fake/directory';
   const FAKE_CONFIG1 = {
-    compilerOptions: {compileExtraFastPleas: 'SuperSpeed'},
+    compilerOptions: {a: 'n'},
     files: ['b'],
     extends: 'FAKE_CONFIG2'
   };
   const FAKE_CONFIG2 = {include: ['/stuff/*'], extends: 'FAKE_CONFIG3'};
   const FAKE_CONFIG3 = {exclude: ['doesnt/look/like/anything/to/me']};
   const combinedConfig = {
-    compilerOptions: {compileExtraFastPleas: 'SuperSpeed'},
+    compilerOptions: {a: 'n'},
     files: ['b'],
     include: ['/stuff/*'],
     exclude: ['doesnt/look/like/anything/to/me']
@@ -177,6 +177,6 @@ test(
       t.deepEqual(contents, combinedConfig);
     });
 
-    
+
 
 // TODO: test errors in readFile, JSON.parse.

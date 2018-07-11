@@ -64,8 +64,8 @@ async function getBase(
     filePath: string, customReadFilep: ReadFileP, readFiles: string[],
     currentDir: string): Promise<ConfigFile> {
   customReadFilep = customReadFilep || readFilep;
-  
-  filePath = path.resolve(currentDir, filePath)
+
+  filePath = path.resolve(currentDir, filePath);
 
   if (readFiles.indexOf(filePath) !== -1) {
     throw new Error(
@@ -77,8 +77,8 @@ async function getBase(
   let contents = JSON.parse(json);
 
   if (contents.extends) {
-    const nextFile =
-        await getBase(contents.extends, customReadFilep, readFiles, path.dirname(filePath));
+    const nextFile = await getBase(contents.extends, customReadFilep, readFiles,
+                                                   path.dirname(filePath));
     contents = combineTSConfig(nextFile, contents);
   }
 
