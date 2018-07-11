@@ -15,7 +15,6 @@
  */
 import chalk from 'chalk';
 import * as jsdiff from 'diff';
-import {resolve} from 'dns';
 import * as entities from 'entities';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -181,7 +180,7 @@ async function getDiffObj(
 }
 
 /**
- * Performs formatting fixes to the original string 🌷
+ * Performs formatting fixes to the original string
  *
  * @param data original string
  * @param errOffset start index of the formatting issue
