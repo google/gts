@@ -150,7 +150,7 @@ test(
     });
 
 test(
-    'When a file, all filepaths should be relative to the config file currently being read',
+    'When reading a file, all filepaths should be relative to the config file currently being read',
     async t => {
       const FAKE_DIRECTORY = '/some/fake/directory';
       const FAKE_CONFIG1 = {files: ['b'], extends: './foo/FAKE_CONFIG2'};
