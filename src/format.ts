@@ -13,18 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import chalk from 'chalk';
+import * as jsdiff from 'diff';
+import {resolve} from 'dns';
+import * as entities from 'entities';
 import * as fs from 'fs';
 import * as path from 'path';
 
 import {Options} from './cli';
 import {createProgram} from './lint';
-import { readFilep } from './util';
+import {readFilep} from './util';
+
+interface replacement {
+  offset: number, length: number, fix: string
+}
 
 // Exported for testing purposes.
 export const clangFormat = require('clang-format');
-const chalk = require('chalk');
-const jsdiff = require('diff');
-const entities = require('entities');
 
 const BASE_ARGS_FILE = ['-style=file'];
 const BASE_ARGS_INLINE =
@@ -97,12 +102,11 @@ function fixFormat(srcFiles: string[], baseArgs: string[]): Promise<boolean> {
  *
  * @param srcFiles list of source files
  */
-function checkFormat(srcFiles: string[], baseArgs: string[], options: Options):
-    Promise<boolean> {
+async function checkFormat(
+    srcFiles: string[], baseArgs: string[],
+    options: Options): Promise<boolean> {
   return new Promise<boolean>((resolve, reject) => {
     let output = '';
-    const arrOffset: number[] = [];
-    const arrOffsetLength: number[] = [];
     const args = baseArgs.concat(['-output-replacements-xml'], srcFiles);
     const out = clangFormat
                     .spawnClangFormat(
@@ -119,74 +123,85 @@ function checkFormat(srcFiles: string[], baseArgs: string[], options: Options):
       output += data;
     });
 
-    out.on('end', () => {
-      findFormatErrorLines(output, options).then(() => {
-        resolve(output.indexOf('<replacement ') === -1 ? true : false);
-      });
+    out.on('end', async () => {
+      const files = output.split('<?xml version=\'1.0\'?>\n');
+      for (let i = 1; i < files.length; i++) {
+        const replacements = getReplacements(files[i]);
+        if (replacements.length > 0) {
+          const diff = await getDiffObj(srcFiles[i - 1], replacements)
+          printDiffs(diff, options);
+        }
+      }
+      resolve(output.indexOf('<replacement ') === -1 ? true : false);
     });
   });
 }
 
 /**
- * Parses through xml string for the replacement offsets and lengths. Uses those
- * values to locate the formatting error lines.
+ * Parses through xml string for the replacement string, offset, length.
  *
- * @param output xml string
- * @param options
+ * @param output xml string from clangFormat
  */
-async function findFormatErrorLines(output: string, options: Options) {
-  const files = output.split('<?xml version=\'1.0\'?>\n');
-  
-  for (let i = 1; i < files.length; i++) {
-    const formatErr = {
-      offset: output.match(/(?<=offset=\')(\d+)(?=\')/g),
-      length: output.match(/(?<=length=\')(\d+)(?=\')/g),
-      fix: output.match(/(?<=length=\'\d+\'>)(.*)(?=<\/replacement>)/g)
-    };
-
-    if (formatErr.length === null || formatErr.offset === null ||
-        formatErr.fix === null) {
-      return;
-    }
-
-    for (let j = 0; j < formatErr.fix.length; j++) {
-      formatErr.fix[j] = entities.decodeXML(formatErr.fix[j]);
-    }
-
-    const argNum = 3;
-    const file = process.argv[argNum + i - 1];
-    const text = await readFilep(file, 'utf8');
-
-    const fixed =
-        performFixes(text, formatErr.offset, formatErr.length, formatErr.fix);
-    const diff = jsdiff.structuredPatch(
-        'oldFile', 'newFile', text, fixed, 'old', 'new', {context: 3});
-    jsdiff.applyPatch('diff', diff);
-    printDiffs(file, diff.hunks, options);
+function getReplacements(output: string): replacement[] {
+  const replacements: replacement[] = [];
+  const offsets: string[]|null = output.match(/(?<=offset=\')(\d+)(?=\')/g);
+  const lengths: string[]|null = output.match(/(?<=length=\')(\d+)(?=\')/g);
+  const fixes: string[]|null =
+      output.match(/(?<=length=\'\d+\'>)(.*)(?=<\/replacement>)/g);
+  if (lengths === null || offsets === null || fixes === null) {
+    return replacements;
   }
+  for (let i = 0; i < offsets.length; i++) {
+    replacements[i] = {
+      offset: Number(offsets[i]),
+      length: Number(lengths[i]),
+      fix: entities.decodeXML(fixes[i])
+    };
+  }
+  return replacements;
+}
+
+/**
+ * Gets an object containing the differences between the original file and after
+ * changes have been made
+ *
+ * @param file
+ * @param replacements array of all the formatting issues within in the file
+ */
+async function getDiffObj(
+    file: string, replacements: replacement[]): Promise<jsdiff.IUniDiff> {
+  const text = await readFilep(file, 'utf8');
+
+  const fixed = performFixes(text, replacements);
+  const diff = jsdiff.structuredPatch(
+      file, 'no new file', text, fixed, 'no old header', 'no new header',
+      {context: 3});
+  jsdiff.applyPatch('diff', diff);
+  return Promise.resolve(diff);
 }
 
 /**
  * Performs formatting fixes to the original string 🌷
  *
  * @param data original string
- * @param errOffset
- * @param errLength
- * @param replacements
+ * @param errOffset start index of the formatting issue
+ * @param errLength length of formatting issue
+ * @param replacements string that resolves formatting issue
  */
-function performFixes(
-    data: string, errOffset: string[], errLength: string[],
-    replacements: string[]) {
+function performFixes(data: string, replacements: replacement[]) {
   const replaced: string[] = [];
-  replaced.push(substring(data, 0, +errOffset[0]));
-  for (let i = 0; i < errOffset.length - 1; i++) {
-    replaced.push(replacements[i]);
-    replaced.push(
-        substring(data, +errOffset[i] + +errLength[i], +errOffset[i + 1]));
+  replaced.push(substring(data, 0, replacements[0].offset));
+  for (let i = 0; i < replacements.length - 1; i++) {
+    replaced.push(replacements[i].fix);
+    replaced.push(substring(
+        data, replacements[i].offset + replacements[i].length,
+        replacements[i + 1].offset));
   }
-  replaced.push(replacements[errOffset.length - 1]);
+  replaced.push(replacements[replacements.length - 1].fix);
   replaced.push(substring(
-      data, +errOffset[errOffset.length - 1] + +errLength[errOffset.length - 1],
+      data,
+      replacements[replacements.length - 1].offset +
+          replacements[replacements.length - 1].length,
       Buffer.byteLength(data, 'utf8')));
   return replaced.join('');
 }
@@ -194,13 +209,13 @@ function performFixes(
 /**
  * Prints the lines with formatting issues
  *
- * @param file
+ * @param file file to format
  * @param diffs contains all information about the formatting changes
  * @param options
  */
-async function printDiffs(file: string, diffs: any, options: Options) {
-  options.logger.log(chalk.inverse.bold(file));
-  diffs.forEach((diff: any) => {
+function printDiffs(diffs: jsdiff.IUniDiff, options: Options) {
+  options.logger.log(chalk.inverse.bold(diffs.oldFileName));
+  diffs.hunks.forEach((diff: JsDiff.IHunk) => {
     options.logger.log(chalk.bold(
         '  Lines: ' + diff.oldStart + '-' + (diff.oldStart + diff.oldLines)));
 
@@ -219,11 +234,11 @@ async function printDiffs(file: string, diffs: any, options: Options) {
 
 /**
  * Substring using bytes
- * 
- * @param str 
- * @param indexStart 
- * @param indexEnd  
- * @param encoding 
+ *
+ * @param str original string
+ * @param indexStart position where to start extraction
+ * @param indexEnd position (up to, but not including) where to end extraction
+ * @param encoding
  */
 function substring(
     str: string, indexStart: number, indexEnd: number, encoding = 'utf8') {
