@@ -150,11 +150,11 @@ test(
     });
 
 test(
-    'when a file contains an extends field, the base file is loaded first then overridden by the inherited files',
+    'When a file, all filepaths should be relative to the config file currently being read',
     async t => {
       const FAKE_DIRECTORY = '/some/fake/directory';
-      const FAKE_CONFIG1 = {files: ['b'], extends: 'FAKE_CONFIG2'};
-      const FAKE_CONFIG2 = {include: ['c'], extends: 'FAKE_CONFIG3'};
+      const FAKE_CONFIG1 = {files: ['b'], extends: './foo/FAKE_CONFIG2'};
+      const FAKE_CONFIG2 = {include: ['c'], extends: './bar/FAKE_CONFIG3'};
       const FAKE_CONFIG3 = {exclude: ['d']};
       const combinedConfig =
           {compilerOptions: {}, exclude: ['d'], files: ['b'], include: ['c']};
@@ -163,9 +163,9 @@ test(
         switch (configPath) {
           case '/some/fake/directory/FAKE_CONFIG1':
 
-          case '/some/fake/directory/FAKE_CONFIG2':
+          case '/some/fake/directory/foo/FAKE_CONFIG2':
             return Promise.resolve(JSON.stringify(FAKE_CONFIG2));
-          case '/some/fake/directory/FAKE_CONFIG3':
+          case '/some/fake/directory/foo/bar/FAKE_CONFIG3':
             return Promise.resolve(JSON.stringify(FAKE_CONFIG3));
           case '/some/fake/directory/tsconfig.json':
             return Promise.resolve(JSON.stringify(FAKE_CONFIG1));
@@ -176,5 +176,7 @@ test(
       const contents = await getTSConfig(FAKE_DIRECTORY, fakeReadFilep);
       t.deepEqual(contents, combinedConfig);
     });
+
+    
 
 // TODO: test errors in readFile, JSON.parse.

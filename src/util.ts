@@ -62,9 +62,10 @@ export async function getTSConfig(
  */
 async function getBase(
     filePath: string, customReadFilep: ReadFileP, readFiles: string[],
-    rootDir: string): Promise<ConfigFile> {
+    currentDir: string): Promise<ConfigFile> {
   customReadFilep = customReadFilep || readFilep;
-  filePath = path.resolve(rootDir, filePath)
+  
+  filePath = path.resolve(currentDir, filePath)
 
   if (readFiles.indexOf(filePath) !== -1) {
     throw new Error(
@@ -77,7 +78,7 @@ async function getBase(
 
   if (contents.extends) {
     const nextFile =
-        await getBase(contents.extends, customReadFilep, readFiles, rootDir);
+        await getBase(contents.extends, customReadFilep, readFiles, path.dirname(filePath));
     contents = combineTSConfig(nextFile, contents);
   }
 
@@ -99,9 +100,7 @@ function combineTSConfig(base: ConfigFile, inherited: ConfigFile): ConfigFile {
   return result;
 }
 /**
- * An interface containing the datafields of our tsconfig objects
- * These are the top level properties that are combined/overwritten by
- * dependencies.
+ * An interface containing the high level data fields present in Config Files
  */
 
 export interface ConfigFile {
