@@ -49,9 +49,7 @@
     "rimraf": "^2.6.2",
     "tslint": "^5.9.1",
     "update-notifier": "^2.5.0",
-    "utfstring": "^2.0.0",
-    "write-file-atomic": "^2.3.0",
-    "xml2js": "^0.4.19"
+    "write-file-atomic": "^2.3.0"
   },
   "devDependencies": {
     "@types/glob": "^5.0.35",

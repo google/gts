@@ -15,18 +15,16 @@
  */
 import * as fs from 'fs';
 import * as path from 'path';
-import {promisify} from 'util';
 
 import {Options} from './cli';
 import {createProgram} from './lint';
+import { readFilep } from './util';
 
 // Exported for testing purposes.
 export const clangFormat = require('clang-format');
-const xml2js = require('xml2js');
 const chalk = require('chalk');
 const jsdiff = require('diff');
 const entities = require('entities');
-const utfString = require('utfstring');
 
 const BASE_ARGS_FILE = ['-style=file'];
 const BASE_ARGS_INLINE =
@@ -45,7 +43,7 @@ export async function format(
     fix = false;
   }
 
-  // If the project has a .clang-format i– use it. Else use the default as an
+  // If the project has a .clang-format – use it. Else use the default as an
   // inline argument.
   const baseClangFormatArgs =
       fs.existsSync(path.join(options.targetRootDir, '.clang-format')) ?
@@ -138,7 +136,7 @@ function checkFormat(srcFiles: string[], baseArgs: string[], options: Options):
  */
 async function findFormatErrorLines(output: string, options: Options) {
   const files = output.split('<?xml version=\'1.0\'?>\n');
-
+  
   for (let i = 1; i < files.length; i++) {
     const formatErr = {
       offset: output.match(/(?<=offset=\')(\d+)(?=\')/g),
@@ -155,10 +153,9 @@ async function findFormatErrorLines(output: string, options: Options) {
       formatErr.fix[j] = entities.decodeXML(formatErr.fix[j]);
     }
 
-    const read = promisify(fs.readFile);
     const argNum = 3;
     const file = process.argv[argNum + i - 1];
-    const text = await read(file, 'utf8');
+    const text = await readFilep(file, 'utf8');
 
     const fixed =
         performFixes(text, formatErr.offset, formatErr.length, formatErr.fix);
@@ -201,7 +198,7 @@ function performFixes(
  * @param diffs contains all information about the formatting changes
  * @param options
  */
-function printDiffs(file: string, diffs: any, options: Options) {
+async function printDiffs(file: string, diffs: any, options: Options) {
   options.logger.log(chalk.inverse.bold(file));
   diffs.forEach((diff: any) => {
     options.logger.log(chalk.bold(
@@ -221,11 +218,11 @@ function printDiffs(file: string, diffs: any, options: Options) {
 }
 
 /**
- * Substring by bytes
+ * Substring using bytes
  * 
  * @param str 
  * @param indexStart 
- * @param indexEnd 
+ * @param indexEnd  
  * @param encoding 
  */
 function substring(
