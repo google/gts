@@ -19,7 +19,6 @@ import * as path from 'path';
 import pify from 'pify';
 import rimraf from 'rimraf';
 
-
 export const readFilep = pify(fs.readFile);
 export const rimrafp = pify(rimraf);
 export const writeFileAtomicp = pify(require('write-file-atomic'));
@@ -40,13 +39,11 @@ export function nop() {
  * Find the tsconfig.json, read it, and return parsed contents.
  * @param rootDir Directory where the tsconfig.json should be found.
  * If the tsconfig.json file has an "extends" field hop down the dependency tree
- * until it ends
+ * until it ends or a circular reference is found in which case an error will be thrown
  */
-
 export async function getTSConfig(
     rootDir: string, customReadFilep?: ReadFileP): Promise<ConfigFile> {
   customReadFilep = customReadFilep || readFilep;
-  // array to hold accessed files, used to check for circular references
   const readArr = [''];
   return await getBase('tsconfig.json', customReadFilep, readArr, rootDir);
 }
@@ -55,10 +52,10 @@ export async function getTSConfig(
  * Recursively iterate through the dependency chain until we reach the end of
  * the dependency chain or encounter a circular reference
  * @param filePath Filepath of file currently being read
- * @param customReadFilep the file reading function being used
+ * @param customReadFilep The file reading function being used
  * @param readFiles an array of the previously read files so we can check for
- * circular references returns a ConfigFile object containing the data from all
- * the dependencies
+ * circular references
+ * returns a ConfigFile object containing the data from all the dependencies
  */
 async function getBase(
     filePath: string, customReadFilep: ReadFileP, readFiles: string[],
