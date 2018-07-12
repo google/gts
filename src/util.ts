@@ -68,8 +68,7 @@ async function getBase(
   filePath = path.resolve(currentDir, filePath);
 
   if (readFiles.indexOf(filePath) !== -1) {
-    throw new Error(
-        'Circular reference in ' + readFiles[readFiles.indexOf(filePath)]);
+    throw new Error('Circular reference in ${filePath}');
   }
   readFiles.push(filePath);
 
@@ -102,7 +101,6 @@ function combineTSConfig(base: ConfigFile, inherited: ConfigFile): ConfigFile {
 /**
  * An interface containing the high level data fields present in Config Files
  */
-
 export interface ConfigFile {
   files?: string[];
   compilerOptions?: {};
