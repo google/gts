@@ -94,7 +94,7 @@ test.serial('format should format files listed in tsconfig.files', t => {
 });
 
 test.serial(
-    'format should format *.ts files when no files or inlcude has been specified',
+    'format should format *.ts files when no files or include has been specified',
     async t => {
       return withFixtures(
           {

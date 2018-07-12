@@ -18,7 +18,7 @@ import * as jsdiff from 'diff';
 import * as entities from 'entities';
 import * as fs from 'fs';
 import * as path from 'path';
-import {file} from 'tmp';
+import {file, fileSync} from 'tmp';
 
 import {Options} from './cli';
 import {createProgram} from './lint';
@@ -135,7 +135,6 @@ function checkFormat(srcFiles: string[], baseArgs: string[], options: Options):
         if (files[i].indexOf('<replacement ') === -1) {
           continue;
         }
-        console.log(i);
         const replacements = getReplacements(files[i]);
         if (replacements.length > 0) {
           const diff = await getDiffObj(srcFiles[i], replacements);
@@ -156,25 +155,24 @@ function checkFormat(srcFiles: string[], baseArgs: string[], options: Options):
 function getReplacements(fileXML: string): Replacement[] {
   const replacements: Replacement[] = [];
 
-  // Uses regex to capture the xml attributes and element
-  // XML format: <replacement offset='OFFSET' length='LENGTH'>FIX</replacement
-  const offsets: string[]|null = fileXML.match(/(?<=offset=\')(\d+)(?=\')/g);
-  const lengths: string[]|null = fileXML.match(/(?<=length=\')(\d+)(?=\')/g);
-  const fixes: string[]|null =
-      fileXML.match(/(?<=length=\'\d+\'>)(.*)(?=<\/replacement>)/g);
+  let xmlLines = fileXML.split('\n');
+  xmlLines = xmlLines.slice(1, xmlLines.length - 2);
 
-  if ((lengths === null || offsets === null || fixes === null) ||
-      lengths.length !== offsets.length || lengths.length !== fixes.length) {
-    throw new Error('Unable to get replacements');
-  }
+  for (let i = 0; i < xmlLines.length; i++) {
+    // Uses regex to capture the xml attribute and element
+    // XML format: <replacement offset='OFFSET' length='LENGTH'>FIX</replacement
+    const offset: string[]|null = (/offset=\'(\d+)\'/g).exec(xmlLines[i]);
+    const length: string[]|null = (/length=\'(\d+)\'/g).exec(xmlLines[i]);
+    const fix: string[]|null =
+        (/length=\'\d+\'>(.*)<\/replacement>/g).exec(xmlLines[i]);
 
-  // Create a replacement object and add it to the array that contains all of
-  // the replacement objects for this file
-  for (let i = 0; i < offsets.length; i++) {
+    if (length === null || offset === null || fix === null) {
+      throw new Error('Unable to get replacement');
+    }
     replacements[i] = {
-      offset: Number(offsets[i]),
-      length: Number(lengths[i]),
-      fix: entities.decodeXML(fixes[i])
+      offset: Number(offset[1]),
+      length: Number(length[1]),
+      fix: entities.decodeXML(fix[1])
     };
   }
   return replacements;
