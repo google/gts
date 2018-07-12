@@ -33,7 +33,6 @@ test('get should parse the correct tsconfig file', async t => {
 
 
 
-// TODO: test for error due to circular reference
 test('should throw an error if it finds a circular reference', async t => {
   const FAKE_DIRECTORY = '/some/fake/directory';
   const FAKE_CONFIG1 = {files: ['b'], extends: 'FAKE_CONFIG2'};
