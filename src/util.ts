@@ -47,8 +47,8 @@ export async function getTSConfig(
   const readArr = [''];
   return await getBase('tsconfig.json', customReadFilep, readArr, rootDir);
 }
+
 /**
- *
  * Recursively iterate through the dependency chain until we reach the end of
  * the dependency chain or encounter a circular reference
  * @param filePath Filepath of file currently being read
@@ -95,6 +95,7 @@ function combineTSConfig(base: ConfigFile, inherited: ConfigFile): ConfigFile {
   delete result.extends;
   return result;
 }
+
 /**
  * An interface containing the high level data fields present in Config Files
  */
