@@ -176,6 +176,5 @@ test(
       t.deepEqual(contents, combinedConfig);
     });
 
-
-
 // TODO: test errors in readFile, JSON.parse.
+ 
