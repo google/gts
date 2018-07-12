@@ -31,8 +31,6 @@ test('get should parse the correct tsconfig file', async t => {
   t.deepEqual(contents, FAKE_CONFIG1);
 });
 
-
-
 test('should throw an error if it finds a circular reference', async t => {
   const FAKE_DIRECTORY = '/some/fake/directory';
   const FAKE_CONFIG1 = {files: ['b'], extends: 'FAKE_CONFIG2'};
@@ -57,7 +55,6 @@ test('should throw an error if it finds a circular reference', async t => {
       getTSConfig(FAKE_DIRECTORY, fakeReadFilep), Error,
       'Circular Reference Detected');
 });
-
 
 test('should follow dependency chain caused by extends files', async t => {
   const FAKE_DIRECTORY = '/some/fake/directory';
