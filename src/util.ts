@@ -39,12 +39,13 @@ export function nop() {
  * Find the tsconfig.json, read it, and return parsed contents.
  * @param rootDir Directory where the tsconfig.json should be found.
  * If the tsconfig.json file has an "extends" field hop down the dependency tree
- * until it ends or a circular reference is found in which case an error will be thrown
+ * until it ends or a circular reference is found in which case an error will be
+ * thrown
  */
 export async function getTSConfig(
     rootDir: string, customReadFilep?: ReadFileP): Promise<ConfigFile> {
   customReadFilep = customReadFilep || readFilep;
-  const readArr = [''];
+  const readArr = new Set();
   return await getBase('tsconfig.json', customReadFilep, readArr, rootDir);
 }
 
@@ -58,16 +59,16 @@ export async function getTSConfig(
  * returns a ConfigFile object containing the data from all the dependencies
  */
 async function getBase(
-    filePath: string, customReadFilep: ReadFileP, readFiles: string[],
+    filePath: string, customReadFilep: ReadFileP, readFiles: Set<string>,
     currentDir: string): Promise<ConfigFile> {
   customReadFilep = customReadFilep || readFilep;
 
   filePath = path.resolve(currentDir, filePath);
 
-  if (readFiles.indexOf(filePath) !== -1) {
+  if (readFiles.has(filePath)) {
     throw new Error('Circular reference in ${filePath}');
   }
-  readFiles.push(filePath);
+  readFiles.add(filePath);
 
   const json = await customReadFilep(filePath, 'utf8');
   let contents = JSON.parse(json);
@@ -105,4 +106,3 @@ export interface ConfigFile {
   include?: string[];
   exclude?: string[];
 }
- 
