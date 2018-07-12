@@ -18,13 +18,20 @@ import * as jsdiff from 'diff';
 import * as entities from 'entities';
 import * as fs from 'fs';
 import * as path from 'path';
+import {file} from 'tmp';
 
 import {Options} from './cli';
 import {createProgram} from './lint';
 import {readFilep} from './util';
 
-interface replacement {
-  offset: number, length: number, fix: string
+/**
+ * Object that contains the position of formatting issue within the file, the
+ * length of it, and the string to replace it with.
+ */
+interface Replacement {
+  offset: number;
+  length: number;
+  fix: string;
 }
 
 // Exported for testing purposes.
@@ -101,9 +108,8 @@ function fixFormat(srcFiles: string[], baseArgs: string[]): Promise<boolean> {
  *
  * @param srcFiles list of source files
  */
-async function checkFormat(
-    srcFiles: string[], baseArgs: string[],
-    options: Options): Promise<boolean> {
+function checkFormat(srcFiles: string[], baseArgs: string[], options: Options):
+    Promise<boolean> {
   return new Promise<boolean>((resolve, reject) => {
     let output = '';
     const args = baseArgs.concat(['-output-replacements-xml'], srcFiles);
@@ -123,11 +129,16 @@ async function checkFormat(
     });
 
     out.on('end', async () => {
-      const files = output.split('<?xml version=\'1.0\'?>\n');
-      for (let i = 1; i < files.length; i++) {
+      const files: string[] =
+          output.split('<?xml version=\'1.0\'?>\n').slice(1);
+      for (let i = 0; i < files.length; i++) {
+        if (files[i].indexOf('<replacement ') === -1) {
+          continue;
+        }
+        console.log(i);
         const replacements = getReplacements(files[i]);
         if (replacements.length > 0) {
-          const diff = await getDiffObj(srcFiles[i - 1], replacements)
+          const diff = await getDiffObj(srcFiles[i], replacements);
           printDiffs(diff, options);
         }
       }
@@ -137,19 +148,28 @@ async function checkFormat(
 }
 
 /**
- * Parses through xml string for the replacement string, offset, length.
+ * Parses through xml string for the replacement string, offset, length and
+ * returns all of the necessary replacements for the file
  *
  * @param output xml string from clangFormat
  */
-function getReplacements(output: string): replacement[] {
-  const replacements: replacement[] = [];
-  const offsets: string[]|null = output.match(/(?<=offset=\')(\d+)(?=\')/g);
-  const lengths: string[]|null = output.match(/(?<=length=\')(\d+)(?=\')/g);
+function getReplacements(fileXML: string): Replacement[] {
+  const replacements: Replacement[] = [];
+
+  // Uses regex to capture the xml attributes and element
+  // XML format: <replacement offset='OFFSET' length='LENGTH'>FIX</replacement
+  const offsets: string[]|null = fileXML.match(/(?<=offset=\')(\d+)(?=\')/g);
+  const lengths: string[]|null = fileXML.match(/(?<=length=\')(\d+)(?=\')/g);
   const fixes: string[]|null =
-      output.match(/(?<=length=\'\d+\'>)(.*)(?=<\/replacement>)/g);
-  if (lengths === null || offsets === null || fixes === null) {
-    return replacements;
+      fileXML.match(/(?<=length=\'\d+\'>)(.*)(?=<\/replacement>)/g);
+
+  if ((lengths === null || offsets === null || fixes === null) ||
+      lengths.length !== offsets.length || lengths.length !== fixes.length) {
+    throw new Error('Unable to get replacements');
   }
+
+  // Create a replacement object and add it to the array that contains all of
+  // the replacement objects for this file
   for (let i = 0; i < offsets.length; i++) {
     replacements[i] = {
       offset: Number(offsets[i]),
@@ -168,15 +188,13 @@ function getReplacements(output: string): replacement[] {
  * @param replacements array of all the formatting issues within in the file
  */
 async function getDiffObj(
-    file: string, replacements: replacement[]): Promise<jsdiff.IUniDiff> {
+    file: string, replacements: Replacement[]): Promise<jsdiff.IUniDiff> {
   const text = await readFilep(file, 'utf8');
-
   const fixed = performFixes(text, replacements);
-  const diff = jsdiff.structuredPatch(
-      file, 'no new file', text, fixed, 'no old header', 'no new header',
-      {context: 3});
+  const diff =
+      jsdiff.structuredPatch(file, '', text, fixed, '', '', {context: 3});
   jsdiff.applyPatch('diff', diff);
-  return Promise.resolve(diff);
+  return diff;
 }
 
 /**
@@ -187,7 +205,7 @@ async function getDiffObj(
  * @param errLength length of formatting issue
  * @param replacements string that resolves formatting issue
  */
-function performFixes(data: string, replacements: replacement[]) {
+function performFixes(data: string, replacements: Replacement[]) {
   const replaced: string[] = [];
   replaced.push(substring(data, 0, replacements[0].offset));
   for (let i = 0; i < replacements.length - 1; i++) {
@@ -208,7 +226,6 @@ function performFixes(data: string, replacements: replacement[]) {
 /**
  * Prints the lines with formatting issues
  *
- * @param file file to format
  * @param diffs contains all information about the formatting changes
  * @param options
  */
@@ -218,7 +235,7 @@ function printDiffs(diffs: jsdiff.IUniDiff, options: Options) {
     options.logger.log(chalk.bold(
         '  Lines: ' + diff.oldStart + '-' + (diff.oldStart + diff.oldLines)));
 
-    diff.lines.forEach(function(line: any) {
+    diff.lines.forEach((line: string) => {
       if (line[0] === '-') {
         options.logger.log('   ' + chalk.red(line));
       } else if (line[0] === '+') {
