@@ -155,6 +155,7 @@ function getReplacements(fileXML: string): Replacement[] {
   const replacements: Replacement[] = [];
 
   let xmlLines = fileXML.split('\n');
+  // The first and last two elements in xmlLines are not needed
   xmlLines = xmlLines.slice(1, xmlLines.length - 2);
 
   for (let i = 0; i < xmlLines.length; i++) {
@@ -238,7 +239,7 @@ function printDiffs(diffs: jsdiff.IUniDiff, options: Options) {
       } else if (line[0] === '+') {
         options.logger.log('   ' + chalk.green(line));
       } else {
-        options.logger.log('   ' + chalk.black(line));
+        options.logger.log('   ' + chalk.gray(line));
       }
     });
     options.logger.log('\n');

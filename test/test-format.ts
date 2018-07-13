@@ -18,15 +18,18 @@ import test from 'ava';
 import fs from 'fs';
 import * as path from 'path';
 
-import {Options, Logger} from '../src/cli';
+import {Logger, Options} from '../src/cli';
 import * as format from '../src/format';
 import {nop} from '../src/util';
 
 import {withFixtures} from './fixtures';
 
 // clang-format won't pass this code because of trailing spaces.
-const BAD_CODE = 'export const foo = [ 2 ];';
-const GOOD_CODE = 'export const foo = [2];';
+const BAD_CODE = '//🦄\nexport const foo = [ \"2\" ];';
+const GOOD_CODE = '//🦄\nexport const foo = [\'2\'];';
+
+const CLANG_FORMAT_MESSAGE =
+    'clang-format reported errors... run `gts fix` to address.';
 
 const OPTIONS: Options = {
   gtsRootDir: path.resolve(__dirname, '../..'),
@@ -210,22 +213,31 @@ test.serial('format should return error from failed spawn', async t => {
         format.clangFormat.spawnClangFormat = original;
       });
 });
+test.serial(
+    'format should print suggestions for fixes for ill-formatted file', t => {
+      return withFixtures(
+          {
+            'tsconfig.json': JSON.stringify({files: ['a.ts']}),
+            'a.ts': BAD_CODE
+          },
+          async () => {
+            let output = '';
+            const newLogger = Object.assign({}, OPTIONS.logger, {
+              log: (n: string) => {
+                output += n;
+              }
+            });
+            const options = Object.assign({}, OPTIONS, {logger: newLogger});
 
-test.serial('format should print message when there are errors for a ill-formatted file', async t => {
-  return withFixtures(
-    {'tsconfig.json': JSON.stringify({files: ['a.ts']}), 'a.ts': BAD_CODE},
-      async () => {
-        const MESSAGE = 'clang-format reported errors... run `gts fix` to address.';
-        let output:string = '';
-        const options = Object.assign({}, OPTIONS);
-        options.logger.log = (n) => {console.log(n + "hello");output += n;};
-        console.log(options.logger.log);
-        options.logger.log("DKJSHKJKD")
-        console.log(options.logger.log);
-        const result = await format.format(options, ['a.ts'], false);
-
-        console.log(result)
-        t.true(true);
-  
-      });
-});
+            await format.format(options, [], false);
+            if (output.search(CLANG_FORMAT_MESSAGE) === -1) {
+              t.fail('Does not print ...run \'gts fix\'...');
+            } else if (
+                output.indexOf('+export const foo = [\'2\'];') === -1 ||
+                output.indexOf('-export const foo = [ \"2\" ];') === -1 ||
+                output.indexOf('🦄') === -1) {
+              t.fail('Output messages and suggested fix are incorrect');
+            }
+            t.pass();
+          });
+    });
