@@ -174,4 +174,3 @@ test(
     });
 
 // TODO: test errors in readFile, JSON.parse.
- 
