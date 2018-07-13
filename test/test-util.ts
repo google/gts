@@ -39,7 +39,7 @@ test('should throw an error if it finds a circular reference', async t => {
   function fakeReadFilep(
       configPath: string, encoding: string): Promise<string> {
     switch (configPath) {
-      case '/some/fake/directory/FAKE_CONFIG1':x
+      case '/some/fake/directory/FAKE_CONFIG1':
         return Promise.resolve(JSON.stringify(FAKE_CONFIG1));
       case '/some/fake/directory/FAKE_CONFIG2':
         return Promise.resolve(JSON.stringify(FAKE_CONFIG2));
