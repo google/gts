@@ -18,7 +18,6 @@ import * as jsdiff from 'diff';
 import * as entities from 'entities';
 import * as fs from 'fs';
 import * as path from 'path';
-import {file, fileSync} from 'tmp';
 
 import {Options} from './cli';
 import {createProgram} from './lint';

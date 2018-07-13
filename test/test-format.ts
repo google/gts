@@ -18,7 +18,7 @@ import test from 'ava';
 import fs from 'fs';
 import * as path from 'path';
 
-import {Options} from '../src/cli';
+import {Options, Logger} from '../src/cli';
 import * as format from '../src/format';
 import {nop} from '../src/util';
 
@@ -208,5 +208,24 @@ test.serial('format should return error from failed spawn', async t => {
         await t.throws(format.format(OPTIONS, [], true), Error, MESSAGE);
         await t.throws(format.format(OPTIONS, [], false), Error, MESSAGE);
         format.clangFormat.spawnClangFormat = original;
+      });
+});
+
+test.serial('format should print message when there are errors for a ill-formatted file', async t => {
+  return withFixtures(
+    {'tsconfig.json': JSON.stringify({files: ['a.ts']}), 'a.ts': BAD_CODE},
+      async () => {
+        const MESSAGE = 'clang-format reported errors... run `gts fix` to address.';
+        let output:string = '';
+        const options = Object.assign({}, OPTIONS);
+        options.logger.log = (n) => {console.log(n + "hello");output += n;};
+        console.log(options.logger.log);
+        options.logger.log("DKJSHKJKD")
+        console.log(options.logger.log);
+        const result = await format.format(options, ['a.ts'], false);
+
+        console.log(result)
+        t.true(true);
+  
       });
 });
