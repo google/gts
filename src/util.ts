@@ -83,7 +83,7 @@ async function getBase(
 }
 
 /**
- * takes in 2 config files
+ * Takes in 2 config files
  * @param base is loaded first
  * @param inherited is then loaded and overwrites base
  */
