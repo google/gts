@@ -39,7 +39,7 @@ test('should throw an error if it finds a circular reference', async t => {
   function fakeReadFilep(
       configPath: string, encoding: string): Promise<string> {
     switch (configPath) {
-      case '/some/fake/directory/FAKE_CONFIG1':
+      case '/some/fake/directory/FAKE_CONFIG1':x
         return Promise.resolve(JSON.stringify(FAKE_CONFIG1));
       case '/some/fake/directory/FAKE_CONFIG2':
         return Promise.resolve(JSON.stringify(FAKE_CONFIG2));
@@ -92,31 +92,6 @@ test('should follow dependency chain caused by extends files', async t => {
   t.deepEqual(contents, combinedConfig);
 });
 
-
-test('should throw an error if it finds a circular reference', async t => {
-  const FAKE_DIRECTORY = '/some/fake/directory';
-  const FAKE_CONFIG1 = {files: ['b'], extends: 'FAKE_CONFIG2'};
-  const FAKE_CONFIG2 = {extends: 'FAKE_CONFIG3'};
-  const FAKE_CONFIG3 = {extends: 'FAKE_CONFIG1'};
-  function fakeReadFilep(
-      configPath: string, encoding: string): Promise<string> {
-    switch (configPath) {
-      case '/some/fake/directory/FAKE_CONFIG1':
-
-      case '/some/fake/directory/FAKE_CONFIG2':
-        return Promise.resolve(JSON.stringify(FAKE_CONFIG2));
-      case '/some/fake/directory/FAKE_CONFIG3':
-        return Promise.resolve(JSON.stringify(FAKE_CONFIG3));
-      case '/some/fake/directory/tsconfig.json':
-        return Promise.resolve(JSON.stringify(FAKE_CONFIG1));
-      default:
-        return Promise.reject('File Not Found');
-    }
-  }
-  await t.throws(
-      getTSConfig(FAKE_DIRECTORY, fakeReadFilep), Error,
-      'Circular Reference Detected');
-});
 
 test(
     'when a file contains an extends field, the base file is loaded first then overridden by the inherited files',
