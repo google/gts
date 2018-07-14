@@ -25,8 +25,8 @@ import {nop} from '../src/util';
 import {withFixtures} from './fixtures';
 
 // clang-format won't pass this code because of trailing spaces.
-const BAD_CODE = '//🦄\nexport const foo = [ \"2\" ];';
-const GOOD_CODE = '//🦄\nexport const foo = [\'2\'];';
+const BAD_CODE = 'export const foo = [ \"2\" ];';
+const GOOD_CODE = 'export const foo = [\'2\'];';
 
 const CLANG_FORMAT_MESSAGE =
     'clang-format reported errors... run `gts fix` to address.';
@@ -213,6 +213,7 @@ test.serial('format should return error from failed spawn', async t => {
         format.clangFormat.spawnClangFormat = original;
       });
 });
+
 test.serial(
     'format should print suggestions for fixes for ill-formatted file', t => {
       return withFixtures(
@@ -234,10 +235,40 @@ test.serial(
               t.fail('Does not print ...run \'gts fix\'...');
             } else if (
                 output.indexOf('+export const foo = [\'2\'];') === -1 ||
-                output.indexOf('-export const foo = [ \"2\" ];') === -1 ||
-                output.indexOf('🦄') === -1) {
-              t.fail('Output messages and suggested fix are incorrect');
+                output.indexOf('-export const foo = [ \"2\" ];') === -1) {
+              t.fail('Output messages and suggested fixes are incorrect');
             }
             t.pass();
           });
     });
+
+test.serial('Format should display unicode characters correctly', t => {
+  return withFixtures(
+      {
+
+        'tsconfig.json': JSON.stringify({files: ['a.ts']}),
+        'a.ts':
+            '//🦄 This is a comment 🌷🏳️‍🌈	— /\nconst variable =    \'5\''
+      },
+      async () => {
+        let output = '';
+        const newLogger = Object.assign({}, OPTIONS.logger, {
+          log: (n: string) => {
+            output += n;
+          }
+        });
+        const options = Object.assign({}, OPTIONS, {logger: newLogger});
+
+        await format.format(options, [], false);
+        if (output.search(CLANG_FORMAT_MESSAGE) === -1) {
+          t.fail('Does not print ...run \'gts fix\'...');
+        } else if (
+            output.indexOf(
+                '//🦄 This is a comment 🌷🏳️‍🌈	—') === -1) {
+          t.fail('Unicode characters are displayed incorrectly');
+        } else if (output.indexOf('const variable = \'5\'') === -1) {
+          t.fail('The text following the unicode characters are incorrect');
+        }
+        t.pass();
+      });
+});

@@ -74,7 +74,7 @@ export async function format(
   if (fix) {
     return fixFormat(srcFiles, baseClangFormatArgs);
   } else {
-    const result = await checkFormat(srcFiles, baseClangFormatArgs, options);
+    const result = await checkFormat(options, srcFiles, baseClangFormatArgs);
     if (!result) {
       options.logger.log(
           'clang-format reported errors... run `gts fix` to address.');
@@ -107,7 +107,7 @@ function fixFormat(srcFiles: string[], baseArgs: string[]): Promise<boolean> {
  *
  * @param srcFiles list of source files
  */
-function checkFormat(srcFiles: string[], baseArgs: string[], options: Options):
+function checkFormat(options: Options, srcFiles: string[], baseArgs: string[]):
     Promise<boolean> {
   return new Promise<boolean>((resolve, reject) => {
     let output = '';
@@ -154,13 +154,14 @@ function checkFormat(srcFiles: string[], baseArgs: string[], options: Options):
 function getReplacements(fileXML: string): Replacement[] {
   const replacements: Replacement[] = [];
 
-  let xmlLines = fileXML.split('\n');
-  // The first and last two elements in xmlLines are not needed
-  xmlLines = xmlLines.slice(1, xmlLines.length - 2);
+  let xmlLines = fileXML.trim().split('\n');
+  // first and last elements are outer 'replacements' tags
+  xmlLines = xmlLines.slice(1, xmlLines.length - 1);
 
   for (let i = 0; i < xmlLines.length; i++) {
     // Uses regex to capture the xml attribute and element
-    // XML format: <replacement offset='OFFSET' length='LENGTH'>FIX</replacement
+    // XML format: <replacement offset='OFFSET'
+    // length='LENGTH'>FIX</replacement>
     const offset: string[]|null = (/offset=\'(\d+)\'/g).exec(xmlLines[i]);
     const length: string[]|null = (/length=\'(\d+)\'/g).exec(xmlLines[i]);
     const fix: string[]|null =
@@ -230,16 +231,16 @@ function performFixes(data: string, replacements: Replacement[]) {
 function printDiffs(diffs: jsdiff.IUniDiff, options: Options) {
   options.logger.log(chalk.inverse.bold(diffs.oldFileName));
   diffs.hunks.forEach((diff: JsDiff.IHunk) => {
-    options.logger.log(chalk.bold(
-        '  Lines: ' + diff.oldStart + '-' + (diff.oldStart + diff.oldLines)));
+    const log = `  Lines: ${diff.oldStart}-${diff.oldStart + diff.oldLines}`;
+    options.logger.log(chalk.bold(log));
 
     diff.lines.forEach((line: string) => {
       if (line[0] === '-') {
-        options.logger.log('   ' + chalk.red(line));
+        options.logger.log(`   ${chalk.red(line)}`);
       } else if (line[0] === '+') {
-        options.logger.log('   ' + chalk.green(line));
+        options.logger.log(`   ${chalk.green(line)}`);
       } else {
-        options.logger.log('   ' + chalk.gray(line));
+        options.logger.log(`   ${chalk.gray(line)}`);
       }
     });
     options.logger.log('\n');
