@@ -21,11 +21,12 @@ import {ConfigFile, getTSConfig} from '../src/util';
 
 
 /**
- * Creates a FakeReadFilep function from a map
+ * Creates a fake promisified readFile function from a map
  * @param myMap contains a filepath as the key and a ConfigFile object as the
- * value The FakeReadFilep function takes in a @param configPath and returns a
- * corresponding ConfigFile object or throws an error if the file is not found
- * in the map
+ * value. The fake promisified readFile function has the same interface of
+ * fs.readFile and takes in a
+ * @param configPath and returns a corresponding ConfigFile object or throws an
+ * error if the file is not found
  */
 function createFakeReadFilep(myMap: Map<string, ConfigFile>) {
   return (configPath: string) => {
@@ -133,4 +134,3 @@ test(
 
 
 // TODO: test errors in readFile, JSON.parse.
- 
