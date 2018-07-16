@@ -71,7 +71,6 @@ test('should follow dependency chain caused by extends files', async t => {
     exclude: ['doesnt/look/like/anything/to/me']
   };
 
-
   const myMap = new Map();
   myMap.set('/some/fake/directory/tsconfig.json', FAKE_CONFIG1);
   myMap.set('/some/fake/directory/FAKE_CONFIG2', FAKE_CONFIG2);
@@ -89,7 +88,6 @@ test('should follow dependency chain caused by extends files', async t => {
   const contents = await getTSConfig(FAKE_DIRECTORY, fakeReadFilep);
   t.deepEqual(contents, combinedConfig);
 });
-
 
 test(
     'when a file contains an extends field, the base file is loaded first then overridden by the inherited files',
