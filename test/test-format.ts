@@ -18,7 +18,7 @@ import test from 'ava';
 import fs from 'fs';
 import * as path from 'path';
 
-import {Logger, Options} from '../src/cli';
+import {Options} from '../src/cli';
 import * as format from '../src/format';
 import {nop} from '../src/util';
 
