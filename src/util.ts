@@ -68,7 +68,7 @@ async function getBase(
   // An error is thrown if there is a circular reference as specified by the
   // TypeScript doc
   if (readFiles.has(filePath)) {
-    throw new Error('Circular reference in ${filePath}');
+    throw new Error(`Circular reference in ${filePath}`);
   }
   readFiles.add(filePath);
 

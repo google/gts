@@ -43,7 +43,7 @@ test('should throw an error if it finds a circular reference', async t => {
 
   function fakeReadFilep(
       configPath: string, encoding: string): Promise<string> {
-    let configFile = myMap.get(configPath);
+    const configFile = myMap.get(configPath);
     if (configFile) {
       return Promise.resolve(JSON.stringify(configFile));
     } else {
@@ -79,7 +79,7 @@ test('should follow dependency chain caused by extends files', async t => {
 
   function fakeReadFilep(
       configPath: string, encoding: string): Promise<string> {
-    let configFile = myMap.get(configPath);
+    const configFile = myMap.get(configPath);
     if (configFile) {
       return Promise.resolve(JSON.stringify(configFile));
     } else {
@@ -106,7 +106,7 @@ test(
 
       function fakeReadFilep(
           configPath: string, encoding: string): Promise<string> {
-        let configFile = myMap.get(configPath);
+        const configFile = myMap.get(configPath);
         if (configFile) {
           return Promise.resolve(JSON.stringify(configFile));
         } else {
@@ -133,7 +133,7 @@ test(
 
       function fakeReadFilep(
           configPath: string, encoding: string): Promise<string> {
-        let configFile = myMap.get(configPath);
+        const configFile = myMap.get(configPath);
         if (configFile) {
           return Promise.resolve(JSON.stringify(configFile));
         } else {
