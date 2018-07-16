@@ -21,6 +21,7 @@ import {getTSConfig} from '../src/util';
 test('get should parse the correct tsconfig file', async t => {
   const FAKE_DIRECTORY = '/some/fake/directory';
   const FAKE_CONFIG1 = {files: ['b']};
+
   function fakeReadFilep(
       configPath: string, encoding: string): Promise<string> {
     t.is(configPath, path.join(FAKE_DIRECTORY, 'tsconfig.json'));
@@ -41,17 +42,9 @@ test('should throw an error if it finds a circular reference', async t => {
   myMap.set('/some/fake/directory/FAKE_CONFIG2', FAKE_CONFIG2);
   myMap.set('/some/fake/directory/FAKE_CONFIG3', FAKE_CONFIG3);
 
-  function fakeReadFilep(
-      configPath: string, encoding: string): Promise<string> {
-    const configFile = myMap.get(configPath);
-    if (configFile) {
-      return Promise.resolve(JSON.stringify(configFile));
-    } else {
-      return Promise.reject('File Not Found');
-    }
-  }
+
   await t.throws(
-      getTSConfig(FAKE_DIRECTORY, fakeReadFilep), Error,
+      getTSConfig(FAKE_DIRECTORY, fakeReadCreator(myMap)), Error,
       'Circular Reference Detected');
 });
 
@@ -76,16 +69,7 @@ test('should follow dependency chain caused by extends files', async t => {
   myMap.set('/some/fake/directory/FAKE_CONFIG2', FAKE_CONFIG2);
   myMap.set('/some/fake/directory/FAKE_CONFIG3', FAKE_CONFIG3);
 
-  function fakeReadFilep(
-      configPath: string, encoding: string): Promise<string> {
-    const configFile = myMap.get(configPath);
-    if (configFile) {
-      return Promise.resolve(JSON.stringify(configFile));
-    } else {
-      return Promise.reject('File Not Found');
-    }
-  }
-  const contents = await getTSConfig(FAKE_DIRECTORY, fakeReadFilep);
+  const contents = await getTSConfig(FAKE_DIRECTORY, fakeReadCreator(myMap));
   t.deepEqual(contents, combinedConfig);
 });
 
@@ -102,16 +86,8 @@ test(
       myMap.set('/some/fake/directory/FAKE_CONFIG2', FAKE_CONFIG2);
       myMap.set('/some/fake/directory/FAKE_CONFIG3', FAKE_CONFIG3);
 
-      function fakeReadFilep(
-          configPath: string, encoding: string): Promise<string> {
-        const configFile = myMap.get(configPath);
-        if (configFile) {
-          return Promise.resolve(JSON.stringify(configFile));
-        } else {
-          return Promise.reject('File Not Found');
-        }
-      }
-      const contents = await getTSConfig(FAKE_DIRECTORY, fakeReadFilep);
+      const contents =
+          await getTSConfig(FAKE_DIRECTORY, fakeReadCreator(myMap));
       t.deepEqual(contents, combinedConfig);
     });
 
@@ -129,17 +105,21 @@ test(
       myMap.set('/some/fake/directory/foo/FAKE_CONFIG2', FAKE_CONFIG2);
       myMap.set('/some/fake/directory/foo/bar/FAKE_CONFIG3', FAKE_CONFIG3);
 
-      function fakeReadFilep(
-          configPath: string, encoding: string): Promise<string> {
-        const configFile = myMap.get(configPath);
-        if (configFile) {
-          return Promise.resolve(JSON.stringify(configFile));
-        } else {
-          return Promise.reject(`${configPath} Not Found`);
-        }
-      }
-      const contents = await getTSConfig(FAKE_DIRECTORY, fakeReadFilep);
+
+      const contents =
+          await getTSConfig(FAKE_DIRECTORY, fakeReadCreator(myMap));
       t.deepEqual(contents, combinedConfig);
     });
+
+function fakeReadCreator(myMap: Map<string, {}>) {
+  return (configPath: string) => {
+    const configFile = myMap.get(configPath);
+    if (configFile) {
+      return Promise.resolve(JSON.stringify(configFile));
+    } else {
+      return Promise.reject(`${configPath} Not Found`);
+    }
+  };
+}
 
 // TODO: test errors in readFile, JSON.parse.
