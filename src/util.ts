@@ -65,7 +65,7 @@ async function getBase(
 
   filePath = path.resolve(currentDir, filePath);
 
-  // An error is thrown if there is a circular reference as specified by the TypeScript doc
+  // An error is thrown if there is a circular reference as specified by the TypeScript
   if (readFiles.has(filePath)) {
     throw new Error('Circular reference in ${filePath}');
   }
@@ -89,7 +89,7 @@ async function getBase(
  * @param inherited is then loaded and overwrites base
  */
 function combineTSConfig(base: ConfigFile, inherited: ConfigFile): ConfigFile {
-  const result: ConfigFile = {'compilerOptions': {}};
+  const result: ConfigFile = {compilerOptions: {}};
 
   Object.assign(result, base, inherited);
   Object.assign(
