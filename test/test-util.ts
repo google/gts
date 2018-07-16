@@ -16,7 +16,27 @@
 import test from 'ava';
 import * as path from 'path';
 
-import {getTSConfig} from '../src/util';
+import {ConfigFile, getTSConfig} from '../src/util';
+
+
+
+/**
+ * Creates a FakeReadFilep function from a map
+ * @param myMap contains a filepath as the key and a ConfigFile object as the
+ * value The FakeReadFilep function takes in a @param configPath and returns a
+ * corresponding ConfigFile object or throws an error if the file is not found
+ * in the map
+ */
+function createFakeReadFilep(myMap: Map<string, ConfigFile>) {
+  return (configPath: string) => {
+    const configFile = myMap.get(configPath);
+    if (configFile) {
+      return Promise.resolve(JSON.stringify(configFile));
+    } else {
+      return Promise.reject(`${configPath} Not Found`);
+    }
+  };
+}
 
 test('get should parse the correct tsconfig file', async t => {
   const FAKE_DIRECTORY = '/some/fake/directory';
@@ -44,7 +64,7 @@ test('should throw an error if it finds a circular reference', async t => {
 
 
   await t.throws(
-      getTSConfig(FAKE_DIRECTORY, fakeReadCreator(myMap)), Error,
+      getTSConfig(FAKE_DIRECTORY, createFakeReadFilep(myMap)), Error,
       'Circular Reference Detected');
 });
 
@@ -69,7 +89,8 @@ test('should follow dependency chain caused by extends files', async t => {
   myMap.set('/some/fake/directory/FAKE_CONFIG2', FAKE_CONFIG2);
   myMap.set('/some/fake/directory/FAKE_CONFIG3', FAKE_CONFIG3);
 
-  const contents = await getTSConfig(FAKE_DIRECTORY, fakeReadCreator(myMap));
+  const contents =
+      await getTSConfig(FAKE_DIRECTORY, createFakeReadFilep(myMap));
   t.deepEqual(contents, combinedConfig);
 });
 
@@ -87,7 +108,7 @@ test(
       myMap.set('/some/fake/directory/FAKE_CONFIG3', FAKE_CONFIG3);
 
       const contents =
-          await getTSConfig(FAKE_DIRECTORY, fakeReadCreator(myMap));
+          await getTSConfig(FAKE_DIRECTORY, createFakeReadFilep(myMap));
       t.deepEqual(contents, combinedConfig);
     });
 
@@ -105,21 +126,11 @@ test(
       myMap.set('/some/fake/directory/foo/FAKE_CONFIG2', FAKE_CONFIG2);
       myMap.set('/some/fake/directory/foo/bar/FAKE_CONFIG3', FAKE_CONFIG3);
 
-
       const contents =
-          await getTSConfig(FAKE_DIRECTORY, fakeReadCreator(myMap));
+          await getTSConfig(FAKE_DIRECTORY, createFakeReadFilep(myMap));
       t.deepEqual(contents, combinedConfig);
     });
 
-function fakeReadCreator(myMap: Map<string, {}>) {
-  return (configPath: string) => {
-    const configFile = myMap.get(configPath);
-    if (configFile) {
-      return Promise.resolve(JSON.stringify(configFile));
-    } else {
-      return Promise.reject(`${configPath} Not Found`);
-    }
-  };
-}
 
 // TODO: test errors in readFile, JSON.parse.
+ 
