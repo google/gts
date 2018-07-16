@@ -35,20 +35,19 @@ test('should throw an error if it finds a circular reference', async t => {
   const FAKE_DIRECTORY = '/some/fake/directory';
   const FAKE_CONFIG1 = {files: ['b'], extends: 'FAKE_CONFIG2'};
   const FAKE_CONFIG2 = {extends: 'FAKE_CONFIG3'};
-  const FAKE_CONFIG3 = {extends: 'FAKE_CONFIG1'};
+  const FAKE_CONFIG3 = {extends: 'tsconfig.json'};
+  const myMap = new Map();
+  myMap.set('/some/fake/directory/tsconfig.json', FAKE_CONFIG1);
+  myMap.set('/some/fake/directory/FAKE_CONFIG2', FAKE_CONFIG2);
+  myMap.set('/some/fake/directory/FAKE_CONFIG3', FAKE_CONFIG3);
+
   function fakeReadFilep(
       configPath: string, encoding: string): Promise<string> {
-    switch (configPath) {
-      case '/some/fake/directory/FAKE_CONFIG1':
-        return Promise.resolve(JSON.stringify(FAKE_CONFIG1));
-      case '/some/fake/directory/FAKE_CONFIG2':
-        return Promise.resolve(JSON.stringify(FAKE_CONFIG2));
-      case '/some/fake/directory/FAKE_CONFIG3':
-        return Promise.resolve(JSON.stringify(FAKE_CONFIG3));
-      case '/some/fake/directory/tsconfig.json':
-        return Promise.resolve(JSON.stringify(FAKE_CONFIG1));
-      default:
-        return Promise.reject('File Not Found');
+    let configFile = myMap.get(configPath);
+    if (configFile) {
+      return Promise.resolve(JSON.stringify(configFile));
+    } else {
+      return Promise.reject('File Not Found');
     }
   }
   await t.throws(
@@ -73,19 +72,18 @@ test('should follow dependency chain caused by extends files', async t => {
   };
 
 
+  const myMap = new Map();
+  myMap.set('/some/fake/directory/tsconfig.json', FAKE_CONFIG1);
+  myMap.set('/some/fake/directory/FAKE_CONFIG2', FAKE_CONFIG2);
+  myMap.set('/some/fake/directory/FAKE_CONFIG3', FAKE_CONFIG3);
+
   function fakeReadFilep(
       configPath: string, encoding: string): Promise<string> {
-    switch (configPath) {
-      case '/some/fake/directory/FAKE_CONFIG1':
-
-      case '/some/fake/directory/FAKE_CONFIG2':
-        return Promise.resolve(JSON.stringify(FAKE_CONFIG2));
-      case '/some/fake/directory/FAKE_CONFIG3':
-        return Promise.resolve(JSON.stringify(FAKE_CONFIG3));
-      case '/some/fake/directory/tsconfig.json':
-        return Promise.resolve(JSON.stringify(FAKE_CONFIG1));
-      default:
-        return Promise.reject('File Not Found');
+    let configFile = myMap.get(configPath);
+    if (configFile) {
+      return Promise.resolve(JSON.stringify(configFile));
+    } else {
+      return Promise.reject('File Not Found');
     }
   }
   const contents = await getTSConfig(FAKE_DIRECTORY, fakeReadFilep);
@@ -101,19 +99,18 @@ test(
       const FAKE_CONFIG2 = {files: ['c'], extends: 'FAKE_CONFIG3'};
       const FAKE_CONFIG3 = {files: ['d']};
       const combinedConfig = {compilerOptions: {}, files: ['b']};
+      const myMap = new Map();
+      myMap.set('/some/fake/directory/tsconfig.json', FAKE_CONFIG1);
+      myMap.set('/some/fake/directory/FAKE_CONFIG2', FAKE_CONFIG2);
+      myMap.set('/some/fake/directory/FAKE_CONFIG3', FAKE_CONFIG3);
+
       function fakeReadFilep(
           configPath: string, encoding: string): Promise<string> {
-        switch (configPath) {
-          case '/some/fake/directory/FAKE_CONFIG1':
-
-          case '/some/fake/directory/FAKE_CONFIG2':
-            return Promise.resolve(JSON.stringify(FAKE_CONFIG2));
-          case '/some/fake/directory/FAKE_CONFIG3':
-            return Promise.resolve(JSON.stringify(FAKE_CONFIG3));
-          case '/some/fake/directory/tsconfig.json':
-            return Promise.resolve(JSON.stringify(FAKE_CONFIG1));
-          default:
-            return Promise.reject('File Not Found');
+        let configFile = myMap.get(configPath);
+        if (configFile) {
+          return Promise.resolve(JSON.stringify(configFile));
+        } else {
+          return Promise.reject('File Not Found');
         }
       }
       const contents = await getTSConfig(FAKE_DIRECTORY, fakeReadFilep);
@@ -129,19 +126,18 @@ test(
       const FAKE_CONFIG3 = {exclude: ['d']};
       const combinedConfig =
           {compilerOptions: {}, exclude: ['d'], files: ['b'], include: ['c']};
+      const myMap = new Map();
+      myMap.set('/some/fake/directory/tsconfig.json', FAKE_CONFIG1);
+      myMap.set('/some/fake/directory/foo/FAKE_CONFIG2', FAKE_CONFIG2);
+      myMap.set('/some/fake/directory/foo/bar/FAKE_CONFIG3', FAKE_CONFIG3);
+
       function fakeReadFilep(
           configPath: string, encoding: string): Promise<string> {
-        switch (configPath) {
-          case '/some/fake/directory/FAKE_CONFIG1':
-
-          case '/some/fake/directory/foo/FAKE_CONFIG2':
-            return Promise.resolve(JSON.stringify(FAKE_CONFIG2));
-          case '/some/fake/directory/foo/bar/FAKE_CONFIG3':
-            return Promise.resolve(JSON.stringify(FAKE_CONFIG3));
-          case '/some/fake/directory/tsconfig.json':
-            return Promise.resolve(JSON.stringify(FAKE_CONFIG1));
-          default:
-            return Promise.reject('File Not Found');
+        let configFile = myMap.get(configPath);
+        if (configFile) {
+          return Promise.resolve(JSON.stringify(configFile));
+        } else {
+          return Promise.reject(`${configPath} Not Found`);
         }
       }
       const contents = await getTSConfig(FAKE_DIRECTORY, fakeReadFilep);
