@@ -160,7 +160,7 @@ function getReplacements(fileXML: string): Replacement[] {
 
   for (let i = 0; i < xmlLines.length; i++) {
     // Uses regex to capture the xml attributes and element
-    // XML format: 
+    // XML format:
     // <replacement offset='OFFSET' length='LENGTH'>FIX</replacement>
     const offset: string[]|null = (/offset=\'(\d+)\'/g).exec(xmlLines[i]);
     const length: string[]|null = (/length=\'(\d+)\'/g).exec(xmlLines[i]);
