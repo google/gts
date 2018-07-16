@@ -65,7 +65,7 @@ async function getBase(
 
   filePath = path.resolve(currentDir, filePath);
 
-  // An error is thrown if there is a circular reference as specified by the TypeScript
+  // An error is thrown if there is a circular reference as specified by the TypeScript doc
   if (readFiles.has(filePath)) {
     throw new Error('Circular reference in ${filePath}');
   }
@@ -99,7 +99,7 @@ function combineTSConfig(base: ConfigFile, inherited: ConfigFile): ConfigFile {
 }
 
 /**
- * An interface containing the high level data fields present in Config Files
+ * An interface containing the top level data fields present in Config Files
  */
 export interface ConfigFile {
   files?: string[];
