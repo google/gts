@@ -159,9 +159,9 @@ function getReplacements(fileXML: string): Replacement[] {
   xmlLines = xmlLines.slice(1, xmlLines.length - 1);
 
   for (let i = 0; i < xmlLines.length; i++) {
-    // Uses regex to capture the xml attribute and element
-    // XML format: <replacement offset='OFFSET'
-    // length='LENGTH'>FIX</replacement>
+    // Uses regex to capture the xml attributes and element
+    // XML format: 
+    // <replacement offset='OFFSET' length='LENGTH'>FIX</replacement>
     const offset: string[]|null = (/offset=\'(\d+)\'/g).exec(xmlLines[i]);
     const length: string[]|null = (/length=\'(\d+)\'/g).exec(xmlLines[i]);
     const fix: string[]|null =
