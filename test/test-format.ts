@@ -231,18 +231,15 @@ test.serial(
             const options = Object.assign({}, OPTIONS, {logger: newLogger});
 
             await format.format(options, [], false);
-            if (output.search(CLANG_FORMAT_MESSAGE) === -1) {
-              t.fail('Does not print ...run \'gts fix\'...');
-            } else if (
-                output.indexOf('+export const foo = [\'2\'];') === -1 ||
-                output.indexOf('-export const foo = [ \"2\" ];') === -1) {
-              t.fail('Output messages and suggested fixes are incorrect');
+            if (output.search(CLANG_FORMAT_MESSAGE) !== -1 &&
+                output.indexOf('+export const foo = [\'2\'];') !== -1 &&
+                output.indexOf('-export const foo = [ \"2\" ];') !== -1) {
+              t.pass();
             }
-            t.pass();
           });
     });
 
-test.serial('Format should display unicode characters correctly', t => {
+test.serial('formatting output should display unicode characters correctly', t => {
   return withFixtures(
       {
 
@@ -260,15 +257,11 @@ test.serial('Format should display unicode characters correctly', t => {
         const options = Object.assign({}, OPTIONS, {logger: newLogger});
 
         await format.format(options, [], false);
-        if (output.search(CLANG_FORMAT_MESSAGE) === -1) {
-          t.fail('Does not print ...run \'gts fix\'...');
-        } else if (
+        if (output.search(CLANG_FORMAT_MESSAGE) !== -1 &&
             output.indexOf(
-                '//🦄 This is a comment 🌷🏳️‍🌈	—') === -1) {
-          t.fail('Unicode characters are displayed incorrectly');
-        } else if (output.indexOf('const variable = \'5\'') === -1) {
-          t.fail('The text following the unicode characters are incorrect');
+                '//🦄 This is a comment 🌷🏳️‍🌈	—') !== -1 &&
+            output.indexOf('const variable = \'5\'') !== -1) {
+          t.pass();
         }
-        t.pass();
       });
 });
