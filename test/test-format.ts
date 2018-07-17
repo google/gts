@@ -15,7 +15,7 @@
  */
 
 import test from 'ava';
-import fs from 'fs';
+import * as fs from 'fs';
 import * as path from 'path';
 
 import {Options} from '../src/cli';
@@ -25,8 +25,11 @@ import {nop} from '../src/util';
 import {withFixtures} from './fixtures';
 
 // clang-format won't pass this code because of trailing spaces.
-const BAD_CODE = 'export const foo = [ 2 ];';
-const GOOD_CODE = 'export const foo = [2];';
+const BAD_CODE = 'export const foo = [ \"2\" ];';
+const GOOD_CODE = 'export const foo = [\'2\'];';
+
+const CLANG_FORMAT_MESSAGE =
+    'clang-format reported errors... run `gts fix` to address.';
 
 const OPTIONS: Options = {
   gtsRootDir: path.resolve(__dirname, '../..'),
@@ -94,7 +97,7 @@ test.serial('format should format files listed in tsconfig.files', t => {
 });
 
 test.serial(
-    'format should format *.ts files when no files or inlcude has been specified',
+    'format should format *.ts files when no files or include has been specified',
     async t => {
       return withFixtures(
           {
@@ -210,3 +213,66 @@ test.serial('format should return error from failed spawn', async t => {
         format.clangFormat.spawnClangFormat = original;
       });
 });
+
+test.serial(
+    'format should print suggestions for fixes for ill-formatted file', t => {
+      return withFixtures(
+          {
+            'tsconfig.json': JSON.stringify({files: ['a.ts']}),
+            'a.ts': BAD_CODE
+          },
+          async () => {
+            let output = '';
+            const newLogger = Object.assign({}, OPTIONS.logger, {
+              log: (n: string) => {
+                output += n;
+              }
+            });
+            const options = Object.assign({}, OPTIONS, {logger: newLogger});
+
+            await format.format(options, [], false);
+            t.true(output.search(CLANG_FORMAT_MESSAGE) !== -1);
+            t.true(output.indexOf('+export const foo = [\'2\'];') !== -1);
+            t.true(output.indexOf('-export const foo = [ \"2\" ];') !== -1);
+          });
+    });
+
+test.serial('formatting output should display unicode characters correctly', t => {
+  return withFixtures(
+      {
+
+        'tsconfig.json': JSON.stringify({files: ['a.ts']}),
+        'a.ts':
+            '//🦄 This is a comment 🌷🏳️‍🌈	— /\nconst variable =    \'5\''
+      },
+      async () => {
+        let output = '';
+        const newLogger = Object.assign({}, OPTIONS.logger, {
+          log: (n: string) => {
+            output += n;
+          }
+        });
+        const options = Object.assign({}, OPTIONS, {logger: newLogger});
+
+        await format.format(options, [], false);
+        t.true(output.search(CLANG_FORMAT_MESSAGE) !== -1);
+        t.true(
+            output.indexOf(
+                '//🦄 This is a comment 🌷🏳️‍🌈	—') !== -1);
+        t.true(output.indexOf('const variable = \'5\'') !== -1);
+      });
+});
+
+test.serial(
+    'should throw error if xml are missing offset, length, or fix values',
+    t => {
+      return withFixtures({}, async () => {
+        const missingLength =
+            '<?xml version=\'1.0\'?>\n<replacements xml:space=\'' +
+            'preserve\' incomplete_format=\'false\'>\n<replacement ' +
+            'offset=\'8\' length=\'\'>FIX</replacement></replacements>';
+        t.throws(() => {
+          format.getReplacements(missingLength);
+        });
+      });
+    });
