@@ -21,7 +21,7 @@ import {ConfigFile, getTSConfig} from '../src/util';
 /**
  * Creates a fake promisified readFile function from a map
  * @param myMap contains a filepath as the key and a ConfigFile object as the
- * value. 
+ * value.
  * The returned funciton has the same interface as fs.readFile
  */
 function createFakeReadFilep(myMap: Map<string, ConfigFile>) {
@@ -126,6 +126,17 @@ test(
       const contents =
           await getTSConfig(FAKE_DIRECTORY, createFakeReadFilep(myMap));
       t.deepEqual(contents, combinedConfig);
+    });
+
+test(
+    'function throws an error when reading a file that does not exist',
+    async t => {
+      const FAKE_DIRECTORY = '/some/fake/directory';
+      const myMap = new Map();
+
+      await t.throws(
+          getTSConfig(FAKE_DIRECTORY, createFakeReadFilep(myMap)), Error,
+          `${FAKE_DIRECTORY}/tsconfig.json Not Found`);
     });
 
 

@@ -71,17 +71,20 @@ async function getBase(
     throw new Error(`Circular reference in ${filePath}`);
   }
   readFiles.add(filePath);
+  try {
+    const json = await customReadFilep(filePath, 'utf8');
+    let contents = JSON.parse(json);
 
-  const json = await customReadFilep(filePath, 'utf8');
-  let contents = JSON.parse(json);
+    if (contents.extends) {
+      const nextFile = await getBase(
+          contents.extends, customReadFilep, readFiles, path.dirname(filePath));
+      contents = combineTSConfig(nextFile, contents);
+    }
 
-  if (contents.extends) {
-    const nextFile = await getBase(contents.extends, customReadFilep, readFiles,
-                                                   path.dirname(filePath));
-    contents = combineTSConfig(nextFile, contents);
+    return contents;
+  } catch (err) {
+    throw new Error(`${filePath} Not Found`);
   }
-
-  return contents;
 }
 
 /**
