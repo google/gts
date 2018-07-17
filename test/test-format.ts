@@ -231,11 +231,9 @@ test.serial(
             const options = Object.assign({}, OPTIONS, {logger: newLogger});
 
             await format.format(options, [], false);
-            if (output.search(CLANG_FORMAT_MESSAGE) !== -1 &&
-                output.indexOf('+export const foo = [\'2\'];') !== -1 &&
-                output.indexOf('-export const foo = [ \"2\" ];') !== -1) {
-              t.pass();
-            }
+            t.true(output.search(CLANG_FORMAT_MESSAGE) !== -1);
+            t.true(output.indexOf('+export const foo = [\'2\'];') !== -1);
+            t.true(output.indexOf('-export const foo = [ \"2\" ];') !== -1);
           });
     });
 
@@ -257,11 +255,24 @@ test.serial('formatting output should display unicode characters correctly', t =
         const options = Object.assign({}, OPTIONS, {logger: newLogger});
 
         await format.format(options, [], false);
-        if (output.search(CLANG_FORMAT_MESSAGE) !== -1 &&
+        t.true(output.search(CLANG_FORMAT_MESSAGE) !== -1);
+        t.true(
             output.indexOf(
-                '//🦄 This is a comment 🌷🏳️‍🌈	—') !== -1 &&
-            output.indexOf('const variable = \'5\'') !== -1) {
-          t.pass();
-        }
+                '//🦄 This is a comment 🌷🏳️‍🌈	—') !== -1);
+        t.true(output.indexOf('const variable = \'5\'') !== -1);
       });
 });
+
+test.serial(
+    'should throw error if xml are missing offset, length, or fix values',
+    t => {
+      return withFixtures({}, async () => {
+        const missingLength =
+            '<?xml version=\'1.0\'?>\n<replacements xml:space=\'preserve\' ' +
+            'incomplete_format=\'false\'>\n<replacement offset=\'8\' length=\'\'>FIX' +
+            '</replacement></replacements>';
+        t.throws(() => {
+          format.getReplacements(missingLength);
+        });
+      });
+    });

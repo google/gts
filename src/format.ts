@@ -27,7 +27,7 @@ import {readFilep} from './util';
  * Object that contains the position of formatting issue within the file, the
  * length of it, and the string to replace it with.
  */
-interface Replacement {
+export interface Replacement {
   offset: number;
   length: number;
   fix: string;
@@ -151,7 +151,7 @@ function checkFormat(options: Options, srcFiles: string[], baseArgs: string[]):
  *
  * @param output xml string from clangFormat
  */
-function getReplacements(fileXML: string): Replacement[] {
+export function getReplacements(fileXML: string): Replacement[] {
   const replacements: Replacement[] = [];
 
   let xmlLines = fileXML.trim().split('\n');
