@@ -22,7 +22,7 @@ import {ConfigFile, getTSConfig} from '../src/util';
  * Creates a fake promisified readFile function from a map
  * @param myMap contains a filepath as the key and a ConfigFile object as the
  * value.
- * The returned funciton has the same interface as fs.readFile
+ * The returned function has the same interface as fs.readFile
  */
 function createFakeReadFilep(myMap: Map<string, ConfigFile>) {
   return (configPath: string) => {
