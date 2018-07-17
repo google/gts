@@ -268,9 +268,9 @@ test.serial(
     t => {
       return withFixtures({}, async () => {
         const missingLength =
-            '<?xml version=\'1.0\'?>\n<replacements xml:space=\'preserve\' ' +
-            'incomplete_format=\'false\'>\n<replacement offset=\'8\' ' + 
-            'length=\'\'>FIX</replacement></replacements>';
+            '<?xml version=\'1.0\'?>\n<replacements xml:space=\'' +
+            'preserve\' incomplete_format=\'false\'>\n<replacement ' +
+            'offset=\'8\' length=\'\'>FIX</replacement></replacements>';
         t.throws(() => {
           format.getReplacements(missingLength);
         });
