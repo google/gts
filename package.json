@@ -41,7 +41,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "chalk": "^2.4.1",
-    "clang-format": "1.2.3",
+    "clang-format": "1.2.4",
     "diff": "^3.5.0",
     "entities": "^1.1.1",
     "inquirer": "^6.0.0",
