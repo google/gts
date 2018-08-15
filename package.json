@@ -76,7 +76,7 @@
     "typescript": "~3.0.0"
   },
   "peerDependencies": {
-    "typescript": "^3.0.0"
+    "typescript": "^2.7.1"
   },
   "ava": {
     "require": [
