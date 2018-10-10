@@ -58,7 +58,7 @@
     "@types/glob": "^7.0.0",
     "@types/inquirer": "^0.0.43",
     "@types/make-dir": "^1.0.3",
-    "@types/meow": "^4.0.1",
+    "@types/meow": "^5.0.0",
     "@types/ncp": "^2.0.1",
     "@types/node": "^10.0.3",
     "@types/pify": "^3.0.2",
