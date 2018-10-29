@@ -24,6 +24,7 @@ import {
   readJsonp as readJson,
   writeFileAtomicp as write,
 } from './util';
+import {generateTsLintConfig} from './lint';
 
 const pkg = require('../../package.json');
 
@@ -182,9 +183,9 @@ async function writePackageJson(
   options.logger.dir(preview);
 }
 
-async function generateTsLintConfig(options: Options): Promise<void> {
-  const config = formatJson({extends: 'gts/tslint.json'});
-  return generateConfigFile(options, './tslint.json', config);
+async function generateTsLintConfigFile(options: Options): Promise<void> {
+  const config = generateTsLintConfig();
+  return generateConfigFile(options, './tslint.json', formatJson(config));
 }
 
 async function generateTsConfig(options: Options): Promise<void> {
@@ -272,7 +273,7 @@ export async function init(options: Options): Promise<boolean> {
     options.logger.log('No edits needed in package.json.');
   }
   await generateTsConfig(options);
-  await generateTsLintConfig(options);
+  await generateTsLintConfigFile(options);
   await generateClangFormat(options);
 
   // Run `npm install` after initial setup so `npm run check` works right away.

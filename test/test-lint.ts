@@ -273,4 +273,36 @@ test.serial('lint for specific files should use file-specific config', t => {
   );
 });
 
+test.serial('should handle json files correctly resolveJsonModule', t => {
+  return withFixtures(
+    {
+      'tsconfig.json': JSON.stringify({
+        include: ['src'],
+        compilerOptions: {
+          module: 'commonjs',
+          resolveJsonModule: true,
+          esModuleInterop: true,
+        },
+      }),
+      'tslint.json': JSON.stringify(lint.generateTsLintConfig()),
+      node_modules: {
+        gts: {
+          'tslint.json': fs.readFileSync('tslint.json', 'utf8'),
+        },
+      },
+      src: {
+        'a.ts': `import settings from "./test.json";`,
+        'test.json': JSON.stringify({
+          dry: false,
+          debug: false,
+        }),
+      },
+    },
+    async () => {
+      const okay = lint.lint(OPTIONS);
+      t.true(okay);
+    }
+  );
+});
+
 // TODO: test for when tsconfig.json is missing.
