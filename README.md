@@ -53,7 +53,7 @@ $ gts check *.ts
 ```
 
 # License
-See [LICENSE.md](LICENSE)
+See [LICENSE](LICENSE)
 
 > ***NOTE: This is not an official Google product.***
 
