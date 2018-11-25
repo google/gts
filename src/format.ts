@@ -162,10 +162,10 @@ export function getReplacements(fileXML: string): Replacement[] {
     // Uses regex to capture the xml attributes and element
     // XML format:
     // <replacement offset='OFFSET' length='LENGTH'>FIX</replacement>
-    const offset: string[]|null = (/offset=\'(\d+)\'/g).exec(xmlLines[i]);
-    const length: string[]|null = (/length=\'(\d+)\'/g).exec(xmlLines[i]);
+    const offset: string[]|null = (/offset='(\d+)'/g).exec(xmlLines[i]);
+    const length: string[]|null = (/length='(\d+)'/g).exec(xmlLines[i]);
     const fix: string[]|null =
-        (/length=\'\d+\'>(.*)<\/replacement>/g).exec(xmlLines[i]);
+        (/length='\d+'>(.*)<\/replacement>/g).exec(xmlLines[i]);
 
     if (length === null || offset === null || fix === null) {
       throw new Error('Unable to get replacement');
