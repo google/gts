@@ -8,6 +8,5 @@
   "lockFileMaintenance": {
     "enabled": true,
     "recreateClosed": true
-  },
-  "gitAuthor": null
+  }
 }
