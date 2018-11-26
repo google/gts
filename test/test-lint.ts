@@ -116,7 +116,7 @@ test.serial('lint should lint files listed in tsconfig.files', t => {
 });
 
 test.serial(
-    'lint should lint *.ts files when no files or inlcude has been specified',
+    'lint should lint *.ts files when no files or include has been specified',
     async t => {
       return withFixtures(
           {
@@ -206,7 +206,7 @@ test.serial('lint should throw for unrecognized files', t => {
 test.serial('lint should prefer user config file over default', async t => {
   const CUSTOM_LINT_CODE = 'debugger;';
 
-  // By defualt the above should fail lint.
+  // By default the above should fail lint.
   await withFixtures(
       {
         'tsconfig.json': JSON.stringify({files: ['a.ts']}),

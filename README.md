@@ -46,10 +46,10 @@ When you run the `npx gts init` command, it's going to do a few things for you:
 ## Individual files
 The commands above will all run in the scope of the current folder.  Some commands can be run on individual files:
 
-```js
-$ gts check index.ts
-$ gts check one.ts two.ts three.ts
-$ gts check *.ts
+```sh
+gts check index.ts
+gts check one.ts two.ts three.ts
+gts check *.ts
 ```
 
 # License
@@ -72,4 +72,3 @@ See [LICENSE](LICENSE)
 [snyk-url]: https://snyk.io/test/github/google/ts-style
 [standardjs-url]: https://www.npmjs.com/package/standard
 [tslint-url]: https://palantir.github.io/tslint/
-
