@@ -120,7 +120,7 @@ test.serial('init should read local package.json', t => {
   return withFixtures(
       {'package.json': JSON.stringify(originalContents)}, async () => {
         // TODO: this test causes `npm install` to run in the fixture directory.
-        // This may make it sensistive to the network, npm resiliency. Find a
+        // This may make it sensitive to the network, npm resiliency. Find a
         // way to mock npm.
         const result = await init.init(OPTIONS_YES);
         t.truthy(result);
@@ -136,7 +136,7 @@ test.serial('init should read local package.json', t => {
 test.serial('init should handle missing package.json', t => {
   return withFixtures({}, async () => {
     // TODO: this test causes `npm install` to run in the fixture directory.
-    // This may make it sensistive to the network, npm resiliency. Find a way to
+    // This may make it sensitive to the network, npm resiliency. Find a way to
     // mock npm.
     const result = await init.init(OPTIONS_YES);
     t.truthy(result);
