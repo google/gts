@@ -23,7 +23,7 @@ import {readFilep as read, readJsonp as readJson, writeFileAtomicp as write} fro
 
 const pkg = require('../../package.json');
 
-const DEFUALT_PACKAGE_JSON: PackageJson = {
+const DEFAULT_PACKAGE_JSON: PackageJson = {
   name: '',
   version: '0.0.0',
   description: '',
@@ -232,7 +232,7 @@ export async function init(options: Options): Promise<boolean> {
       return false;
     }
 
-    packageJson = DEFUALT_PACKAGE_JSON;
+    packageJson = DEFAULT_PACKAGE_JSON;
     generatedPackageJson = true;
   }
 
