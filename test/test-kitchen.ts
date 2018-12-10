@@ -28,7 +28,7 @@ interface ExecError extends Error {
   code: number;
 }
 
-function isExecError(err: Error|ExecError): err is ExecError {
+function isExecError(err: Error | ExecError): err is ExecError {
   return (err as ExecError).code !== undefined;
 }
 
@@ -38,26 +38,30 @@ function isExecError(err: Error|ExecError): err is ExecError {
 // need to see console output for a process that exited with a non-zero exit
 // code, so we define a more exhaustive promsified cp.exec here.
 // TODO: replace this code with a npm modules that promisifies exec.
-const execp =
-    (command: string, execOptions?: cp.ExecOptions): Promise<ExecResult> => {
-      return new Promise((resolve) => {
-        cp.exec(
-            command, execOptions || {},
-            (err: Error|ExecError|null, stdout, stderr) => {
-              resolve({
-                exitCode: err && isExecError(err) ? err.code : 0,
-                stdout,
-                stderr
-              });
-            });
-      });
-    };
+const execp = (
+  command: string,
+  execOptions?: cp.ExecOptions
+): Promise<ExecResult> => {
+  return new Promise(resolve => {
+    cp.exec(
+      command,
+      execOptions || {},
+      (err: Error | ExecError | null, stdout, stderr) => {
+        resolve({
+          exitCode: err && isExecError(err) ? err.code : 0,
+          stdout,
+          stderr,
+        });
+      }
+    );
+  });
+};
 
 const keep = !!process.env.GTS_KEEP_TEMPDIRS;
 const stagingDir = tmp.dirSync({keep, unsafeCleanup: true});
 const stagingPath = stagingDir.name;
 const execOpts = {
-  cwd: `${stagingPath}/kitchen`
+  cwd: `${stagingPath}/kitchen`,
 };
 
 console.log(`${chalk.blue(`${__filename} staging area: ${stagingPath}`)}`);
@@ -82,8 +86,9 @@ test.serial('init', async t => {
     // It's important to use `-n` here because we don't want to overwrite
     // the version of gts installed, as it will trigger the npm install.
     await simpleExecp(
-        `npx -p ${stagingPath}/gts.tgz --ignore-existing gts init -n`,
-        execOpts);
+      `npx -p ${stagingPath}/gts.tgz --ignore-existing gts init -n`,
+      execOpts
+    );
   }
 
   // Ensure config files got generated.
@@ -114,8 +119,10 @@ test.serial('use as a non-locally installed module', async t => {
   await simpleExecp(`${GTS} init -n`, opts);
 
   // The `extends` field must use the local gts path.
-  const tsconfigJson =
-      fs.readFileSync(`${tmpDir.name}/kitchen/tsconfig.json`, 'utf8');
+  const tsconfigJson = fs.readFileSync(
+    `${tmpDir.name}/kitchen/tsconfig.json`,
+    'utf8'
+  );
   const tsconfig = JSON.parse(tsconfigJson);
   t.deepEqual(tsconfig.extends, './node_modules/gts/tsconfig-google.json');
 
@@ -130,12 +137,19 @@ test.serial('use as a non-locally installed module', async t => {
 
 test.serial('generated json files should terminate with newline', async t => {
   await simpleExecp('./node_modules/.bin/gts init -y', execOpts);
-  t.truthy(fs.readFileSync(`${stagingPath}/kitchen/package.json`, 'utf8')
-               .endsWith('\n'));
-  t.truthy(fs.readFileSync(`${stagingPath}/kitchen/tsconfig.json`, 'utf8')
-               .endsWith('\n'));
-  t.truthy(fs.readFileSync(`${stagingPath}/kitchen/tslint.json`, 'utf8')
-               .endsWith('\n'));
+  t.truthy(
+    fs
+      .readFileSync(`${stagingPath}/kitchen/package.json`, 'utf8')
+      .endsWith('\n')
+  );
+  t.truthy(
+    fs
+      .readFileSync(`${stagingPath}/kitchen/tsconfig.json`, 'utf8')
+      .endsWith('\n')
+  );
+  t.truthy(
+    fs.readFileSync(`${stagingPath}/kitchen/tslint.json`, 'utf8').endsWith('\n')
+  );
 });
 
 test.serial('check before fix', async t => {
@@ -146,15 +160,14 @@ test.serial('check before fix', async t => {
 });
 
 test.serial('fix', async t => {
-  const preFix = fs.readFileSync(`${stagingPath}/kitchen/src/server.ts`, 'utf8')
-                     .split('\n');
+  const preFix = fs
+    .readFileSync(`${stagingPath}/kitchen/src/server.ts`, 'utf8')
+    .split('\n');
   await simpleExecp('npm run fix', execOpts);
-  const postFix =
-      fs.readFileSync(`${stagingPath}/kitchen/src/server.ts`, 'utf8')
-          .split('\n');
-  t.deepEqual(
-      preFix[0].trim() + ';',
-      postFix[0]);  // fix should have added a semi-colon
+  const postFix = fs
+    .readFileSync(`${stagingPath}/kitchen/src/server.ts`, 'utf8')
+    .split('\n');
+  t.deepEqual(preFix[0].trim() + ';', postFix[0]); // fix should have added a semi-colon
   t.pass();
 });
 
@@ -181,7 +194,6 @@ test.serial('clean', async t => {
     fs.accessSync(`${stagingPath}/kitchen/build`);
   });
 });
-
 
 /**
  * CLEAN UP - remove the staging directory when done.

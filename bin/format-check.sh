@@ -1,8 +1,8 @@
 #!/bin/bash
 
-output=$(clang-format -i -style='{Language: JavaScript, BasedOnStyle: Google, ColumnLimit: 80}' -output-replacements-xml src/*.ts test/*.ts)
-
-if [[ ${output} =~ "<replacement offset" ]] ; then
+output=$(prettier --list-different src/*.ts test/*.ts)
+len=${#output}
+if [[ ${len} != 0 ]] ; then
   echo "Format errors found. Run 'npm run format' to fix."
   exit 1
 fi

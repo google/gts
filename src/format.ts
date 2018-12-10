@@ -37,8 +37,10 @@ export interface Replacement {
 export const clangFormat = require('clang-format');
 
 const BASE_ARGS_FILE = ['-style=file'];
-const BASE_ARGS_INLINE =
-    ['-style', '{Language: JavaScript, BasedOnStyle: Google, ColumnLimit: 80}'];
+const BASE_ARGS_INLINE = [
+  '-style',
+  '{Language: JavaScript, BasedOnStyle: Google, ColumnLimit: 80}',
+];
 
 /**
  * Run tslint fix and clang fix with the default configuration
@@ -47,7 +49,10 @@ const BASE_ARGS_INLINE =
  * @param files files to format
  */
 export async function format(
-    options: Options, files: string[] = [], fix = false): Promise<boolean> {
+  options: Options,
+  files: string[] = [],
+  fix = false
+): Promise<boolean> {
   if (options.dryRun && fix) {
     options.logger.log('format: skipping auto fix since --dry-run was passed');
     fix = false;
@@ -55,10 +60,11 @@ export async function format(
 
   // If the project has a .clang-format – use it. Else use the default as an
   // inline argument.
-  const baseClangFormatArgs =
-      fs.existsSync(path.join(options.targetRootDir, '.clang-format')) ?
-      BASE_ARGS_FILE :
-      BASE_ARGS_INLINE;
+  const baseClangFormatArgs = fs.existsSync(
+    path.join(options.targetRootDir, '.clang-format')
+  )
+    ? BASE_ARGS_FILE
+    : BASE_ARGS_INLINE;
 
   const program = createProgram(options);
   // Obtain a list of source files to format.
@@ -67,9 +73,10 @@ export async function format(
   // through options). This is necessary because we only want to format files
   // over which the developer has control (i.e. not auto-generated or
   // third-party source files).
-  const srcFiles = files.length > 0 ?
-      files :
-      program.getRootFileNames().filter(f => !f.endsWith('.d.ts'));
+  const srcFiles =
+    files.length > 0
+      ? files
+      : program.getRootFileNames().filter(f => !f.endsWith('.d.ts'));
 
   if (fix) {
     return fixFormat(srcFiles, baseClangFormatArgs);
@@ -77,7 +84,8 @@ export async function format(
     const result = await checkFormat(options, srcFiles, baseClangFormatArgs);
     if (!result) {
       options.logger.log(
-          'clang-format reported errors... run `gts fix` to address.');
+        'clang-format reported errors... run `gts fix` to address.'
+      );
     }
     return result;
   }
@@ -91,13 +99,17 @@ export async function format(
 function fixFormat(srcFiles: string[], baseArgs: string[]): Promise<boolean> {
   return new Promise<boolean>((resolve, reject) => {
     const args = baseArgs.concat(['-i'], srcFiles);
-    clangFormat.spawnClangFormat(args, (err?: Error) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(true);
-      }
-    }, 'inherit');
+    clangFormat.spawnClangFormat(
+      args,
+      (err?: Error) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(true);
+        }
+      },
+      'inherit'
+    );
   });
 }
 
@@ -107,29 +119,30 @@ function fixFormat(srcFiles: string[], baseArgs: string[]): Promise<boolean> {
  *
  * @param srcFiles list of source files
  */
-function checkFormat(options: Options, srcFiles: string[], baseArgs: string[]):
-    Promise<boolean> {
+function checkFormat(
+  options: Options,
+  srcFiles: string[],
+  baseArgs: string[]
+): Promise<boolean> {
   return new Promise<boolean>((resolve, reject) => {
     let output = '';
     const args = baseArgs.concat(['-output-replacements-xml'], srcFiles);
-    const out = clangFormat
-                    .spawnClangFormat(
-                        args,
-                        (err?: Error) => {
-                          if (err) {
-                            reject(err);
-                          }
-                        },
-                        ['ignore', 'pipe', process.stderr])
-                    .stdout;
+    const out = clangFormat.spawnClangFormat(
+      args,
+      (err?: Error) => {
+        if (err) {
+          reject(err);
+        }
+      },
+      ['ignore', 'pipe', process.stderr]
+    ).stdout;
     out.setEncoding('utf8');
     out.on('data', (data: Buffer) => {
       output += data;
     });
 
     out.on('end', async () => {
-      const files: string[] =
-          output.split('<?xml version=\'1.0\'?>\n').slice(1);
+      const files: string[] = output.split("<?xml version='1.0'?>\n").slice(1);
       for (let i = 0; i < files.length; i++) {
         if (files[i].indexOf('<replacement ') === -1) {
           continue;
@@ -162,10 +175,11 @@ export function getReplacements(fileXML: string): Replacement[] {
     // Uses regex to capture the xml attributes and element
     // XML format:
     // <replacement offset='OFFSET' length='LENGTH'>FIX</replacement>
-    const offset: string[]|null = (/offset='(\d+)'/g).exec(xmlLines[i]);
-    const length: string[]|null = (/length='(\d+)'/g).exec(xmlLines[i]);
-    const fix: string[]|null =
-        (/length='\d+'>(.*)<\/replacement>/g).exec(xmlLines[i]);
+    const offset: string[] | null = /offset='(\d+)'/g.exec(xmlLines[i]);
+    const length: string[] | null = /length='(\d+)'/g.exec(xmlLines[i]);
+    const fix: string[] | null = /length='\d+'>(.*)<\/replacement>/g.exec(
+      xmlLines[i]
+    );
 
     if (length === null || offset === null || fix === null) {
       throw new Error('Unable to get replacement');
@@ -173,7 +187,7 @@ export function getReplacements(fileXML: string): Replacement[] {
     replacements[i] = {
       offset: Number(offset[1]),
       length: Number(length[1]),
-      fix: entities.decodeXML(fix[1])
+      fix: entities.decodeXML(fix[1]),
     };
   }
   return replacements;
@@ -187,11 +201,14 @@ export function getReplacements(fileXML: string): Replacement[] {
  * @param replacements array of all the formatting issues within in the file
  */
 async function getDiffObj(
-    file: string, replacements: Replacement[]): Promise<jsdiff.IUniDiff> {
+  file: string,
+  replacements: Replacement[]
+): Promise<jsdiff.IUniDiff> {
   const text = await readFilep(file, 'utf8');
   const fixed = performFixes(text, replacements);
-  const diff =
-      jsdiff.structuredPatch(file, '', text, fixed, '', '', {context: 3});
+  const diff = jsdiff.structuredPatch(file, '', text, fixed, '', '', {
+    context: 3,
+  });
   jsdiff.applyPatch('diff', diff);
   return diff;
 }
@@ -209,16 +226,23 @@ function performFixes(data: string, replacements: Replacement[]) {
   replaced.push(substring(data, 0, replacements[0].offset));
   for (let i = 0; i < replacements.length - 1; i++) {
     replaced.push(replacements[i].fix);
-    replaced.push(substring(
-        data, replacements[i].offset + replacements[i].length,
-        replacements[i + 1].offset));
+    replaced.push(
+      substring(
+        data,
+        replacements[i].offset + replacements[i].length,
+        replacements[i + 1].offset
+      )
+    );
   }
   replaced.push(replacements[replacements.length - 1].fix);
-  replaced.push(substring(
+  replaced.push(
+    substring(
       data,
       replacements[replacements.length - 1].offset +
-          replacements[replacements.length - 1].length,
-      Buffer.byteLength(data, 'utf8')));
+        replacements[replacements.length - 1].length,
+      Buffer.byteLength(data, 'utf8')
+    )
+  );
   return replaced.join('');
 }
 
@@ -256,8 +280,12 @@ function printDiffs(diffs: jsdiff.IUniDiff, options: Options) {
  * @param encoding
  */
 function substring(
-    str: string, indexStart: number, indexEnd: number, encoding = 'utf8') {
+  str: string,
+  indexStart: number,
+  indexEnd: number,
+  encoding = 'utf8'
+) {
   return Buffer.from(str, encoding)
-      .slice(indexStart, indexEnd)
-      .toString(encoding);
+    .slice(indexStart, indexEnd)
+    .toString(encoding);
 }

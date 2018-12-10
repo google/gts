@@ -28,20 +28,27 @@ import {Options} from './cli';
  *            set.
  */
 export function lint(
-    options: Options, files: string[] = [], fix = false): boolean {
+  options: Options,
+  files: string[] = [],
+  fix = false
+): boolean {
   if (options.dryRun && fix) {
     options.logger.log('lint: skipping auto fix since --dry-run was passed');
     fix = false;
   }
 
-  if (files.length > 0) {  // manually provided filenames.
+  if (files.length > 0) {
+    // manually provided filenames.
     const rcs = files.map(file => {
       // Different config files may apply to each file.
-      const configPath = Configuration.findConfigurationPath(null, file) ||
-          path.join(options.gtsRootDir, 'tslint.json');
+      const configPath =
+        Configuration.findConfigurationPath(null, file) ||
+        path.join(options.gtsRootDir, 'tslint.json');
 
-      const configuration =
-          Configuration.loadConfigurationFromPath(configPath, '');
+      const configuration = Configuration.loadConfigurationFromPath(
+        configPath,
+        ''
+      );
       const source = fs.readFileSync(file, 'utf8');
 
       const linter = new Linter({fix, formatter: 'codeFrame'});
@@ -54,16 +61,17 @@ export function lint(
       return true;
     });
 
-    return rcs.every(rc => rc);  // if all files succeeded.
+    return rcs.every(rc => rc); // if all files succeeded.
   } else {
     // Lint the set of files specified by the typescript program config.
     const program = createProgram(options);
     files = Linter.getFileNames(program);
 
-    const configPath =
-        fs.existsSync(path.join(options.targetRootDir, 'tslint.json')) ?
-        path.resolve(options.targetRootDir, 'tslint.json') :
-        path.resolve(options.gtsRootDir, 'tslint.json');
+    const configPath = fs.existsSync(
+      path.join(options.targetRootDir, 'tslint.json')
+    )
+      ? path.resolve(options.targetRootDir, 'tslint.json')
+      : path.resolve(options.gtsRootDir, 'tslint.json');
 
     const configuration = Configuration.loadConfigurationFromPath(configPath);
     const linter = new Linter({fix, formatter: 'codeFrame'}, program);

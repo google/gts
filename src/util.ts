@@ -43,7 +43,9 @@ export function nop() {
  * thrown
  */
 export async function getTSConfig(
-    rootDir: string, customReadFilep?: ReadFileP): Promise<ConfigFile> {
+  rootDir: string,
+  customReadFilep?: ReadFileP
+): Promise<ConfigFile> {
   customReadFilep = customReadFilep || readFilep;
   const readArr = new Set();
   return await getBase('tsconfig.json', customReadFilep, readArr, rootDir);
@@ -59,8 +61,11 @@ export async function getTSConfig(
  * returns a ConfigFile object containing the data from all the dependencies
  */
 async function getBase(
-    filePath: string, customReadFilep: ReadFileP, readFiles: Set<string>,
-    currentDir: string): Promise<ConfigFile> {
+  filePath: string,
+  customReadFilep: ReadFileP,
+  readFiles: Set<string>,
+  currentDir: string
+): Promise<ConfigFile> {
   customReadFilep = customReadFilep || readFilep;
 
   filePath = path.resolve(currentDir, filePath);
@@ -77,7 +82,11 @@ async function getBase(
 
     if (contents.extends) {
       const nextFile = await getBase(
-          contents.extends, customReadFilep, readFiles, path.dirname(filePath));
+        contents.extends,
+        customReadFilep,
+        readFiles,
+        path.dirname(filePath)
+      );
       contents = combineTSConfig(nextFile, contents);
     }
 
@@ -97,7 +106,10 @@ function combineTSConfig(base: ConfigFile, inherited: ConfigFile): ConfigFile {
 
   Object.assign(result, base, inherited);
   Object.assign(
-      result.compilerOptions, base.compilerOptions, inherited.compilerOptions);
+    result.compilerOptions,
+    base.compilerOptions,
+    inherited.compilerOptions
+  );
   delete result.extends;
   return result;
 }
