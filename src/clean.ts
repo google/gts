@@ -32,8 +32,9 @@ export async function clean(options: Options): Promise<boolean> {
     const outDir = tsconfig.compilerOptions.outDir;
     if (outDir === '.') {
       options.logger.error(
-          `${chalk.red('ERROR:')} ${chalk.gray('compilerOptions.outDir')} ` +
-          `cannot use the value '.'.  That would delete all of our sources.`);
+        `${chalk.red('ERROR:')} ${chalk.gray('compilerOptions.outDir')} ` +
+          `cannot use the value '.'.  That would delete all of our sources.`
+      );
       return false;
     }
     const message = `${chalk.red('Removing')} ${outDir} ...`;
@@ -42,9 +43,10 @@ export async function clean(options: Options): Promise<boolean> {
     return true;
   } else {
     options.logger.error(
-        `${chalk.red('ERROR:')} The ${chalk.gray('clean')} command` +
+      `${chalk.red('ERROR:')} The ${chalk.gray('clean')} command` +
         ` requires ${chalk.gray('compilerOptions.outDir')} to be defined in ` +
-        `tsconfig.json.`);
+        `tsconfig.json.`
+    );
     return false;
   }
 }

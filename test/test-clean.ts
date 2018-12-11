@@ -30,7 +30,7 @@ const OPTIONS: Options = {
   dryRun: false,
   yes: false,
   no: false,
-  logger: {log: nop, error: nop, dir: nop}
+  logger: {log: nop, error: nop, dir: nop},
 };
 
 test.failing.serial('should gracefully error if tsconfig is missing', t => {
@@ -40,47 +40,52 @@ test.failing.serial('should gracefully error if tsconfig is missing', t => {
 });
 
 test.serial(
-    'should gracefully error if tsconfig does not have valid outDir', t => {
-      return withFixtures({'tsconfig.json': JSON.stringify({})}, async () => {
-        const deleted = await clean(OPTIONS);
-        t.is(deleted, false);
-      });
+  'should gracefully error if tsconfig does not have valid outDir',
+  t => {
+    return withFixtures({'tsconfig.json': JSON.stringify({})}, async () => {
+      const deleted = await clean(OPTIONS);
+      t.is(deleted, false);
     });
+  }
+);
 
 test.serial('should avoid deleting .', t => {
   return withFixtures(
-      {'tsconfig.json': JSON.stringify({compilerOptions: {outDir: '.'}})},
-      async () => {
-        const deleted = await clean(OPTIONS);
-        t.is(deleted, false);
-      });
+    {'tsconfig.json': JSON.stringify({compilerOptions: {outDir: '.'}})},
+    async () => {
+      const deleted = await clean(OPTIONS);
+      t.is(deleted, false);
+    }
+  );
 });
 
 test.failing.serial('should ensure that outDir is local to targetRoot', t => {
   return withFixtures(
-      {'tsconfig.json': JSON.stringify({compilerOptions: {outDir: '../out'}})},
-      async () => {
-        const deleted = await clean(OPTIONS);
-        t.is(deleted, false);
-      });
+    {'tsconfig.json': JSON.stringify({compilerOptions: {outDir: '../out'}})},
+    async () => {
+      const deleted = await clean(OPTIONS);
+      t.is(deleted, false);
+    }
+  );
 });
 
 test.serial('should remove outDir', t => {
   const OUT = 'outputDirectory';
   return withFixtures(
-      {
-        'tsconfig.json': JSON.stringify({compilerOptions: {outDir: OUT}}),
-        [OUT]: {}
-      },
-      async (dir) => {
-        const outputPath = path.join(dir, OUT);
-        // make sure the output directory exists.
+    {
+      'tsconfig.json': JSON.stringify({compilerOptions: {outDir: OUT}}),
+      [OUT]: {},
+    },
+    async dir => {
+      const outputPath = path.join(dir, OUT);
+      // make sure the output directory exists.
+      fs.accessSync(outputPath);
+      const deleted = await clean(OPTIONS);
+      t.is(deleted, true);
+      // make sure the directory has been deleted.
+      t.throws(() => {
         fs.accessSync(outputPath);
-        const deleted = await clean(OPTIONS);
-        t.is(deleted, true);
-        // make sure the directory has been deleted.
-        t.throws(() => {
-          fs.accessSync(outputPath);
-        });
       });
+    }
+  );
 });

@@ -19,7 +19,11 @@ import * as inquirer from 'inquirer';
 import * as path from 'path';
 
 import {Options} from './cli';
-import {readFilep as read, readJsonp as readJson, writeFileAtomicp as write} from './util';
+import {
+  readFilep as read,
+  readJsonp as readJson,
+  writeFileAtomicp as write,
+} from './util';
 
 const pkg = require('../../package.json');
 
@@ -32,7 +36,7 @@ const DEFAULT_PACKAGE_JSON: PackageJson = {
   files: ['build/src'],
   license: 'Apache-2.0',
   keywords: [],
-  scripts: {test: 'echo "Error: no test specified" && exit 1'}
+  scripts: {test: 'echo "Error: no test specified" && exit 1'},
 };
 
 export interface Bag<T> {
@@ -55,8 +59,11 @@ export interface PackageJson {
 }
 
 async function query(
-    message: string, question: string, defaultVal: boolean,
-    options: Options): Promise<boolean> {
+  message: string,
+  question: string,
+  defaultVal: boolean,
+  options: Options
+): Promise<boolean> {
   if (options.yes) {
     return true;
   } else if (options.no) {
@@ -67,13 +74,19 @@ async function query(
     options.logger.log(message);
   }
 
-  const answers: inquirer.Answers = await inquirer.prompt(
-      {type: 'confirm', name: 'query', message: question, default: defaultVal});
+  const answers: inquirer.Answers = await inquirer.prompt({
+    type: 'confirm',
+    name: 'query',
+    message: question,
+    default: defaultVal,
+  });
   return answers.query;
 }
 
 export async function addScripts(
-    packageJson: PackageJson, options: Options): Promise<boolean> {
+  packageJson: PackageJson,
+  options: Options
+): Promise<boolean> {
   let edits = false;
   const scripts: Bag<string> = {
     check: `gts check`,
@@ -82,7 +95,7 @@ export async function addScripts(
     fix: `gts fix`,
     prepare: `npm run compile`,
     pretest: `npm run compile`,
-    posttest: `npm run check`
+    posttest: `npm run check`,
   };
 
   if (!packageJson.scripts) {
@@ -97,8 +110,8 @@ export async function addScripts(
     if (existing !== target) {
       if (existing) {
         const message =
-            `package.json already has a script for ${chalk.bold(script)}:\n` +
-            `-${chalk.red(existing)}\n+${chalk.green(target)}`;
+          `package.json already has a script for ${chalk.bold(script)}:\n` +
+          `-${chalk.red(existing)}\n+${chalk.green(target)}`;
         install = await query(message, 'Replace', false, options);
       }
 
@@ -112,11 +125,13 @@ export async function addScripts(
 }
 
 export async function addDependencies(
-    packageJson: PackageJson, options: Options): Promise<boolean> {
+  packageJson: PackageJson,
+  options: Options
+): Promise<boolean> {
   let edits = false;
   const deps: Bag<string> = {
     gts: `^${pkg.version}`,
-    typescript: pkg.devDependencies.typescript
+    typescript: pkg.devDependencies.typescript,
   };
 
   if (!packageJson.devDependencies) {
@@ -130,8 +145,9 @@ export async function addDependencies(
 
     if (existing !== target) {
       if (existing) {
-        const message = `Already have devDependency for ${chalk.bold(dep)}:\n` +
-            `-${chalk.red(existing)}\n+${chalk.green(target)}`;
+        const message =
+          `Already have devDependency for ${chalk.bold(dep)}:\n` +
+          `-${chalk.red(existing)}\n+${chalk.green(target)}`;
         install = await query(message, 'Overwrite', false, options);
       }
 
@@ -152,14 +168,16 @@ function formatJson(object: {}) {
 }
 
 async function writePackageJson(
-    packageJson: PackageJson, options: Options): Promise<void> {
+  packageJson: PackageJson,
+  options: Options
+): Promise<void> {
   options.logger.log('Writing package.json...');
   if (!options.dryRun) {
     await write('./package.json', formatJson(packageJson));
   }
   const preview = {
     scripts: packageJson.scripts,
-    devDependencies: packageJson.devDependencies
+    devDependencies: packageJson.devDependencies,
   };
   options.logger.dir(preview);
 }
@@ -173,7 +191,7 @@ async function generateTsConfig(options: Options): Promise<void> {
   const config = formatJson({
     extends: './node_modules/gts/tsconfig-google.json',
     compilerOptions: {rootDir: '.', outDir: 'build'},
-    include: ['src/*.ts', 'src/**/*.ts', 'test/*.ts', 'test/**/*.ts']
+    include: ['src/*.ts', 'src/**/*.ts', 'test/*.ts', 'test/**/*.ts'],
   });
   return generateConfigFile(options, './tsconfig.json', config);
 }
@@ -184,7 +202,10 @@ async function generateClangFormat(options: Options): Promise<void> {
 }
 
 async function generateConfigFile(
-    options: Options, filename: string, contents: string) {
+  options: Options,
+  filename: string,
+  contents: string
+) {
   let existing;
   try {
     existing = await read(filename, 'utf8');
@@ -202,7 +223,11 @@ async function generateConfigFile(
     return;
   } else if (existing) {
     writeFile = await query(
-        `${chalk.bold(filename)} already exists`, 'Overwrite', false, options);
+      `${chalk.bold(filename)} already exists`,
+      'Overwrite',
+      false,
+      options
+    );
   }
 
   if (writeFile) {
@@ -224,8 +249,11 @@ export async function init(options: Options): Promise<boolean> {
       throw new Error(`Unable to open package.json file: ${err.message}`);
     }
     const generate = await query(
-        `${chalk.bold('package.json')} does not exist.`, `Generate`, true,
-        options);
+      `${chalk.bold('package.json')} does not exist.`,
+      `Generate`,
+      true,
+      options
+    );
 
     if (!generate) {
       options.logger.log('Please run from a directory with your package.json.');

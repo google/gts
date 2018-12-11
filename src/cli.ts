@@ -37,8 +37,11 @@ export interface Options {
   logger: Logger;
 }
 
-export type VerbFilesFunction =
-    (options: Options, files: string[], fix?: boolean) => Promise<boolean>;
+export type VerbFilesFunction = (
+  options: Options,
+  files: string[],
+  fix?: boolean
+) => Promise<boolean>;
 
 const logger: Logger = console;
 
@@ -69,8 +72,8 @@ const cli = meow({
     help: {type: 'boolean'},
     yes: {type: 'boolean', alias: 'y'},
     no: {type: 'boolean', alias: 'n'},
-    'dry-run': {type: 'boolean'}
-  }
+    'dry-run': {type: 'boolean'},
+  },
 });
 
 function usage(msg?: string): void {
@@ -88,7 +91,7 @@ async function run(verb: string, files: string[]): Promise<boolean> {
     targetRootDir: process.cwd(),
     yes: cli.flags.yes || cli.flags.y || false,
     no: cli.flags.no || cli.flags.n || false,
-    logger
+    logger,
   };
   // Linting/formatting depend on typescript. We don't want to load the
   // typescript module during init, since it might not exist.
@@ -106,8 +109,9 @@ async function run(verb: string, files: string[]): Promise<boolean> {
       return passLint && passFormat;
     case 'fix':
       return (
-          await lint(options, files, true) &&
-          await format(options, files, true));
+        (await lint(options, files, true)) &&
+        (await format(options, files, true))
+      );
     case 'clean':
       return await clean(options);
     default:
