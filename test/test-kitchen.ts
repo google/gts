@@ -127,7 +127,7 @@ test.serial('use as a non-locally installed module', async t => {
   t.deepEqual(tsconfig.extends, './node_modules/gts/tsconfig-google.json');
 
   // server.ts has a lint error. Should error.
-  await t.throws(simpleExecp(`${GTS} check src/server.ts`, opts));
+  await t.throwsAsync(simpleExecp(`${GTS} check src/server.ts`, opts));
 
   if (!keep) {
     tmpDir.removeCallback();

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import {test, Test} from 'ava';
 import * as fs from 'fs';
 import * as makeDir from 'make-dir';
 import * as path from 'path';
@@ -47,7 +46,7 @@ async function setupFixtures(dir: string, fixtures: Fixtures) {
 
 export async function withFixtures(
   fixtures: Fixtures,
-  fn: (fixturesDir: string) => Promise<{} | void>
+  fn: (fixturesDir: string) => PromiseLike<void>
 ) {
   const keep = !!process.env.GTS_KEEP_TEMPDIRS;
   const dir = tmp.dirSync({keep, unsafeCleanup: true});
