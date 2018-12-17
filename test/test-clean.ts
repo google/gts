@@ -33,7 +33,7 @@ const OPTIONS: Options = {
   logger: {log: nop, error: nop, dir: nop},
 };
 
-test.failing.serial('should gracefully error if tsconfig is missing', t => {
+test.serial.failing('should gracefully error if tsconfig is missing', t => {
   return withFixtures({}, async () => {
     await clean(OPTIONS);
   });
@@ -59,7 +59,7 @@ test.serial('should avoid deleting .', t => {
   );
 });
 
-test.failing.serial('should ensure that outDir is local to targetRoot', t => {
+test.serial.failing('should ensure that outDir is local to targetRoot', t => {
   return withFixtures(
     {'tsconfig.json': JSON.stringify({compilerOptions: {outDir: '../out'}})},
     async () => {

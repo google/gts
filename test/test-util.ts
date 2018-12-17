@@ -61,7 +61,7 @@ test('should throw an error if it finds a circular reference', async t => {
   myMap.set('/some/fake/directory/FAKE_CONFIG2', FAKE_CONFIG2);
   myMap.set('/some/fake/directory/FAKE_CONFIG3', FAKE_CONFIG3);
 
-  await t.throws(
+  await t.throwsAsync(
     getTSConfig(FAKE_DIRECTORY, createFakeReadFilep(myMap)),
     Error,
     'Circular Reference Detected'
@@ -141,7 +141,7 @@ test('function throws an error when reading a file that does not exist', async t
   const FAKE_DIRECTORY = '/some/fake/directory';
   const myMap = new Map();
 
-  await t.throws(
+  await t.throwsAsync(
     getTSConfig(FAKE_DIRECTORY, createFakeReadFilep(myMap)),
     Error,
     `${FAKE_DIRECTORY}/tsconfig.json Not Found`

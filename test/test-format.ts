@@ -221,8 +221,8 @@ test.serial('format should return error from failed spawn', async t => {
           cb(new Error(MESSAGE));
         });
       };
-      await t.throws(format.format(OPTIONS, [], true), Error, MESSAGE);
-      await t.throws(format.format(OPTIONS, [], false), Error, MESSAGE);
+      await t.throwsAsync(format.format(OPTIONS, [], true), Error, MESSAGE);
+      await t.throwsAsync(format.format(OPTIONS, [], false), Error, MESSAGE);
       format.clangFormat.spawnClangFormat = original;
     }
   );
