@@ -29,11 +29,14 @@ workflows:
           filters: *release_tags
       - node10:
           filters: *release_tags
+      - node11:
+          filters: *release_tags
       - publish_npm:
           requires:
             - node6
             - node8
             - node10
+            - node11
           filters:
             branches:
               ignore: /.*/
@@ -53,6 +56,11 @@ jobs:
   node10:
     docker:
       - image: node:10
+        user: node
+    <<: *unit_tests
+  node11:
+    docker:
+      - image: node:11
         user: node
     <<: *unit_tests
 
