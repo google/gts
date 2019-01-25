@@ -20,15 +20,6 @@ import * as ts from 'typescript';
 
 import {Options} from './cli';
 
-export function generateTsLintConfig(): Configuration.RawConfigFile {
-  return {
-    extends: 'gts/tslint.json',
-    linterOptions: {
-      exclude: ['*.json', '**/*.json'],
-    },
-  };
-}
-
 /**
  * Run tslint with the default configuration. Returns true on success.
  * @param options gts options

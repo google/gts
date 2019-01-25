@@ -24,7 +24,6 @@ import {
   readJsonp as readJson,
   writeFileAtomicp as write,
 } from './util';
-import {generateTsLintConfig} from './lint';
 
 const pkg = require('../../package.json');
 
@@ -184,7 +183,12 @@ async function writePackageJson(
 }
 
 async function generateTsLintConfigFile(options: Options): Promise<void> {
-  const config = generateTsLintConfig();
+  const config = {
+    extends: 'gts/tslint.json',
+    linterOptions: {
+      exclude: ['*.json', '**/*.json'],
+    },
+  };
   return generateConfigFile(options, './tslint.json', formatJson(config));
 }
 
