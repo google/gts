@@ -19,6 +19,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 import {Options} from '../src/cli';
+import {TSLINT_CONFIG} from '../src/init';
 import * as lint from '../src/lint';
 import {nop} from '../src/util';
 
@@ -284,7 +285,7 @@ test.serial('should handle json files correctly resolveJsonModule', t => {
           esModuleInterop: true,
         },
       }),
-      'tslint.json': JSON.stringify(lint.generateTsLintConfig()),
+      'tslint.json': JSON.stringify(TSLINT_CONFIG),
       node_modules: {
         gts: {
           'tslint.json': fs.readFileSync('tslint.json', 'utf8'),
