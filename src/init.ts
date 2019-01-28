@@ -182,9 +182,19 @@ async function writePackageJson(
   options.logger.dir(preview);
 }
 
+export const TSLINT_CONFIG = {
+  extends: 'gts/tslint.json',
+  linterOptions: {
+    exclude: ['*.json', '**/*.json'],
+  },
+};
+
 async function generateTsLintConfig(options: Options): Promise<void> {
-  const config = formatJson({extends: 'gts/tslint.json'});
-  return generateConfigFile(options, './tslint.json', config);
+  return generateConfigFile(
+    options,
+    './tslint.json',
+    formatJson(TSLINT_CONFIG)
+  );
 }
 
 async function generateTsConfig(options: Options): Promise<void> {

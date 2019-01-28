@@ -19,6 +19,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 import {Options} from '../src/cli';
+import {TSLINT_CONFIG} from '../src/init';
 import * as lint from '../src/lint';
 import {nop} from '../src/util';
 
@@ -269,6 +270,38 @@ test.serial('lint for specific files should use file-specific config', t => {
       t.false(okay);
       t.regex(logBuffer, /dira\/a\.ts/);
       t.notRegex(logBuffer, /dirb\/b\.ts/);
+    }
+  );
+});
+
+test.serial('should handle json files correctly resolveJsonModule', t => {
+  return withFixtures(
+    {
+      'tsconfig.json': JSON.stringify({
+        include: ['src'],
+        compilerOptions: {
+          module: 'commonjs',
+          resolveJsonModule: true,
+          esModuleInterop: true,
+        },
+      }),
+      'tslint.json': JSON.stringify(TSLINT_CONFIG),
+      node_modules: {
+        gts: {
+          'tslint.json': fs.readFileSync('tslint.json', 'utf8'),
+        },
+      },
+      src: {
+        'a.ts': `import settings from "./test.json";`,
+        'test.json': JSON.stringify({
+          dry: false,
+          debug: false,
+        }),
+      },
+    },
+    async () => {
+      const okay = lint.lint(OPTIONS);
+      t.true(okay);
     }
   );
 });
