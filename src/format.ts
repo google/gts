@@ -203,7 +203,7 @@ export function getReplacements(fileXML: string): Replacement[] {
 async function getDiffObj(
   file: string,
   replacements: Replacement[]
-): Promise<jsdiff.IUniDiff> {
+): Promise<jsdiff.ParsedDiff> {
   const text = await readFilep(file, 'utf8');
   const fixed = performFixes(text, replacements);
   const diff = jsdiff.structuredPatch(file, '', text, fixed, '', '', {
@@ -252,9 +252,9 @@ function performFixes(data: string, replacements: Replacement[]) {
  * @param diffs contains all information about the formatting changes
  * @param options
  */
-function printDiffs(diffs: jsdiff.IUniDiff, options: Options) {
-  options.logger.log(chalk.inverse.bold(diffs.oldFileName));
-  diffs.hunks.forEach((diff: JsDiff.IHunk) => {
+function printDiffs(diffs: jsdiff.ParsedDiff, options: Options) {
+  options.logger.log(chalk.inverse.bold(diffs.oldFileName!));
+  diffs.hunks.forEach((diff: jsdiff.Hunk) => {
     const log = `  Lines: ${diff.oldStart}-${diff.oldStart + diff.oldLines}`;
     options.logger.log(chalk.bold(log));
 
