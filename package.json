@@ -54,7 +54,7 @@
     "write-file-atomic": "^2.3.0"
   },
   "devDependencies": {
-    "@types/diff": "^3.5.1",
+    "@types/diff": "^4.0.0",
     "@types/entities": "^1.1.0",
     "@types/glob": "^7.0.0",
     "@types/inquirer": "^0.0.43",
