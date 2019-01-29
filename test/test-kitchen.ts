@@ -29,7 +29,7 @@ interface ExecError extends Error {
 }
 
 function isExecError(err: Error | ExecError): err is ExecError {
-  return (err as ExecError).code !== undefined;
+  return err && (err as ExecError).code !== undefined;
 }
 
 // cp.exec doesn't fit the (err ^ result) pattern because a process can write
@@ -46,7 +46,7 @@ const execp = (
     cp.exec(
       command,
       execOptions || {},
-      (err: Error | ExecError | null, stdout, stderr) => {
+      (err: cp.ExecException | null, stdout, stderr) => {
         resolve({
           exitCode: err && isExecError(err) ? err.code : 0,
           stdout,
