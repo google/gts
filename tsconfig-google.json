@@ -12,7 +12,7 @@
     "pretty": true,
     "sourceMap": true,
     "strict": true,
-    "target": "es2016"
+    "target": "es2017"
   },
   "exclude": [
     "node_modules"
