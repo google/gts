@@ -23,8 +23,6 @@ workflows:
   version: 2
   tests:
     jobs:
-      - node6:
-          filters: *release_tags
       - node8:
           filters: *release_tags
       - node10:
@@ -33,7 +31,6 @@ workflows:
           filters: *release_tags
       - publish_npm:
           requires:
-            - node6
             - node8
             - node10
             - node11
@@ -43,11 +40,6 @@ workflows:
             <<: *release_tags
 
 jobs:
-  node6:
-    docker:
-      - image: node:6
-        user: node
-    <<: *unit_tests
   node8:
     docker:
       - image: node:8
