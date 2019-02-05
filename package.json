@@ -8,12 +8,12 @@
     "gts": "build/src/cli.js"
   },
   "files": [
-    ".clang-format",
     "CHANGELOG.md",
     "LICENSE",
     "README.md",
     "build/src",
     "build/types",
+    "prettier.config.js",
     "tsconfig-google.json",
     "tsconfig.json",
     "tslint.json"
@@ -41,7 +41,6 @@
   "license": "Apache-2.0",
   "dependencies": {
     "chalk": "^2.4.1",
-    "clang-format": "1.2.3",
     "diff": "^4.0.1",
     "entities": "^1.1.1",
     "inquirer": "^6.0.0",
@@ -63,6 +62,7 @@
     "@types/ncp": "^2.0.1",
     "@types/node": "^10.0.3",
     "@types/pify": "^3.0.2",
+    "@types/prettier": "^1.15.2",
     "@types/rimraf": "^2.0.2",
     "@types/tmp": "^0.0.33",
     "@types/update-notifier": "^2.2.0",

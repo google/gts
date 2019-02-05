@@ -94,7 +94,7 @@ test.serial('init', async t => {
   // Ensure config files got generated.
   fs.accessSync(`${stagingPath}/kitchen/tsconfig.json`);
   fs.accessSync(`${stagingPath}/kitchen/tslint.json`);
-  fs.accessSync(`${stagingPath}/kitchen/.clang-format`);
+  fs.accessSync(`${stagingPath}/kitchen/prettier.config.js`);
 
   // Compilation shouldn't have happened. Hence no `build` directory.
   const dirContents = fs.readdirSync(`${stagingPath}/kitchen`);
@@ -155,7 +155,7 @@ test.serial('generated json files should terminate with newline', async t => {
 test.serial('check before fix', async t => {
   const {exitCode, stdout} = await execp('npm run check', execOpts);
   t.deepEqual(exitCode, 1);
-  t.notDeepEqual(stdout.indexOf('clang-format reported errors'), -1);
+  t.notDeepEqual(stdout.indexOf('prettier reported errors'), -1);
   t.pass();
 });
 

@@ -24,12 +24,16 @@ import {nop} from '../src/util';
 
 import {withFixtures} from './fixtures';
 
-// clang-format won't pass this code because of trailing spaces.
 const BAD_CODE = 'export const foo = [ "2" ];';
-const GOOD_CODE = "export const foo = ['2'];";
+const GOOD_CODE = "export const foo = ['2'];\n";
+const CODE_WITH_TABS = `module.exports = {
+\treallyLongIdentified: 4,
+\tanotherSuperLongIdentifier,
+\tthisCannotFitOnTheSameLine
+};\n`;
 
-const CLANG_FORMAT_MESSAGE =
-  'clang-format reported errors... run `gts fix` to address.';
+const PRETTIER_FORMAT_MESSAGE =
+  'prettier reported errors... run `gts fix` to address.';
 
 const OPTIONS: Options = {
   gtsRootDir: path.resolve(__dirname, '../..'),
@@ -180,12 +184,39 @@ test.serial('format should not auto fix on dry-run', t => {
   );
 });
 
-test.serial('format should use user provided config', t => {
+test.serial('format should return false on code with tabs', t => {
   return withFixtures(
     {
-      'tsconfig.json': JSON.stringify({files: ['a.ts']}),
-      '.clang-format': 'Language: JavaScript',
-      'a.ts': BAD_CODE, // but actually good under the custom JS format config.
+      'tsconfig.json': JSON.stringify({files: ['tabs.ts']}),
+      'tabs.ts': CODE_WITH_TABS,
+    },
+    async () => {
+      const result = await format.format(OPTIONS, [], false);
+      t.false(result);
+    }
+  );
+});
+
+test.serial('format should use user provided prettier.config.js', t => {
+  return withFixtures(
+    {
+      'tsconfig.json': JSON.stringify({files: ['tabs.ts']}),
+      'prettier.config.js': `module.exports = { useTabs: true }`,
+      'tabs.ts': CODE_WITH_TABS,
+    },
+    async () => {
+      const result = await format.format(OPTIONS, [], false);
+      t.true(result);
+    }
+  );
+});
+
+test.serial('format should use user provided .prettierrc', t => {
+  return withFixtures(
+    {
+      'tsconfig.json': JSON.stringify({files: ['tabs.ts']}),
+      '.prettierrc': `useTabs: true\n`,
+      'tabs.ts': CODE_WITH_TABS,
     },
     async () => {
       const result = await format.format(OPTIONS, [], false);
@@ -208,26 +239,6 @@ test.serial('format should prefer the files parameter over options', t => {
   );
 });
 
-test.serial('format should return error from failed spawn', async t => {
-  return withFixtures(
-    {'tsconfig.json': JSON.stringify({files: ['a.ts']}), 'a.ts': GOOD_CODE},
-    async () => {
-      const MESSAGE = '🦄';
-      // Mock clangFormat.
-      const original = format.clangFormat.spawnClangFormat;
-      // tslint:disable-next-line:no-any
-      format.clangFormat.spawnClangFormat = (_: any, cb: Function) => {
-        setImmediate(() => {
-          cb(new Error(MESSAGE));
-        });
-      };
-      await t.throwsAsync(format.format(OPTIONS, [], true), Error, MESSAGE);
-      await t.throwsAsync(format.format(OPTIONS, [], false), Error, MESSAGE);
-      format.clangFormat.spawnClangFormat = original;
-    }
-  );
-});
-
 test.serial(
   'format should print suggestions for fixes for ill-formatted file',
   t => {
@@ -246,7 +257,7 @@ test.serial(
         const options = Object.assign({}, OPTIONS, {logger: newLogger});
 
         await format.format(options, [], false);
-        t.true(output.search(CLANG_FORMAT_MESSAGE) !== -1);
+        t.true(output.search(PRETTIER_FORMAT_MESSAGE) !== -1);
         t.true(output.indexOf("+export const foo = ['2'];") !== -1);
         t.true(output.indexOf('-export const foo = [ "2" ];') !== -1);
       }
@@ -272,25 +283,10 @@ test.serial(
         const options = Object.assign({}, OPTIONS, {logger: newLogger});
 
         await format.format(options, [], false);
-        t.true(output.search(CLANG_FORMAT_MESSAGE) !== -1);
+        t.true(output.search(PRETTIER_FORMAT_MESSAGE) !== -1);
         t.true(output.indexOf('//🦄 This is a comment 🌷🏳️‍🌈	—') !== -1);
         t.true(output.indexOf("const variable = '5'") !== -1);
       }
     );
-  }
-);
-
-test.serial(
-  'should throw error if xml are missing offset, length, or fix values',
-  t => {
-    return withFixtures({}, async () => {
-      const missingLength =
-        "<?xml version='1.0'?>\n<replacements xml:space='" +
-        "preserve' incomplete_format='false'>\n<replacement " +
-        "offset='8' length=''>FIX</replacement></replacements>";
-      t.throws(() => {
-        format.getReplacements(missingLength);
-      });
-    });
   }
 );

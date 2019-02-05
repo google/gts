@@ -206,9 +206,12 @@ async function generateTsConfig(options: Options): Promise<void> {
   return generateConfigFile(options, './tsconfig.json', config);
 }
 
-async function generateClangFormat(options: Options): Promise<void> {
-  const style = await read(path.join(__dirname, '../../.clang-format'), 'utf8');
-  return generateConfigFile(options, './.clang-format', style);
+async function generatePrettierConfig(options: Options): Promise<void> {
+  const style = await read(
+    path.join(__dirname, '../../prettier.config.js'),
+    'utf8'
+  );
+  return generateConfigFile(options, './prettier.config.js', style);
 }
 
 async function generateConfigFile(
@@ -283,7 +286,7 @@ export async function init(options: Options): Promise<boolean> {
   }
   await generateTsConfig(options);
   await generateTsLintConfig(options);
-  await generateClangFormat(options);
+  await generatePrettierConfig(options);
 
   // Run `npm install` after initial setup so `npm run check` works right away.
   if (!options.dryRun) {
