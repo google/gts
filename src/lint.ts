@@ -15,10 +15,10 @@
  */
 import * as fs from 'fs';
 import * as path from 'path';
-import {Configuration, Linter} from 'tslint';
+import { Configuration, Linter } from 'tslint';
 import * as ts from 'typescript';
 
-import {Options} from './cli';
+import { Options } from './cli';
 
 /**
  * Run tslint with the default configuration. Returns true on success.
@@ -51,7 +51,7 @@ export function lint(
       );
       const source = fs.readFileSync(file, 'utf8');
 
-      const linter = new Linter({fix, formatter: 'codeFrame'});
+      const linter = new Linter({ fix, formatter: 'codeFrame' });
       linter.lint(file, source, configuration);
       const result = linter.getResult();
       if (result.errorCount || result.warningCount) {
@@ -74,7 +74,7 @@ export function lint(
       : path.resolve(options.gtsRootDir, 'tslint.json');
 
     const configuration = Configuration.loadConfigurationFromPath(configPath);
-    const linter = new Linter({fix, formatter: 'codeFrame'}, program);
+    const linter = new Linter({ fix, formatter: 'codeFrame' }, program);
 
     files.forEach(file => {
       const sourceFile = program.getSourceFile(file);

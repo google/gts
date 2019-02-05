@@ -18,8 +18,8 @@ import * as prettier from 'prettier';
 import * as fs from 'fs';
 import * as diff from 'diff';
 
-import {Options} from './cli';
-import {createProgram} from './lint';
+import { Options } from './cli';
+import { createProgram } from './lint';
 
 const PRETTIER_OPTIONS = require('../../prettier.config.js');
 

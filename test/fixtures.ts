@@ -49,7 +49,7 @@ export async function withFixtures(
   fn: (fixturesDir: string) => PromiseLike<void>
 ) {
   const keep = !!process.env.GTS_KEEP_TEMPDIRS;
-  const dir = tmp.dirSync({keep, unsafeCleanup: true});
+  const dir = tmp.dirSync({ keep, unsafeCleanup: true });
 
   await setupFixtures(dir.name, fixtures);
 

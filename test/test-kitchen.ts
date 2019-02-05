@@ -58,7 +58,7 @@ const execp = (
 };
 
 const keep = !!process.env.GTS_KEEP_TEMPDIRS;
-const stagingDir = tmp.dirSync({keep, unsafeCleanup: true});
+const stagingDir = tmp.dirSync({ keep, unsafeCleanup: true });
 const stagingPath = stagingDir.name;
 const execOpts = {
   cwd: `${stagingPath}/kitchen`,
@@ -107,8 +107,8 @@ test.serial('use as a non-locally installed module', async t => {
   // Use from a directory different from where we have locally installed. This
   // simulates use as a globally installed module.
   const GTS = `${stagingPath}/kitchen/node_modules/.bin/gts`;
-  const tmpDir = tmp.dirSync({keep, unsafeCleanup: true});
-  const opts = {cwd: `${tmpDir.name}/kitchen`};
+  const tmpDir = tmp.dirSync({ keep, unsafeCleanup: true });
+  const opts = { cwd: `${tmpDir.name}/kitchen` };
 
   // Copy test files.
   await ncpp('test/fixtures', `${tmpDir.name}/`);
@@ -153,7 +153,7 @@ test.serial('generated json files should terminate with newline', async t => {
 });
 
 test.serial('check before fix', async t => {
-  const {exitCode, stdout} = await execp('npm run check', execOpts);
+  const { exitCode, stdout } = await execp('npm run check', execOpts);
   t.deepEqual(exitCode, 1);
   t.notDeepEqual(stdout.indexOf('prettier reported errors'), -1);
   t.pass();

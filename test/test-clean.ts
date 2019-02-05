@@ -18,11 +18,11 @@ import test from 'ava';
 import * as fs from 'fs';
 import * as path from 'path';
 
-import {clean} from '../src/clean';
-import {Options} from '../src/cli';
-import {nop} from '../src/util';
+import { clean } from '../src/clean';
+import { Options } from '../src/cli';
+import { nop } from '../src/util';
 
-import {withFixtures} from './fixtures';
+import { withFixtures } from './fixtures';
 
 const OPTIONS: Options = {
   gtsRootDir: path.resolve(__dirname, '../..'),
@@ -30,7 +30,7 @@ const OPTIONS: Options = {
   dryRun: false,
   yes: false,
   no: false,
-  logger: {log: nop, error: nop, dir: nop},
+  logger: { log: nop, error: nop, dir: nop },
 };
 
 test.serial.failing('should gracefully error if tsconfig is missing', t => {
@@ -42,7 +42,7 @@ test.serial.failing('should gracefully error if tsconfig is missing', t => {
 test.serial(
   'should gracefully error if tsconfig does not have valid outDir',
   t => {
-    return withFixtures({'tsconfig.json': JSON.stringify({})}, async () => {
+    return withFixtures({ 'tsconfig.json': JSON.stringify({}) }, async () => {
       const deleted = await clean(OPTIONS);
       t.is(deleted, false);
     });
@@ -51,7 +51,7 @@ test.serial(
 
 test.serial('should avoid deleting .', t => {
   return withFixtures(
-    {'tsconfig.json': JSON.stringify({compilerOptions: {outDir: '.'}})},
+    { 'tsconfig.json': JSON.stringify({ compilerOptions: { outDir: '.' } }) },
     async () => {
       const deleted = await clean(OPTIONS);
       t.is(deleted, false);
@@ -61,7 +61,11 @@ test.serial('should avoid deleting .', t => {
 
 test.serial.failing('should ensure that outDir is local to targetRoot', t => {
   return withFixtures(
-    {'tsconfig.json': JSON.stringify({compilerOptions: {outDir: '../out'}})},
+    {
+      'tsconfig.json': JSON.stringify({
+        compilerOptions: { outDir: '../out' },
+      }),
+    },
     async () => {
       const deleted = await clean(OPTIONS);
       t.is(deleted, false);
@@ -73,7 +77,7 @@ test.serial('should remove outDir', t => {
   const OUT = 'outputDirectory';
   return withFixtures(
     {
-      'tsconfig.json': JSON.stringify({compilerOptions: {outDir: OUT}}),
+      'tsconfig.json': JSON.stringify({ compilerOptions: { outDir: OUT } }),
       [OUT]: {},
     },
     async dir => {
