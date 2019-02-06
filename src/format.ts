@@ -46,7 +46,7 @@ export async function format(
       : program.getRootFileNames().filter(f => !f.endsWith('.d.ts'));
 
   const result = await checkFormat(srcFiles, options, fix);
-  if (result === false) {
+  if (!result) {
     options.logger.log('prettier reported errors... run `gts fix` to address.');
   }
   return result;
