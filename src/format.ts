@@ -82,9 +82,16 @@ async function checkFormat(srcFiles: string[], options: Options, fix: boolean) {
   const checks = configs.map(({ file, config }: FileConfig) => {
     config = config || PRETTIER_OPTIONS;
     const contents = fs.readFileSync(file, 'utf8');
-    const formatted = prettier.format(contents, config!);
-    const wellFormatted = contents === formatted;
-    if (wellFormatted) {
+
+    let formatted: string;
+    try {
+      formatted = prettier.format(contents, config!);
+    } catch (e) {
+      options.logger.log(`${file}: ${e}`);
+      return false;
+    }
+
+    if (contents === formatted) {
       return true;
     }
     if (fix) {

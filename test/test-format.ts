@@ -290,3 +290,30 @@ test.serial(
     );
   }
 );
+
+// Files that cannot be formatted should be left untouched.
+test.serial('format should leave the kitty unharmed', t => {
+  const KITTY = `
+   /\\**/\\
+  ( o_o  )_)
+  ,(u  u  ,),
+ {}{}{}{}{}{}`;
+
+  return withFixtures(
+    {
+      'tsconfig.json': JSON.stringify({ files: ['a.ts'] }),
+      'a.ts': BAD_CODE,
+      'kitty.kitty': KITTY,
+    },
+    async fixturesDir => {
+      const result = await format.format(OPTIONS, ['kitty.kitty'], true);
+      t.false(result); // Well structured JS, the kitty is not.
+      // Well structured or not, the kitty should be left alone.
+      const contents = fs.readFileSync(
+        path.join(fixturesDir, 'kitty.kitty'),
+        'utf8'
+      );
+      t.deepEqual(contents, KITTY);
+    }
+  );
+});
