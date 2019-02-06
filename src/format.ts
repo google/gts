@@ -47,24 +47,24 @@ export async function format(
 
   const result = await checkFormat(srcFiles, options, fix);
   if (result === false) {
-    options.logger.log(
-      'prettier reported errors... run `gts fix` to address.'
-    );
+    options.logger.log('prettier reported errors... run `gts fix` to address.');
   }
   return result;
 }
 
 interface FileConfig {
   file: string;
-  config: prettier.Options|null;
+  config: prettier.Options | null;
 }
 
-async function mapFilesToFileConfigs(srcFiles: string[]): Promise<FileConfig[]> {
+async function mapFilesToFileConfigs(
+  srcFiles: string[]
+): Promise<FileConfig[]> {
   const configs = await Promise.all(
     srcFiles.map(file => prettier.resolveConfig(file))
   );
-  return srcFiles.map((file, index) => { 
-    return {file, config: configs[index]};
+  return srcFiles.map((file, index) => {
+    return { file, config: configs[index] };
   });
 }
 
@@ -79,7 +79,7 @@ async function mapFilesToFileConfigs(srcFiles: string[]): Promise<FileConfig[]> 
 async function checkFormat(srcFiles: string[], options: Options, fix: boolean) {
   const configs = await mapFilesToFileConfigs(srcFiles);
 
-  const checks = configs.map(({file, config}: FileConfig) => {
+  const checks = configs.map(({ file, config }: FileConfig) => {
     config = config || PRETTIER_OPTIONS;
     const contents = fs.readFileSync(file, 'utf8');
     const formatted = prettier.format(contents, config!);
