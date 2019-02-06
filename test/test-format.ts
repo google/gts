@@ -18,18 +18,22 @@ import test from 'ava';
 import * as fs from 'fs';
 import * as path from 'path';
 
-import {Options} from '../src/cli';
+import { Options } from '../src/cli';
 import * as format from '../src/format';
-import {nop} from '../src/util';
+import { nop } from '../src/util';
 
-import {withFixtures} from './fixtures';
+import { withFixtures } from './fixtures';
 
-// clang-format won't pass this code because of trailing spaces.
 const BAD_CODE = 'export const foo = [ "2" ];';
-const GOOD_CODE = "export const foo = ['2'];";
+const GOOD_CODE = "export const foo = ['2'];\n";
+const CODE_WITH_TABS = `module.exports = {
+\treallyLongIdentified: 4,
+\tanotherSuperLongIdentifier,
+\tthisCannotFitOnTheSameLine
+};\n`;
 
-const CLANG_FORMAT_MESSAGE =
-  'clang-format reported errors... run `gts fix` to address.';
+const PRETTIER_FORMAT_MESSAGE =
+  'prettier reported errors... run `gts fix` to address.';
 
 const OPTIONS: Options = {
   gtsRootDir: path.resolve(__dirname, '../..'),
@@ -37,12 +41,12 @@ const OPTIONS: Options = {
   dryRun: false,
   yes: false,
   no: false,
-  logger: {log: console.log, error: console.error, dir: nop},
+  logger: { log: console.log, error: console.error, dir: nop },
 };
 
 test.serial('format should return true for well-formatted files', t => {
   return withFixtures(
-    {'tsconfig.json': JSON.stringify({files: ['a.ts']}), 'a.ts': GOOD_CODE},
+    { 'tsconfig.json': JSON.stringify({ files: ['a.ts'] }), 'a.ts': GOOD_CODE },
     async () => {
       const result = await format.format(OPTIONS, [], false);
       t.true(result);
@@ -52,7 +56,7 @@ test.serial('format should return true for well-formatted files', t => {
 
 test.serial('format should return false for ill-formatted files', t => {
   return withFixtures(
-    {'tsconfig.json': JSON.stringify({files: ['a.ts']}), 'a.ts': BAD_CODE},
+    { 'tsconfig.json': JSON.stringify({ files: ['a.ts'] }), 'a.ts': BAD_CODE },
     async () => {
       const result = await format.format(OPTIONS, [], false);
       t.false(result);
@@ -63,8 +67,8 @@ test.serial('format should return false for ill-formatted files', t => {
 test.serial('format should only look in root files', t => {
   return withFixtures(
     {
-      'tsconfig.json': JSON.stringify({files: ['a.ts']}),
-      'a.ts': "import {foo} from './b';\n",
+      'tsconfig.json': JSON.stringify({ files: ['a.ts'] }),
+      'a.ts': "import { foo } from './b';\n",
       'b.ts': BAD_CODE,
     },
     async () => {
@@ -76,7 +80,7 @@ test.serial('format should only look in root files', t => {
 
 test.serial('format should auto fix problems', t => {
   return withFixtures(
-    {'tsconfig.json': JSON.stringify({files: ['a.ts']}), 'a.ts': BAD_CODE},
+    { 'tsconfig.json': JSON.stringify({ files: ['a.ts'] }), 'a.ts': BAD_CODE },
     async fixturesDir => {
       const result = await format.format(OPTIONS, [], true);
       t.true(result);
@@ -89,7 +93,7 @@ test.serial('format should auto fix problems', t => {
 test.serial('format should format files listed in tsconfig.files', t => {
   return withFixtures(
     {
-      'tsconfig.json': JSON.stringify({files: ['a.ts']}),
+      'tsconfig.json': JSON.stringify({ files: ['a.ts'] }),
       'a.ts': GOOD_CODE,
       'b.ts': BAD_CODE,
     },
@@ -122,7 +126,7 @@ test.serial(
   async t => {
     return withFixtures(
       {
-        'tsconfig.json': JSON.stringify({files: ['a.ts']}),
+        'tsconfig.json': JSON.stringify({ files: ['a.ts'] }),
         'a.ts': BAD_CODE,
         'b.ts': BAD_CODE,
       },
@@ -142,7 +146,7 @@ test.serial(
 test.serial('skip files listed in exclude', t => {
   return withFixtures(
     {
-      'tsconfig.json': JSON.stringify({exclude: ['b.*']}),
+      'tsconfig.json': JSON.stringify({ exclude: ['b.*'] }),
       'a.ts': GOOD_CODE,
       'b.ts': BAD_CODE,
     },
@@ -156,9 +160,9 @@ test.serial('skip files listed in exclude', t => {
 test.serial('format globs listed in include', t => {
   return withFixtures(
     {
-      'tsconfig.json': JSON.stringify({include: ['dirb/*']}),
-      dira: {'a.ts': GOOD_CODE},
-      dirb: {'b.ts': BAD_CODE},
+      'tsconfig.json': JSON.stringify({ include: ['dirb/*'] }),
+      dira: { 'a.ts': GOOD_CODE },
+      dirb: { 'b.ts': BAD_CODE },
     },
     async () => {
       const okay = await format.format(OPTIONS);
@@ -169,9 +173,9 @@ test.serial('format globs listed in include', t => {
 
 test.serial('format should not auto fix on dry-run', t => {
   return withFixtures(
-    {'tsconfig.json': JSON.stringify({files: ['a.ts']}), 'a.ts': BAD_CODE},
+    { 'tsconfig.json': JSON.stringify({ files: ['a.ts'] }), 'a.ts': BAD_CODE },
     async fixturesDir => {
-      const optionsWithDryRun = Object.assign({}, OPTIONS, {dryRun: true});
+      const optionsWithDryRun = Object.assign({}, OPTIONS, { dryRun: true });
       const okay = await format.format(optionsWithDryRun, [], true);
       t.is(okay, false);
       const contents = fs.readFileSync(path.join(fixturesDir, 'a.ts'), 'utf8');
@@ -180,12 +184,39 @@ test.serial('format should not auto fix on dry-run', t => {
   );
 });
 
-test.serial('format should use user provided config', t => {
+test.serial('format should return false on code with tabs', t => {
   return withFixtures(
     {
-      'tsconfig.json': JSON.stringify({files: ['a.ts']}),
-      '.clang-format': 'Language: JavaScript',
-      'a.ts': BAD_CODE, // but actually good under the custom JS format config.
+      'tsconfig.json': JSON.stringify({ files: ['tabs.ts'] }),
+      'tabs.ts': CODE_WITH_TABS,
+    },
+    async () => {
+      const result = await format.format(OPTIONS, [], false);
+      t.false(result);
+    }
+  );
+});
+
+test.serial('format should use user provided prettier.config.js', t => {
+  return withFixtures(
+    {
+      'tsconfig.json': JSON.stringify({ files: ['tabs.ts'] }),
+      'prettier.config.js': `module.exports = { useTabs: true }`,
+      'tabs.ts': CODE_WITH_TABS,
+    },
+    async () => {
+      const result = await format.format(OPTIONS, [], false);
+      t.true(result);
+    }
+  );
+});
+
+test.serial('format should use user provided .prettierrc', t => {
+  return withFixtures(
+    {
+      'tsconfig.json': JSON.stringify({ files: ['tabs.ts'] }),
+      '.prettierrc': `useTabs: true\n`,
+      'tabs.ts': CODE_WITH_TABS,
     },
     async () => {
       const result = await format.format(OPTIONS, [], false);
@@ -197,7 +228,7 @@ test.serial('format should use user provided config', t => {
 test.serial('format should prefer the files parameter over options', t => {
   return withFixtures(
     {
-      'tsconfig.json': JSON.stringify({files: ['a.ts']}),
+      'tsconfig.json': JSON.stringify({ files: ['a.ts'] }),
       'a.ts': BAD_CODE,
       'good.ts': GOOD_CODE,
     },
@@ -208,32 +239,12 @@ test.serial('format should prefer the files parameter over options', t => {
   );
 });
 
-test.serial('format should return error from failed spawn', async t => {
-  return withFixtures(
-    {'tsconfig.json': JSON.stringify({files: ['a.ts']}), 'a.ts': GOOD_CODE},
-    async () => {
-      const MESSAGE = '🦄';
-      // Mock clangFormat.
-      const original = format.clangFormat.spawnClangFormat;
-      // tslint:disable-next-line:no-any
-      format.clangFormat.spawnClangFormat = (_: any, cb: Function) => {
-        setImmediate(() => {
-          cb(new Error(MESSAGE));
-        });
-      };
-      await t.throwsAsync(format.format(OPTIONS, [], true), Error, MESSAGE);
-      await t.throwsAsync(format.format(OPTIONS, [], false), Error, MESSAGE);
-      format.clangFormat.spawnClangFormat = original;
-    }
-  );
-});
-
 test.serial(
   'format should print suggestions for fixes for ill-formatted file',
   t => {
     return withFixtures(
       {
-        'tsconfig.json': JSON.stringify({files: ['a.ts']}),
+        'tsconfig.json': JSON.stringify({ files: ['a.ts'] }),
         'a.ts': BAD_CODE,
       },
       async () => {
@@ -243,10 +254,10 @@ test.serial(
             output += n;
           },
         });
-        const options = Object.assign({}, OPTIONS, {logger: newLogger});
+        const options = Object.assign({}, OPTIONS, { logger: newLogger });
 
         await format.format(options, [], false);
-        t.true(output.search(CLANG_FORMAT_MESSAGE) !== -1);
+        t.true(output.search(PRETTIER_FORMAT_MESSAGE) !== -1);
         t.true(output.indexOf("+export const foo = ['2'];") !== -1);
         t.true(output.indexOf('-export const foo = [ "2" ];') !== -1);
       }
@@ -259,7 +270,7 @@ test.serial(
   t => {
     return withFixtures(
       {
-        'tsconfig.json': JSON.stringify({files: ['a.ts']}),
+        'tsconfig.json': JSON.stringify({ files: ['a.ts'] }),
         'a.ts': "//🦄 This is a comment 🌷🏳️‍🌈	— /\nconst variable =    '5'",
       },
       async () => {
@@ -269,10 +280,10 @@ test.serial(
             output += n;
           },
         });
-        const options = Object.assign({}, OPTIONS, {logger: newLogger});
+        const options = Object.assign({}, OPTIONS, { logger: newLogger });
 
         await format.format(options, [], false);
-        t.true(output.search(CLANG_FORMAT_MESSAGE) !== -1);
+        t.true(output.search(PRETTIER_FORMAT_MESSAGE) !== -1);
         t.true(output.indexOf('//🦄 This is a comment 🌷🏳️‍🌈	—') !== -1);
         t.true(output.indexOf("const variable = '5'") !== -1);
       }
@@ -280,17 +291,29 @@ test.serial(
   }
 );
 
-test.serial(
-  'should throw error if xml are missing offset, length, or fix values',
-  t => {
-    return withFixtures({}, async () => {
-      const missingLength =
-        "<?xml version='1.0'?>\n<replacements xml:space='" +
-        "preserve' incomplete_format='false'>\n<replacement " +
-        "offset='8' length=''>FIX</replacement></replacements>";
-      t.throws(() => {
-        format.getReplacements(missingLength);
-      });
-    });
-  }
-);
+// Files that cannot be formatted should be left untouched.
+test.serial('format should leave the kitty unharmed', t => {
+  const KITTY = `
+   /\\**/\\
+  ( o_o  )_)
+  ,(u  u  ,),
+ {}{}{}{}{}{}`;
+
+  return withFixtures(
+    {
+      'tsconfig.json': JSON.stringify({ files: ['a.ts'] }),
+      'a.ts': BAD_CODE,
+      'kitty.kitty': KITTY,
+    },
+    async fixturesDir => {
+      const result = await format.format(OPTIONS, ['kitty.kitty'], true);
+      t.false(result); // Well structured JS, the kitty is not.
+      // Well structured or not, the kitty should be left alone.
+      const contents = fs.readFileSync(
+        path.join(fixturesDir, 'kitty.kitty'),
+        'utf8'
+      );
+      t.deepEqual(contents, KITTY);
+    }
+  );
+});

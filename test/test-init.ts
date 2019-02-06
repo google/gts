@@ -17,11 +17,11 @@
 import test from 'ava';
 import * as path from 'path';
 
-import {Options} from '../src/cli';
+import { Options } from '../src/cli';
 import * as init from '../src/init';
-import {nop, readJsonp as readJson} from '../src/util';
+import { nop, readJsonp as readJson } from '../src/util';
 
-import {withFixtures} from './fixtures';
+import { withFixtures } from './fixtures';
 
 const OPTIONS: Options = {
   gtsRootDir: path.resolve(__dirname, '../..'),
@@ -29,11 +29,11 @@ const OPTIONS: Options = {
   dryRun: false,
   yes: false,
   no: false,
-  logger: {log: nop, error: nop, dir: nop},
+  logger: { log: nop, error: nop, dir: nop },
 };
-const OPTIONS_YES = Object.assign({}, OPTIONS, {yes: true});
-const OPTIONS_NO = Object.assign({}, OPTIONS, {no: true});
-const OPTIONS_DRY_RUN = Object.assign({}, OPTIONS, {dryRun: true});
+const OPTIONS_YES = Object.assign({}, OPTIONS, { yes: true });
+const OPTIONS_NO = Object.assign({}, OPTIONS, { no: true });
+const OPTIONS_DRY_RUN = Object.assign({}, OPTIONS, { dryRun: true });
 
 function hasExpectedScripts(packageJson: init.PackageJson): boolean {
   return (
@@ -75,7 +75,7 @@ test('addScripts should not edit existing scripts on no', async t => {
     pretest: `fake run compile`,
     posttest: `fake run check`,
   };
-  const pkg: init.PackageJson = {scripts: Object.assign({}, SCRIPTS)};
+  const pkg: init.PackageJson = { scripts: Object.assign({}, SCRIPTS) };
 
   const result = await init.addScripts(pkg, OPTIONS_NO);
   t.is(result, false); // no edits.
@@ -92,7 +92,7 @@ test('addScripts should edit existing scripts on yes', async t => {
     pretest: `fake run compile`,
     posttest: `fake run check`,
   };
-  const pkg: init.PackageJson = {scripts: Object.assign({}, SCRIPTS)};
+  const pkg: init.PackageJson = { scripts: Object.assign({}, SCRIPTS) };
   const result = await init.addScripts(pkg, OPTIONS_YES);
   t.is(result, true); // made edits.
   t.notDeepEqual(pkg.scripts, SCRIPTS);
@@ -106,17 +106,17 @@ test('addDependencies should add a deps section if none exists', async t => {
 });
 
 test('addDependencies should not edit existing deps on no', async t => {
-  const DEPS = {gts: 'something', typescript: 'or the other'};
-  const pkg: init.PackageJson = {devDependencies: Object.assign({}, DEPS)};
-  const OPTIONS_NO = Object.assign({}, OPTIONS, {no: true});
+  const DEPS = { gts: 'something', typescript: 'or the other' };
+  const pkg: init.PackageJson = { devDependencies: Object.assign({}, DEPS) };
+  const OPTIONS_NO = Object.assign({}, OPTIONS, { no: true });
   const result = await init.addDependencies(pkg, OPTIONS_NO);
   t.is(result, false); // no edits.
   t.deepEqual(pkg.devDependencies, DEPS);
 });
 
 test('addDependencies should edit existing deps on yes', async t => {
-  const DEPS = {gts: 'something', typescript: 'or the other'};
-  const pkg: init.PackageJson = {devDependencies: Object.assign({}, DEPS)};
+  const DEPS = { gts: 'something', typescript: 'or the other' };
+  const pkg: init.PackageJson = { devDependencies: Object.assign({}, DEPS) };
 
   const result = await init.addDependencies(pkg, OPTIONS_YES);
   t.is(result, true); // made edits.
@@ -127,9 +127,9 @@ test('addDependencies should edit existing deps on yes', async t => {
 
 // init
 test.serial('init should read local package.json', t => {
-  const originalContents = {some: 'property'};
+  const originalContents = { some: 'property' };
   return withFixtures(
-    {'package.json': JSON.stringify(originalContents)},
+    { 'package.json': JSON.stringify(originalContents) },
     async () => {
       // TODO: this test causes `npm install` to run in the fixture directory.
       // This may make it sensitive to the network, npm resiliency. Find a

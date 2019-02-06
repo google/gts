@@ -102,7 +102,7 @@ async function getBase(
  * @param inherited is then loaded and overwrites base
  */
 function combineTSConfig(base: ConfigFile, inherited: ConfigFile): ConfigFile {
-  const result: ConfigFile = {compilerOptions: {}};
+  const result: ConfigFile = { compilerOptions: {} };
 
   Object.assign(result, base, inherited);
   Object.assign(

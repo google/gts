@@ -18,12 +18,12 @@ import test from 'ava';
 import * as fs from 'fs';
 import * as path from 'path';
 
-import {Options} from '../src/cli';
-import {TSLINT_CONFIG} from '../src/init';
+import { Options } from '../src/cli';
+import { TSLINT_CONFIG } from '../src/init';
 import * as lint from '../src/lint';
-import {nop} from '../src/util';
+import { nop } from '../src/util';
 
-import {withFixtures} from './fixtures';
+import { withFixtures } from './fixtures';
 
 const OPTIONS: Options = {
   gtsRootDir: path.resolve(__dirname, '../..'),
@@ -31,7 +31,7 @@ const OPTIONS: Options = {
   dryRun: false,
   yes: false,
   no: false,
-  logger: {log: nop, error: nop, dir: nop},
+  logger: { log: nop, error: nop, dir: nop },
 };
 
 const BAD_CODE = `throw 'hello world';`;
@@ -42,7 +42,7 @@ const FIXABLE_CODE = 'const x : Array<string> = []';
 const FIXABLE_CODE_FIXED = 'const x : string[] = [];';
 
 test.serial('createProgram should return an object', t => {
-  return withFixtures({'tsconfig.json': '{}'}, async () => {
+  return withFixtures({ 'tsconfig.json': '{}' }, async () => {
     const program = lint.createProgram(OPTIONS);
     t.truthy(program);
   });
@@ -51,7 +51,7 @@ test.serial('createProgram should return an object', t => {
 test.serial('lint should return true on good code', t => {
   return withFixtures(
     {
-      'tsconfig.json': JSON.stringify({files: ['a.ts']}),
+      'tsconfig.json': JSON.stringify({ files: ['a.ts'] }),
       'a.ts': GOOD_CODE,
     },
     async () => {
@@ -64,7 +64,7 @@ test.serial('lint should return true on good code', t => {
 test.serial('lint should return false on bad code', t => {
   return withFixtures(
     {
-      'tsconfig.json': JSON.stringify({files: ['a.ts']}),
+      'tsconfig.json': JSON.stringify({ files: ['a.ts'] }),
       'a.ts': BAD_CODE,
     },
     async () => {
@@ -77,7 +77,7 @@ test.serial('lint should return false on bad code', t => {
 test.serial('lint should auto fix fixable errors', t => {
   return withFixtures(
     {
-      'tsconfig.json': JSON.stringify({files: ['a.ts']}),
+      'tsconfig.json': JSON.stringify({ files: ['a.ts'] }),
       'a.ts': FIXABLE_CODE,
     },
     async fixturesDir => {
@@ -92,11 +92,11 @@ test.serial('lint should auto fix fixable errors', t => {
 test.serial('lint should not auto fix on dry-run', t => {
   return withFixtures(
     {
-      'tsconfig.json': JSON.stringify({files: ['a.ts']}),
+      'tsconfig.json': JSON.stringify({ files: ['a.ts'] }),
       'a.ts': FIXABLE_CODE,
     },
     async fixturesDir => {
-      const optionsWithDryRun = Object.assign({}, OPTIONS, {dryRun: true});
+      const optionsWithDryRun = Object.assign({}, OPTIONS, { dryRun: true });
       const okay = lint.lint(optionsWithDryRun, [], true);
       t.is(okay, false);
       const contents = fs.readFileSync(path.join(fixturesDir, 'a.ts'), 'utf8');
@@ -108,7 +108,7 @@ test.serial('lint should not auto fix on dry-run', t => {
 test.serial('lint should lint files listed in tsconfig.files', t => {
   return withFixtures(
     {
-      'tsconfig.json': JSON.stringify({files: ['a.ts']}),
+      'tsconfig.json': JSON.stringify({ files: ['a.ts'] }),
       'a.ts': GOOD_CODE,
       'b.ts': BAD_CODE,
     },
@@ -141,7 +141,7 @@ test.serial(
   async t => {
     return withFixtures(
       {
-        'tsconfig.json': JSON.stringify({files: ['a.ts']}),
+        'tsconfig.json': JSON.stringify({ files: ['a.ts'] }),
         'a.ts': FIXABLE_CODE,
         'b.ts': BAD_CODE,
       },
@@ -161,7 +161,7 @@ test.serial(
 test.serial('lint should not lint files listed in exclude', t => {
   return withFixtures(
     {
-      'tsconfig.json': JSON.stringify({exclude: ['b.*']}),
+      'tsconfig.json': JSON.stringify({ exclude: ['b.*'] }),
       'a.ts': GOOD_CODE,
       'b.ts': BAD_CODE,
     },
@@ -175,9 +175,9 @@ test.serial('lint should not lint files listed in exclude', t => {
 test.serial('lint should lint globs listed in include', t => {
   return withFixtures(
     {
-      'tsconfig.json': JSON.stringify({include: ['dirb/*']}),
-      dira: {'a.ts': GOOD_CODE},
-      dirb: {'b.ts': BAD_CODE},
+      'tsconfig.json': JSON.stringify({ include: ['dirb/*'] }),
+      dira: { 'a.ts': GOOD_CODE },
+      dirb: { 'b.ts': BAD_CODE },
     },
     async () => {
       const okay = lint.lint(OPTIONS);
@@ -190,8 +190,8 @@ test.serial('lint should lint only specified files', t => {
   return withFixtures(
     {
       'tsconfig.json': JSON.stringify({}),
-      dira: {'a.ts': GOOD_CODE},
-      dirb: {'b.ts': BAD_CODE},
+      dira: { 'a.ts': GOOD_CODE },
+      dirb: { 'b.ts': BAD_CODE },
     },
     async () => {
       const aOkay = lint.lint(OPTIONS, ['dira/a.ts']);
@@ -222,7 +222,7 @@ test.serial('lint should prefer user config file over default', async t => {
   // By default the above should fail lint.
   await withFixtures(
     {
-      'tsconfig.json': JSON.stringify({files: ['a.ts']}),
+      'tsconfig.json': JSON.stringify({ files: ['a.ts'] }),
       'a.ts': CUSTOM_LINT_CODE,
     },
     async () => {
@@ -234,7 +234,7 @@ test.serial('lint should prefer user config file over default', async t => {
   // User should be able to override the default config.
   return withFixtures(
     {
-      'tsconfig.json': JSON.stringify({files: ['a.ts']}),
+      'tsconfig.json': JSON.stringify({ files: ['a.ts'] }),
       'tslint.json': JSON.stringify({}),
       'a.ts': CUSTOM_LINT_CODE,
     },
@@ -263,7 +263,7 @@ test.serial('lint for specific files should use file-specific config', t => {
         'a.ts': CODE_WITH_PARSEINT,
         // no tslint, so default should apply.
       },
-      dirb: {'b.ts': CODE_WITH_PARSEINT, 'tslint.json': JSON.stringify({})},
+      dirb: { 'b.ts': CODE_WITH_PARSEINT, 'tslint.json': JSON.stringify({}) },
     },
     async () => {
       const okay = lint.lint(optionsWithLog, ['dira/a.ts', 'dirb/b.ts']);

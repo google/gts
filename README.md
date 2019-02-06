@@ -14,7 +14,7 @@
 - **Catch style issues & programmer errors early**. Save precious code review time by eliminating back-and-forth between reviewer & contributor.
 - **Opinionated, but not to a fault**. We recommend you use the default configuration, but if you *need* to customize compiler or linter config, you can.
 
-Under the covers, we use [tslint][tslint-url] to enforce the style guide and provide automated fixes, and [clang-format][clang-format-url] to re-format code.
+Under the covers, we use [tslint][tslint-url] to enforce the style guide and provide automated fixes, and [prettier][prettier-url] to re-format code.
 
 Made with ❤️ by the Google Node.js team.
 
@@ -59,7 +59,7 @@ See [LICENSE](LICENSE)
 
 [circle-image]: https://circleci.com/gh/google/ts-style.svg?style=svg
 [circle-url]: https://circleci.com/gh/google/ts-style
-[clang-format-url]: https://github.com/angular/clang-format
+[prettier-url]: https://prettier.io/
 [codecov-image]: https://codecov.io/gh/google/ts-style/branch/master/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/google/ts-style
 [david-dev-image]: https://david-dm.org/google/ts-style/dev-status.svg

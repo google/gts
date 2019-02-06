@@ -18,7 +18,7 @@ import * as cp from 'child_process';
 import * as inquirer from 'inquirer';
 import * as path from 'path';
 
-import {Options} from './cli';
+import { Options } from './cli';
 import {
   readFilep as read,
   readJsonp as readJson,
@@ -36,7 +36,7 @@ const DEFAULT_PACKAGE_JSON: PackageJson = {
   files: ['build/src'],
   license: 'Apache-2.0',
   keywords: [],
-  scripts: {test: 'echo "Error: no test specified" && exit 1'},
+  scripts: { test: 'echo "Error: no test specified" && exit 1' },
 };
 
 export interface Bag<T> {
@@ -200,15 +200,18 @@ async function generateTsLintConfig(options: Options): Promise<void> {
 async function generateTsConfig(options: Options): Promise<void> {
   const config = formatJson({
     extends: './node_modules/gts/tsconfig-google.json',
-    compilerOptions: {rootDir: '.', outDir: 'build'},
+    compilerOptions: { rootDir: '.', outDir: 'build' },
     include: ['src/*.ts', 'src/**/*.ts', 'test/*.ts', 'test/**/*.ts'],
   });
   return generateConfigFile(options, './tsconfig.json', config);
 }
 
-async function generateClangFormat(options: Options): Promise<void> {
-  const style = await read(path.join(__dirname, '../../.clang-format'), 'utf8');
-  return generateConfigFile(options, './.clang-format', style);
+async function generatePrettierConfig(options: Options): Promise<void> {
+  const style = await read(
+    path.join(__dirname, '../../prettier.config.js'),
+    'utf8'
+  );
+  return generateConfigFile(options, './prettier.config.js', style);
 }
 
 async function generateConfigFile(
@@ -283,13 +286,13 @@ export async function init(options: Options): Promise<boolean> {
   }
   await generateTsConfig(options);
   await generateTsLintConfig(options);
-  await generateClangFormat(options);
+  await generatePrettierConfig(options);
 
   // Run `npm install` after initial setup so `npm run check` works right away.
   if (!options.dryRun) {
     // --ignore-scripts so that compilation doesn't happen because there's no
     // source files yet.
-    cp.spawnSync('npm', ['install', '--ignore-scripts'], {stdio: 'inherit'});
+    cp.spawnSync('npm', ['install', '--ignore-scripts'], { stdio: 'inherit' });
   }
 
   return true;
