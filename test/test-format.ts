@@ -68,7 +68,7 @@ test.serial('format should only look in root files', t => {
   return withFixtures(
     {
       'tsconfig.json': JSON.stringify({ files: ['a.ts'] }),
-      'a.ts': "import {foo} from './b';\n",
+      'a.ts': "import { foo } from './b';\n",
       'b.ts': BAD_CODE,
     },
     async () => {

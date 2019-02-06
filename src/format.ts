@@ -45,18 +45,27 @@ export async function format(
       ? files
       : program.getRootFileNames().filter(f => !f.endsWith('.d.ts'));
 
-  if (fix) {
-    fixFormat(srcFiles);
-    return true;
-  } else {
-    const result = await checkFormat(srcFiles, options);
-    if (!result) {
-      options.logger.log(
-        'prettier reported errors... run `gts fix` to address.'
-      );
-    }
-    return result;
+  const result = await checkFormat(srcFiles, options, fix);
+  if (result === false) {
+    options.logger.log(
+      'prettier reported errors... run `gts fix` to address.'
+    );
   }
+  return result;
+}
+
+interface FileConfig {
+  file: string;
+  config: prettier.Options|null;
+}
+
+async function mapFilesToFileConfigs(srcFiles: string[]): Promise<FileConfig[]> {
+  const configs = await Promise.all(
+    srcFiles.map(file => prettier.resolveConfig(file))
+  );
+  return srcFiles.map((file, index) => { 
+    return {file, config: configs[index]};
+  });
 }
 
 /**
@@ -64,36 +73,28 @@ export async function format(
  *
  * @param srcFiles list of source files
  * @param options gts options
- * @returns true if any files have formatting errors
+ * @param fix true to auto fix the formatting problems
+ * @returns false if there are still formatting problems
  */
-async function checkFormat(srcFiles: string[], options: Options) {
-  const configs = await Promise.all(
-    srcFiles.map(file => prettier.resolveConfig(file))
-  );
+async function checkFormat(srcFiles: string[], options: Options, fix: boolean) {
+  const configs = await mapFilesToFileConfigs(srcFiles);
 
-  const checks = srcFiles.map((file, index) => {
-    const config = configs[index] || PRETTIER_OPTIONS;
-    config.filepath = config.filepath || file;
+  const checks = configs.map(({file, config}: FileConfig) => {
+    config = config || PRETTIER_OPTIONS;
     const contents = fs.readFileSync(file, 'utf8');
-    const formatted = prettier.format(contents, config);
+    const formatted = prettier.format(contents, config!);
     const wellFormatted = contents === formatted;
-    if (!wellFormatted) {
-      const patch = diff.createPatch(file, contents, formatted);
-      options.logger.log(patch);
+    if (wellFormatted) {
+      return true;
     }
-    return wellFormatted;
+    if (fix) {
+      fs.writeFileSync(file, formatted, 'utf8');
+      return true;
+    }
+    const patch = diff.createPatch(file, contents, formatted);
+    options.logger.log(patch);
+    return false;
   });
 
   return checks.reduce((sum, flag) => sum && flag, true);
-}
-
-function fixFormat(srcFiles: string[]) {
-  srcFiles.forEach(file => {
-    const contents = fs.readFileSync(file, 'utf8');
-    const alreadyFormatted = prettier.check(contents, PRETTIER_OPTIONS);
-    if (!alreadyFormatted) {
-      const formatted = prettier.format(contents, PRETTIER_OPTIONS);
-      fs.writeFileSync(file, formatted, 'utf8');
-    }
-  });
 }
