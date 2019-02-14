@@ -64,7 +64,7 @@
     "@types/node": "^10.0.3",
     "@types/pify": "^3.0.2",
     "@types/rimraf": "^2.0.2",
-    "@types/tmp": "^0.0.33",
+    "@types/tmp": "^0.0.34",
     "@types/update-notifier": "^2.2.0",
     "ava": "^1.0.0",
     "codecov": "^3.0.1",
