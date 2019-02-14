@@ -108,10 +108,7 @@ async function run(verb: string, files: string[]): Promise<boolean> {
       const passFormat = await format(options, files);
       return passLint && passFormat;
     case 'fix':
-      return (
-        (await lint(options, files, true)) &&
-        (format(options, files, true))
-      );
+      return (await lint(options, files, true)) && format(options, files, true);
     case 'clean':
       return clean(options);
     default:
