@@ -97,7 +97,7 @@ async function run(verb: string, files: string[]): Promise<boolean> {
   // typescript module during init, since it might not exist.
   // See: https://github.com/google/ts-style/issues/48
   if (verb === 'init') {
-    return await init(options);
+    return init(options);
   }
 
   const lint: VerbFilesFunction = require('./lint').lint;
@@ -110,10 +110,10 @@ async function run(verb: string, files: string[]): Promise<boolean> {
     case 'fix':
       return (
         (await lint(options, files, true)) &&
-        (await format(options, files, true))
+        (format(options, files, true))
       );
     case 'clean':
-      return await clean(options);
+      return clean(options);
     default:
       usage(`Unknown verb: ${verb}`);
       return false;

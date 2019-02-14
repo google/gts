@@ -48,7 +48,7 @@ export async function getTSConfig(
 ): Promise<ConfigFile> {
   customReadFilep = customReadFilep || readFilep;
   const readArr = new Set();
-  return await getBase('tsconfig.json', customReadFilep, readArr, rootDir);
+  return getBase('tsconfig.json', customReadFilep, readArr, rootDir);
 }
 
 /**
