@@ -81,6 +81,7 @@ async function checkFormat(srcFiles: string[], options: Options, fix: boolean) {
 
   const checks = configs.map(({ file, config }: FileConfig) => {
     config = config || PRETTIER_OPTIONS;
+    config!.filepath = config!.filepath || file;
     const contents = fs.readFileSync(file, 'utf8');
 
     let formatted: string;
