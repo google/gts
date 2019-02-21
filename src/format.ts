@@ -47,7 +47,9 @@ export async function format(
 
   const result = await checkFormat(srcFiles, options, fix);
   if (!result) {
-    options.logger.log('prettier reported errors... run `standardts fix` to address.');
+    options.logger.log(
+      'prettier reported errors... run `standardts fix` to address.'
+    );
   }
   return result;
 }

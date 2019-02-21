@@ -124,7 +124,10 @@ test.serial('use as a non-locally installed module', async t => {
     'utf8'
   );
   const tsconfig = JSON.parse(tsconfigJson);
-  t.deepEqual(tsconfig.extends, './node_modules/standardts/tsconfig-google.json');
+  t.deepEqual(
+    tsconfig.extends,
+    './node_modules/standardts/tsconfig-google.json'
+  );
 
   // server.ts has a lint error. Should error.
   await t.throwsAsync(simpleExecp(`${GTS} check src/server.ts`, opts));
