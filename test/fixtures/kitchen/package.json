@@ -3,6 +3,6 @@
   "version": "1.0.0",
   "devDependencies": {
     "typescript": "^2.4.2",
-    "gts": "file:../gts.tgz"
+    "standardts": "file:../standardts.tgz"
   }
 }

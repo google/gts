@@ -47,7 +47,7 @@ export async function format(
 
   const result = await checkFormat(srcFiles, options, fix);
   if (!result) {
-    options.logger.log('prettier reported errors... run `gts fix` to address.');
+    options.logger.log('prettier reported errors... run `standardts fix` to address.');
   }
   return result;
 }
@@ -72,7 +72,7 @@ async function mapFilesToFileConfigs(
  * Checks formatting of the given file list.
  *
  * @param srcFiles list of source files
- * @param options gts options
+ * @param options standardts options
  * @param fix true to auto fix the formatting problems
  * @returns false if there are still formatting problems
  */

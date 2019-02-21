@@ -53,7 +53,7 @@ function hasExpectedScripts(packageJson: init.PackageJson): boolean {
 function hasExpectedDependencies(packageJson: init.PackageJson): boolean {
   return (
     !!packageJson.devDependencies &&
-    ['gts', 'typescript'].every(d => !!packageJson.devDependencies![d])
+    ['standardts', 'typescript'].every(d => !!packageJson.devDependencies![d])
   );
 }
 
@@ -106,7 +106,7 @@ test('addDependencies should add a deps section if none exists', async t => {
 });
 
 test('addDependencies should not edit existing deps on no', async t => {
-  const DEPS = { gts: 'something', typescript: 'or the other' };
+  const DEPS = { standardts: 'something', typescript: 'or the other' };
   const pkg: init.PackageJson = { devDependencies: Object.assign({}, DEPS) };
   const OPTIONS_NO = Object.assign({}, OPTIONS, { no: true });
   const result = await init.addDependencies(pkg, OPTIONS_NO);
@@ -115,7 +115,7 @@ test('addDependencies should not edit existing deps on no', async t => {
 });
 
 test('addDependencies should edit existing deps on yes', async t => {
-  const DEPS = { gts: 'something', typescript: 'or the other' };
+  const DEPS = { standardts: 'something', typescript: 'or the other' };
   const pkg: init.PackageJson = { devDependencies: Object.assign({}, DEPS) };
 
   const result = await init.addDependencies(pkg, OPTIONS_YES);

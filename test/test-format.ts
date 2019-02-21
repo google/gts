@@ -33,7 +33,7 @@ const CODE_WITH_TABS = `module.exports = {
 };\n`;
 
 const PRETTIER_FORMAT_MESSAGE =
-  'prettier reported errors... run `gts fix` to address.';
+  'prettier reported errors... run `standardts fix` to address.';
 
 const OPTIONS: Options = {
   gtsRootDir: path.resolve(__dirname, '../..'),

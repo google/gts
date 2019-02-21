@@ -287,7 +287,7 @@ test.serial('should handle json files correctly resolveJsonModule', t => {
       }),
       'tslint.json': JSON.stringify(TSLINT_CONFIG),
       node_modules: {
-        gts: {
+        standardts: {
           'tslint.json': fs.readFileSync('tslint.json', 'utf8'),
         },
       },

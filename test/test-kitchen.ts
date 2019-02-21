@@ -73,7 +73,7 @@ console.log(`${chalk.blue(`${__filename} staging area: ${stagingPath}`)}`);
 test.before(async () => {
   await simpleExecp('npm pack');
   const tarball = `${pkg.name}-${pkg.version}.tgz`;
-  await renamep(tarball, `${stagingPath}/gts.tgz`);
+  await renamep(tarball, `${stagingPath}/standardts.tgz`);
   await ncpp('test/fixtures', `${stagingPath}/`);
 });
 
@@ -81,12 +81,12 @@ test.serial('init', async t => {
   const nodeVersion = Number(process.version.slice(1).split('.')[0]);
   if (nodeVersion < 8) {
     await simpleExecp('npm install', execOpts);
-    await simpleExecp('./node_modules/.bin/gts init -y', execOpts);
+    await simpleExecp('./node_modules/.bin/standardts init -y', execOpts);
   } else {
     // It's important to use `-n` here because we don't want to overwrite
-    // the version of gts installed, as it will trigger the npm install.
+    // the version of standardts installed, as it will trigger the npm install.
     await simpleExecp(
-      `npx -p ${stagingPath}/gts.tgz --ignore-existing gts init -n`,
+      `npx -p ${stagingPath}/standardts.tgz --ignore-existing standardts init -n`,
       execOpts
     );
   }
@@ -106,25 +106,25 @@ test.serial('init', async t => {
 test.serial('use as a non-locally installed module', async t => {
   // Use from a directory different from where we have locally installed. This
   // simulates use as a globally installed module.
-  const GTS = `${stagingPath}/kitchen/node_modules/.bin/gts`;
+  const GTS = `${stagingPath}/kitchen/node_modules/.bin/standardts`;
   const tmpDir = tmp.dirSync({ keep, unsafeCleanup: true });
   const opts = { cwd: `${tmpDir.name}/kitchen` };
 
   // Copy test files.
   await ncpp('test/fixtures', `${tmpDir.name}/`);
-  // Test package.json expects a gts tarball from ../gts.tgz.
-  await ncpp(`${stagingPath}/gts.tgz`, `${tmpDir.name}/gts.tgz`);
+  // Test package.json expects a standardts tarball from ../standardts.tgz.
+  await ncpp(`${stagingPath}/standardts.tgz`, `${tmpDir.name}/standardts.tgz`);
   // It's important to use `-n` here because we don't want to overwrite
-  // the version of gts installed, as it will trigger the npm install.
+  // the version of standardts installed, as it will trigger the npm install.
   await simpleExecp(`${GTS} init -n`, opts);
 
-  // The `extends` field must use the local gts path.
+  // The `extends` field must use the local standardts path.
   const tsconfigJson = fs.readFileSync(
     `${tmpDir.name}/kitchen/tsconfig.json`,
     'utf8'
   );
   const tsconfig = JSON.parse(tsconfigJson);
-  t.deepEqual(tsconfig.extends, './node_modules/gts/tsconfig-google.json');
+  t.deepEqual(tsconfig.extends, './node_modules/standardts/tsconfig-google.json');
 
   // server.ts has a lint error. Should error.
   await t.throwsAsync(simpleExecp(`${GTS} check src/server.ts`, opts));
@@ -136,7 +136,7 @@ test.serial('use as a non-locally installed module', async t => {
 });
 
 test.serial('generated json files should terminate with newline', async t => {
-  await simpleExecp('./node_modules/.bin/gts init -y', execOpts);
+  await simpleExecp('./node_modules/.bin/standardts init -y', execOpts);
   t.truthy(
     fs
       .readFileSync(`${stagingPath}/kitchen/package.json`, 'utf8')
@@ -185,8 +185,7 @@ test.serial('build', async t => {
 });
 
 /**
- * Verify the `gts clean` command actually removes the
- * output dir
+ * Verify the `standardts clean` command actually removes the output dir
  */
 test.serial('clean', async t => {
   await simpleExecp('npm run clean', execOpts);

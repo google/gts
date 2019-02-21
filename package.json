@@ -1,11 +1,12 @@
 {
-  "name": "gts",
+  "name": "standardts",
   "version": "0.9.0",
   "description": "Google TypeScript Style",
-  "repository": "google/ts-style",
+  "repository": "google/standardts",
   "main": "build/src/index.js",
   "bin": {
-    "gts": "build/src/cli.js"
+    "gts": "build/src/cli.js",
+    "standardts": "build/src/cli.js"
   },
   "files": [
     "CHANGELOG.md",

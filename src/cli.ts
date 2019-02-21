@@ -48,7 +48,7 @@ const logger: Logger = console;
 const cli = meow({
   help: `
 	Usage
-	  $ gts <verb> [<file>...] [options]
+	  $ standardts <verb> [<file>...] [options]
 
     Verb can be:
       init        Adds default npm scripts to your package.json.
@@ -63,11 +63,11 @@ const cli = meow({
     --dry-run     Don't make any acutal changes.
 
 	Examples
-    $ gts init -y
-    $ gts check
-    $ gts fix
-    $ gts fix src/file1.ts src/file2.ts
-    $ gts clean`,
+    $ standardts init -y
+    $ standardts check
+    $ standardts fix
+    $ standardts fix src/file1.ts src/file2.ts
+    $ standardts clean`,
   flags: {
     help: { type: 'boolean' },
     yes: { type: 'boolean', alias: 'y' },
@@ -95,7 +95,7 @@ async function run(verb: string, files: string[]): Promise<boolean> {
   };
   // Linting/formatting depend on typescript. We don't want to load the
   // typescript module during init, since it might not exist.
-  // See: https://github.com/google/ts-style/issues/48
+  // See: https://github.com/google/standardts/issues/48
   if (verb === 'init') {
     return init(options);
   }

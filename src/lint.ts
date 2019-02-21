@@ -22,7 +22,7 @@ import { Options } from './cli';
 
 /**
  * Run tslint with the default configuration. Returns true on success.
- * @param options gts options
+ * @param options standardts options
  * @param files files to run linter on
  * @param fix automatically fix linter errors. Ignored when options.dryRun is
  *            set.

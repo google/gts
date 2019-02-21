@@ -89,10 +89,10 @@ export async function addScripts(
 ): Promise<boolean> {
   let edits = false;
   const scripts: Bag<string> = {
-    check: `gts check`,
-    clean: 'gts clean',
+    check: `standardts check`,
+    clean: 'standardts clean',
     compile: `tsc -p .`,
-    fix: `gts fix`,
+    fix: `standardts fix`,
     prepare: `npm run compile`,
     pretest: `npm run compile`,
     posttest: `npm run check`,
@@ -130,7 +130,7 @@ export async function addDependencies(
 ): Promise<boolean> {
   let edits = false;
   const deps: Bag<string> = {
-    gts: `^${pkg.version}`,
+    standardts: `^${pkg.version}`,
     typescript: pkg.devDependencies.typescript,
   };
 
@@ -183,7 +183,7 @@ async function writePackageJson(
 }
 
 export const TSLINT_CONFIG = {
-  extends: 'gts/tslint.json',
+  extends: 'standardts/tslint.json',
   linterOptions: {
     exclude: ['*.json', '**/*.json'],
   },
@@ -199,7 +199,7 @@ async function generateTsLintConfig(options: Options): Promise<void> {
 
 async function generateTsConfig(options: Options): Promise<void> {
   const config = formatJson({
-    extends: './node_modules/gts/tsconfig-google.json',
+    extends: './node_modules/standardts/tsconfig-google.json',
     compilerOptions: { rootDir: '.', outDir: 'build' },
     include: ['src/*.ts', 'src/**/*.ts', 'test/*.ts', 'test/**/*.ts'],
   });
