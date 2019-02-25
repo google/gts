@@ -7,6 +7,8 @@
 [![Known Vulnerabilities][snyk-image]][snyk-url]
 [![codecov][codecov-image]][codecov-url]
 
+**NOTE: THIS README refers to the master branch which corresponds to the upcoming 1.0 release. To view documentation for the currently released version of this module see: https://github.com/google/gts/tree/v0.9.x.**
+
 [gts][npm-url] is Google's TypeScript style guide, and the configuration for our formatter, linter, and automatic code fixer. No lint rules to edit, no configuration to update, no more bike shedding over syntax. To borrow from [standardjs][standardjs-url]:
 
 - **No configuration**. The easiest way to enforce consistent style in your project. Just drop it in.
@@ -57,8 +59,8 @@ See [LICENSE](LICENSE)
 
 > ***NOTE: This is not an official Google product.***
 
-[circle-image]: https://circleci.com/gh/google/ts-style.svg?style=svg
-[circle-url]: https://circleci.com/gh/google/ts-style
+[circle-image]: https://circleci.com/gh/google/gts.svg?style=svg
+[circle-url]: https://circleci.com/gh/google/gts
 [prettier-url]: https://prettier.io/
 [codecov-image]: https://codecov.io/gh/google/ts-style/branch/master/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/google/ts-style
