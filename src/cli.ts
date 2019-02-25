@@ -95,7 +95,7 @@ async function run(verb: string, files: string[]): Promise<boolean> {
   };
   // Linting/formatting depend on typescript. We don't want to load the
   // typescript module during init, since it might not exist.
-  // See: https://github.com/google/ts-style/issues/48
+  // See: https://github.com/google/gts/issues/48
   if (verb === 'init') {
     return init(options);
   }
