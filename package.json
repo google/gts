@@ -28,7 +28,7 @@
     "lint": "tslint -c tslint.json  --project . -t codeFrame",
     "lint-fix": "tslint -c tslint.json --project . -t codeFrame --fix",
     "prepare": "npm run compile",
-    "test": "nyc ava build/test/test*.js",
+    "test": "nyc mocha build/test",
     "pretest": "npm run compile",
     "posttest": "npm run lint && npm run format-check && npm run license-check",
     "license-check": "jsgl --local ."
@@ -55,10 +55,12 @@
   "devDependencies": {
     "@types/diff": "^4.0.0",
     "@types/entities": "^1.1.0",
+    "@types/execa": "^0.9.0",
     "@types/glob": "^7.0.0",
     "@types/inquirer": "^0.0.43",
     "@types/make-dir": "^1.0.3",
     "@types/meow": "^5.0.0",
+    "@types/mocha": "^5.2.6",
     "@types/ncp": "^2.0.1",
     "@types/node": "^10.0.3",
     "@types/pify": "^3.0.2",
@@ -66,25 +68,18 @@
     "@types/rimraf": "^2.0.2",
     "@types/tmp": "^0.0.34",
     "@types/update-notifier": "^2.2.0",
-    "ava": "^1.0.0",
     "codecov": "^3.0.1",
+    "execa": "^1.0.0",
     "js-green-licenses": "^0.5.0",
     "make-dir": "^2.0.0",
+    "mocha": "^5.2.0",
     "ncp": "^2.0.0",
-    "nyc": "^13.0.0",
+    "nyc": "^13.3.0",
     "source-map-support": "^0.5.5",
     "tmp": "0.0.33",
     "typescript": "~3.3.0"
   },
   "peerDependencies": {
     "typescript": "^3.0.0"
-  },
-  "ava": {
-    "require": [
-      "source-map-support/register"
-    ]
-  },
-  "publishConfig": {
-    "tag": "next"
   }
 }

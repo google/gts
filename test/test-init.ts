@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import test from 'ava';
+import * as assert from 'assert';
 import * as path from 'path';
 
 import { Options } from '../src/cli';
@@ -23,142 +23,148 @@ import { nop, readJsonp as readJson } from '../src/util';
 
 import { withFixtures } from './fixtures';
 
-const OPTIONS: Options = {
-  gtsRootDir: path.resolve(__dirname, '../..'),
-  targetRootDir: './',
-  dryRun: false,
-  yes: false,
-  no: false,
-  logger: { log: nop, error: nop, dir: nop },
-};
-const OPTIONS_YES = Object.assign({}, OPTIONS, { yes: true });
-const OPTIONS_NO = Object.assign({}, OPTIONS, { no: true });
-const OPTIONS_DRY_RUN = Object.assign({}, OPTIONS, { dryRun: true });
-
-function hasExpectedScripts(packageJson: init.PackageJson): boolean {
-  return (
-    !!packageJson.scripts &&
-    [
-      'check',
-      'clean',
-      'compile',
-      'fix',
-      'prepare',
-      'pretest',
-      'posttest',
-    ].every(s => !!packageJson.scripts![s])
-  );
-}
-
-function hasExpectedDependencies(packageJson: init.PackageJson): boolean {
-  return (
-    !!packageJson.devDependencies &&
-    ['gts', 'typescript'].every(d => !!packageJson.devDependencies![d])
-  );
-}
-
-test('addScripts should add a scripts section if none exists', async t => {
-  const pkg: init.PackageJson = {};
-  const result = await init.addScripts(pkg, OPTIONS);
-  t.is(result, true); // made edits.
-  t.truthy(pkg.scripts);
-  t.truthy(hasExpectedScripts(pkg));
-});
-
-test('addScripts should not edit existing scripts on no', async t => {
-  const SCRIPTS = {
-    check: `fake check`,
-    clean: 'fake clean',
-    compile: `fake tsc -p .`,
-    fix: `fake fix`,
-    prepare: `fake run compile`,
-    pretest: `fake run compile`,
-    posttest: `fake run check`,
+describe('init', () => {
+  const OPTIONS: Options = {
+    gtsRootDir: path.resolve(__dirname, '../..'),
+    targetRootDir: './',
+    dryRun: false,
+    yes: false,
+    no: false,
+    logger: { log: nop, error: nop, dir: nop },
   };
-  const pkg: init.PackageJson = { scripts: Object.assign({}, SCRIPTS) };
-
-  const result = await init.addScripts(pkg, OPTIONS_NO);
-  t.is(result, false); // no edits.
-  t.deepEqual(pkg.scripts, SCRIPTS);
-});
-
-test('addScripts should edit existing scripts on yes', async t => {
-  const SCRIPTS = {
-    check: `fake check`,
-    clean: 'fake clean',
-    compile: `fake tsc -p .`,
-    fix: `fake fix`,
-    prepare: `fake run compile`,
-    pretest: `fake run compile`,
-    posttest: `fake run check`,
-  };
-  const pkg: init.PackageJson = { scripts: Object.assign({}, SCRIPTS) };
-  const result = await init.addScripts(pkg, OPTIONS_YES);
-  t.is(result, true); // made edits.
-  t.notDeepEqual(pkg.scripts, SCRIPTS);
-});
-
-test('addDependencies should add a deps section if none exists', async t => {
-  const pkg: init.PackageJson = {};
-  const result = await init.addDependencies(pkg, OPTIONS);
-  t.is(result, true); // made edits.
-  t.truthy(pkg.devDependencies);
-});
-
-test('addDependencies should not edit existing deps on no', async t => {
-  const DEPS = { gts: 'something', typescript: 'or the other' };
-  const pkg: init.PackageJson = { devDependencies: Object.assign({}, DEPS) };
+  const OPTIONS_YES = Object.assign({}, OPTIONS, { yes: true });
   const OPTIONS_NO = Object.assign({}, OPTIONS, { no: true });
-  const result = await init.addDependencies(pkg, OPTIONS_NO);
-  t.is(result, false); // no edits.
-  t.deepEqual(pkg.devDependencies, DEPS);
-});
+  const OPTIONS_DRY_RUN = Object.assign({}, OPTIONS, { dryRun: true });
 
-test('addDependencies should edit existing deps on yes', async t => {
-  const DEPS = { gts: 'something', typescript: 'or the other' };
-  const pkg: init.PackageJson = { devDependencies: Object.assign({}, DEPS) };
+  function hasExpectedScripts(packageJson: init.PackageJson): boolean {
+    return (
+      !!packageJson.scripts &&
+      [
+        'check',
+        'clean',
+        'compile',
+        'fix',
+        'prepare',
+        'pretest',
+        'posttest',
+      ].every(s => !!packageJson.scripts![s])
+    );
+  }
 
-  const result = await init.addDependencies(pkg, OPTIONS_YES);
-  t.is(result, true); // made edits.
-  t.notDeepEqual(pkg.devDependencies, DEPS);
-});
+  function hasExpectedDependencies(packageJson: init.PackageJson): boolean {
+    return (
+      !!packageJson.devDependencies &&
+      ['gts', 'typescript'].every(d => !!packageJson.devDependencies![d])
+    );
+  }
 
-// TODO: test generateConfigFile
-
-// init
-test.serial('init should read local package.json', t => {
-  const originalContents = { some: 'property' };
-  return withFixtures(
-    { 'package.json': JSON.stringify(originalContents) },
-    async () => {
-      // TODO: this test causes `npm install` to run in the fixture directory.
-      // This may make it sensitive to the network, npm resiliency. Find a
-      // way to mock npm.
-      const result = await init.init(OPTIONS_YES);
-      t.truthy(result);
-      const contents = await readJson('./package.json');
-
-      t.not(contents, originalContents, 'the file should have been modified');
-      t.is(
-        contents.some,
-        originalContents.some,
-        'unrelated property should have preserved'
-      );
-    }
-  );
-});
-
-test.serial('init should handle missing package.json', t => {
-  return withFixtures({}, async () => {
-    // TODO: this test causes `npm install` to run in the fixture directory.
-    // This may make it sensitive to the network, npm resiliency. Find a way to
-    // mock npm.
-    const result = await init.init(OPTIONS_YES);
-    t.truthy(result);
-    const contents = await readJson('./package.json');
-    t.truthy(hasExpectedScripts(contents));
-    t.truthy(hasExpectedDependencies(contents));
+  it('addScripts should add a scripts section if none exists', async () => {
+    const pkg: init.PackageJson = {};
+    const result = await init.addScripts(pkg, OPTIONS);
+    assert.strictEqual(result, true); // made edits.
+    assert.ok(pkg.scripts);
+    assert.ok(hasExpectedScripts(pkg));
   });
-});
 
-// TODO: need more tests.
+  it('addScripts should not edit existing scripts on no', async () => {
+    const SCRIPTS = {
+      check: `fake check`,
+      clean: 'fake clean',
+      compile: `fake tsc -p .`,
+      fix: `fake fix`,
+      prepare: `fake run compile`,
+      pretest: `fake run compile`,
+      posttest: `fake run check`,
+    };
+    const pkg: init.PackageJson = { scripts: Object.assign({}, SCRIPTS) };
+
+    const result = await init.addScripts(pkg, OPTIONS_NO);
+    assert.strictEqual(result, false); // no edits.
+    assert.deepStrictEqual(pkg.scripts, SCRIPTS);
+  });
+
+  it('addScripts should edit existing scripts on yes', async () => {
+    const SCRIPTS = {
+      check: `fake check`,
+      clean: 'fake clean',
+      compile: `fake tsc -p .`,
+      fix: `fake fix`,
+      prepare: `fake run compile`,
+      pretest: `fake run compile`,
+      posttest: `fake run check`,
+    };
+    const pkg: init.PackageJson = { scripts: Object.assign({}, SCRIPTS) };
+    const result = await init.addScripts(pkg, OPTIONS_YES);
+    assert.strictEqual(result, true); // made edits.
+    assert.notDeepStrictEqual(pkg.scripts, SCRIPTS);
+  });
+
+  it('addDependencies should add a deps section if none exists', async () => {
+    const pkg: init.PackageJson = {};
+    const result = await init.addDependencies(pkg, OPTIONS);
+    assert.strictEqual(result, true); // made edits.
+    assert.ok(pkg.devDependencies);
+  });
+
+  it('addDependencies should not edit existing deps on no', async () => {
+    const DEPS = { gts: 'something', typescript: 'or the other' };
+    const pkg: init.PackageJson = { devDependencies: Object.assign({}, DEPS) };
+    const OPTIONS_NO = Object.assign({}, OPTIONS, { no: true });
+    const result = await init.addDependencies(pkg, OPTIONS_NO);
+    assert.strictEqual(result, false); // no edits.
+    assert.deepStrictEqual(pkg.devDependencies, DEPS);
+  });
+
+  it('addDependencies should edit existing deps on yes', async () => {
+    const DEPS = { gts: 'something', typescript: 'or the other' };
+    const pkg: init.PackageJson = { devDependencies: Object.assign({}, DEPS) };
+
+    const result = await init.addDependencies(pkg, OPTIONS_YES);
+    assert.strictEqual(result, true); // made edits.
+    assert.notDeepStrictEqual(pkg.devDependencies, DEPS);
+  });
+
+  // TODO: test generateConfigFile
+
+  // init
+  it('init should read local package.json', () => {
+    const originalContents = { some: 'property' };
+    return withFixtures(
+      { 'package.json': JSON.stringify(originalContents) },
+      async () => {
+        // TODO: this test causes `npm install` to run in the fixture directory.
+        // This may make it sensitive to the network, npm resiliency. Find a
+        // way to mock npm.
+        const result = await init.init(OPTIONS_YES);
+        assert.ok(result);
+        const contents = await readJson('./package.json');
+
+        assert.notStrictEqual(
+          contents,
+          originalContents,
+          'the file should have been modified'
+        );
+        assert.strictEqual(
+          contents.some,
+          originalContents.some,
+          'unrelated property should have preserved'
+        );
+      }
+    );
+  });
+
+  it('init should handle missing package.json', () => {
+    return withFixtures({}, async () => {
+      // TODO: this test causes `npm install` to run in the fixture directory.
+      // This may make it sensitive to the network, npm resiliency. Find a way to
+      // mock npm.
+      const result = await init.init(OPTIONS_YES);
+      assert.ok(result);
+      const contents = await readJson('./package.json');
+      assert.ok(hasExpectedScripts(contents));
+      assert.ok(hasExpectedDependencies(contents));
+    });
+  });
+
+  // TODO: need more tests.
+});
