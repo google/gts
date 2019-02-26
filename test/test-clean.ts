@@ -14,82 +14,84 @@
  * limitations under the License.
  */
 
-import test from 'ava';
+import * as assert from 'assert';
 import * as fs from 'fs';
 import * as path from 'path';
 
 import { clean } from '../src/clean';
 import { Options } from '../src/cli';
 import { nop } from '../src/util';
-
 import { withFixtures } from './fixtures';
 
-const OPTIONS: Options = {
-  gtsRootDir: path.resolve(__dirname, '../..'),
-  targetRootDir: './',
-  dryRun: false,
-  yes: false,
-  no: false,
-  logger: { log: nop, error: nop, dir: nop },
-};
+describe('clean', () => {
+  const OPTIONS: Options = {
+    gtsRootDir: path.resolve(__dirname, '../..'),
+    targetRootDir: './',
+    dryRun: false,
+    yes: false,
+    no: false,
+    logger: { log: nop, error: nop, dir: nop },
+  };
 
-test.serial.failing('should gracefully error if tsconfig is missing', t => {
-  return withFixtures({}, async () => {
-    await clean(OPTIONS);
+  it('should gracefully error if tsconfig is missing', async () => {
+    await assert.rejects(
+      withFixtures({}, async () => {
+        await clean(OPTIONS);
+      })
+    );
   });
-});
 
-test.serial(
-  'should gracefully error if tsconfig does not have valid outDir',
-  t => {
+  it('should gracefully error if tsconfig does not have valid outDir', async () => {
     return withFixtures({ 'tsconfig.json': JSON.stringify({}) }, async () => {
       const deleted = await clean(OPTIONS);
-      t.is(deleted, false);
+      assert.strictEqual(deleted, false);
     });
-  }
-);
+  });
 
-test.serial('should avoid deleting .', t => {
-  return withFixtures(
-    { 'tsconfig.json': JSON.stringify({ compilerOptions: { outDir: '.' } }) },
-    async () => {
-      const deleted = await clean(OPTIONS);
-      t.is(deleted, false);
-    }
-  );
-});
+  it('should avoid deleting .', () => {
+    return withFixtures(
+      { 'tsconfig.json': JSON.stringify({ compilerOptions: { outDir: '.' } }) },
+      async () => {
+        const deleted = await clean(OPTIONS);
+        assert.strictEqual(deleted, false);
+      }
+    );
+  });
 
-test.serial.failing('should ensure that outDir is local to targetRoot', t => {
-  return withFixtures(
-    {
-      'tsconfig.json': JSON.stringify({
-        compilerOptions: { outDir: '../out' },
-      }),
-    },
-    async () => {
-      const deleted = await clean(OPTIONS);
-      t.is(deleted, false);
-    }
-  );
-});
+  it('should ensure that outDir is local to targetRoot', async () => {
+    await assert.rejects(
+      withFixtures(
+        {
+          'tsconfig.json': JSON.stringify({
+            compilerOptions: { outDir: '../out' },
+          }),
+        },
+        async () => {
+          const deleted = await clean(OPTIONS);
+          assert.strictEqual(deleted, false);
+        }
+      )
+    );
+  });
 
-test.serial('should remove outDir', t => {
-  const OUT = 'outputDirectory';
-  return withFixtures(
-    {
-      'tsconfig.json': JSON.stringify({ compilerOptions: { outDir: OUT } }),
-      [OUT]: {},
-    },
-    async dir => {
-      const outputPath = path.join(dir, OUT);
-      // make sure the output directory exists.
-      fs.accessSync(outputPath);
-      const deleted = await clean(OPTIONS);
-      t.is(deleted, true);
-      // make sure the directory has been deleted.
-      t.throws(() => {
+  it('should remove outDir', () => {
+    const OUT = 'outputDirectory';
+    return withFixtures(
+      {
+        'tsconfig.json': JSON.stringify({ compilerOptions: { outDir: OUT } }),
+        [OUT]: {},
+      },
+      async dir => {
+        const outputPath = path.join(dir, OUT);
+        // make sure the output directory exists.
         fs.accessSync(outputPath);
-      });
-    }
-  );
+        const deleted = await clean(OPTIONS);
+        assert.strictEqual(deleted, true);
+        // make sure the directory has been deleted.
+        assert.throws(() => {
+          fs.accessSync(outputPath);
+        });
+      }
+    );
+  });
 });
