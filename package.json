@@ -56,7 +56,7 @@
     "@types/diff": "^4.0.0",
     "@types/entities": "^1.1.0",
     "@types/glob": "^7.0.0",
-    "@types/inquirer": "^0.0.43",
+    "@types/inquirer": "^0.0.44",
     "@types/make-dir": "^1.0.3",
     "@types/meow": "^5.0.0",
     "@types/ncp": "^2.0.1",
