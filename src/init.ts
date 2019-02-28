@@ -23,6 +23,7 @@ import {
   readFilep as read,
   readJsonp as readJson,
   writeFileAtomicp as write,
+  getPkgManagerName,
 } from './util';
 
 const pkg = require('../../package.json');
@@ -88,14 +89,15 @@ export async function addScripts(
   options: Options
 ): Promise<boolean> {
   let edits = false;
+  const pkgManager = getPkgManagerName(options.yarn);
   const scripts: Bag<string> = {
     check: `gts check`,
     clean: 'gts clean',
     compile: `tsc -p .`,
     fix: `gts fix`,
-    prepare: `npm run compile`,
-    pretest: `npm run compile`,
-    posttest: `npm run check`,
+    prepare: `${pkgManager} run compile`,
+    pretest: `${pkgManager} run compile`,
+    posttest: `${pkgManager} run check`,
   };
 
   if (!packageJson.scripts) {
@@ -292,7 +294,11 @@ export async function init(options: Options): Promise<boolean> {
   if (!options.dryRun) {
     // --ignore-scripts so that compilation doesn't happen because there's no
     // source files yet.
-    cp.spawnSync('npm', ['install', '--ignore-scripts'], { stdio: 'inherit' });
+    cp.spawnSync(
+      getPkgManagerName(options.yarn),
+      ['install', '--ignore-scripts'],
+      { stdio: 'inherit' }
+    );
   }
 
   return true;

@@ -19,6 +19,7 @@ import * as meow from 'meow';
 import * as updateNotifier from 'update-notifier';
 import { init } from './init';
 import { clean } from './clean';
+import { isYarnUsed } from './util';
 
 const packageJson = require('../../package.json');
 
@@ -35,6 +36,7 @@ export interface Options {
   yes: boolean;
   no: boolean;
   logger: Logger;
+  yarn?: boolean;
 }
 
 export type VerbFilesFunction = (
@@ -61,6 +63,7 @@ const cli = meow({
     -y, --yes     Assume a yes answer for every prompt.
     -n, --no      Assume a no answer for every prompt.
     --dry-run     Don't make any acutal changes.
+    --yarn        Use yarn instead of npm.
 
 	Examples
     $ gts init -y
@@ -73,6 +76,7 @@ const cli = meow({
     yes: { type: 'boolean', alias: 'y' },
     no: { type: 'boolean', alias: 'n' },
     'dry-run': { type: 'boolean' },
+    yarn: { type: 'boolean' },
   },
 });
 
@@ -92,6 +96,7 @@ async function run(verb: string, files: string[]): Promise<boolean> {
     yes: cli.flags.yes || cli.flags.y || false,
     no: cli.flags.no || cli.flags.n || false,
     logger,
+    yarn: cli.flags.yarn || isYarnUsed(),
   };
   // Linting/formatting depend on typescript. We don't want to load the
   // typescript module during init, since it might not exist.
