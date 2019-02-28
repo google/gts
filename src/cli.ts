@@ -62,7 +62,7 @@ const cli = meow({
     --help        Prints this help message.
     -y, --yes     Assume a yes answer for every prompt.
     -n, --no      Assume a no answer for every prompt.
-    --dry-run     Don't make any acutal changes.
+    --dry-run     Don't make any actual changes.
     --yarn        Use yarn instead of npm.
 
 	Examples
