@@ -124,3 +124,19 @@ export interface ConfigFile {
   exclude?: string[];
   extends?: string[];
 }
+
+/**
+ * Automatically defines npm or yarn is going to be used:
+ * - If only yarn.lock exists, use yarn
+ * - If only package-lock.json or both exist, use npm
+ */
+export function isYarnUsed(existsSync = fs.existsSync): boolean {
+  if (existsSync('package-lock.json')) {
+    return false;
+  }
+  return existsSync('yarn.lock');
+}
+
+export function getPkgManagerName(isYarnUsed?: boolean): 'yarn' | 'npm' {
+  return isYarnUsed ? 'yarn' : 'npm';
+}

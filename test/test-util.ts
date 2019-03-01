@@ -15,8 +15,14 @@
  */
 import test from 'ava';
 import * as path from 'path';
+import { PathLike } from 'fs';
 
-import { ConfigFile, getTSConfig } from '../src/util';
+import {
+  ConfigFile,
+  getTSConfig,
+  isYarnUsed,
+  getPkgManagerName,
+} from '../src/util';
 
 /**
  * Creates a fake promisified readFile function from a map
@@ -33,6 +39,12 @@ function createFakeReadFilep(myMap: Map<string, ConfigFile>) {
       return Promise.reject(`${configPath} Not Found`);
     }
   };
+}
+
+function makeFakeFsExistsSync(
+  expected: PathLike[]
+): (path: PathLike) => boolean {
+  return (path: PathLike) => expected.some(item => item === path);
 }
 
 test('get should parse the correct tsconfig file', async t => {
@@ -146,6 +158,33 @@ test('function throws an error when reading a file that does not exist', async t
     Error,
     `${FAKE_DIRECTORY}/tsconfig.json Not Found`
   );
+});
+
+test("isYarnUsed returns true if there's yarn.lock file only", async t => {
+  const existsSync = makeFakeFsExistsSync(['yarn.lock']);
+
+  t.is(isYarnUsed(existsSync), true);
+});
+
+test("isYarnUsed returns false if there's package-lock.json file only", async t => {
+  const existsSync = makeFakeFsExistsSync(['package-lock.json']);
+
+  t.is(isYarnUsed(existsSync), false);
+});
+
+test("isYarnUsed returns false if there're yarn.lock and package-lock.json files", async t => {
+  const existsSync = makeFakeFsExistsSync(['package-lock.json', 'yarn.lock']);
+
+  t.is(isYarnUsed(existsSync), false);
+});
+
+test('getPkgManagerName returns npm by default', async t => {
+  t.is(getPkgManagerName(), 'npm');
+  t.is(getPkgManagerName(), getPkgManagerName(false));
+});
+
+test('getPkgManagerName returns yarn', async t => {
+  t.is(getPkgManagerName(true), 'yarn');
 });
 
 // TODO: test errors in readFile, JSON.parse.

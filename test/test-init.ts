@@ -33,7 +33,7 @@ const OPTIONS: Options = {
 };
 const OPTIONS_YES = Object.assign({}, OPTIONS, { yes: true });
 const OPTIONS_NO = Object.assign({}, OPTIONS, { no: true });
-const OPTIONS_DRY_RUN = Object.assign({}, OPTIONS, { dryRun: true });
+const OPTIONS_YARN = Object.assign({}, OPTIONS_YES, { yarn: true });
 
 function hasExpectedScripts(packageJson: init.PackageJson): boolean {
   return (
@@ -159,6 +159,22 @@ test.serial('init should handle missing package.json', t => {
     t.truthy(hasExpectedScripts(contents));
     t.truthy(hasExpectedDependencies(contents));
   });
+});
+
+test.serial('init should support yarn', t => {
+  return withFixtures(
+    {
+      'package.json': JSON.stringify({ name: 'test' }),
+      'yarn.lock': '',
+    },
+    async () => {
+      const result = await init.init(OPTIONS_YARN);
+      t.truthy(result);
+
+      const contents = await readJson('./package.json');
+      t.truthy(contents.scripts.prepare === 'yarn run compile');
+    }
+  );
 });
 
 // TODO: need more tests.
