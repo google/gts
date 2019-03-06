@@ -9,7 +9,7 @@ unit_tests: &unit_tests
     - checkout
     - run:
         name: Install modules and dependencies.
-        command: npm install
+        command: npm ci
     - run:
         name: Run unit tests.
         command: npm test
@@ -67,7 +67,7 @@ jobs:
           command: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
       - run:
           name: Install modules and dependencies.
-          command: npm install
+          command: npm ci
       - run:
           name: Publish the module to npm.
           command: npm publish
