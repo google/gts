@@ -66,7 +66,7 @@ describe('util', () => {
     myMap.set('/some/fake/directory/FAKE_CONFIG3', FAKE_CONFIG3);
 
     await assert.rejects(
-      getTSConfig(FAKE_DIRECTORY, createFakeReadFilep(myMap)),
+      () => getTSConfig(FAKE_DIRECTORY, createFakeReadFilep(myMap)),
       Error,
       'Circular Reference Detected'
     );
@@ -146,7 +146,7 @@ describe('util', () => {
     const myMap = new Map();
 
     await assert.rejects(
-      getTSConfig(FAKE_DIRECTORY, createFakeReadFilep(myMap)),
+      () => getTSConfig(FAKE_DIRECTORY, createFakeReadFilep(myMap)),
       Error,
       `${FAKE_DIRECTORY}/tsconfig.json Not Found`
     );
