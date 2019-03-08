@@ -28,11 +28,10 @@ describe('format', () => {
   const BAD_CODE = 'export const foo = [ "2" ];';
   const GOOD_CODE = "export const foo = ['2'];\n";
   const CODE_WITH_TABS = `module.exports = {
-  \treallyLongIdentified: 4,
-  \tanotherSuperLongIdentifier,
-  \tthisCannotFitOnTheSameLine
-  };\n`;
-
+\treallyLongIdentified: 4,
+\tanotherSuperLongIdentifier,
+\tthisCannotFitOnTheSameLine
+};\n`;
   const PRETTIER_FORMAT_MESSAGE =
     'prettier reported errors... run `gts fix` to address.';
 
