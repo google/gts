@@ -152,7 +152,7 @@ describe('🚰 kitchen sink', () => {
     assert.notStrictEqual(stdout.indexOf('prettier reported errors'), -1);
   });
 
-  it('should fix', async t => {
+  it('should fix', async () => {
     const preFix = fs
       .readFileSync(`${stagingPath}/kitchen/src/server.ts`, 'utf8')
       .split('\n');
@@ -167,7 +167,7 @@ describe('🚰 kitchen sink', () => {
     await simpleExecp('npm run check', execOpts);
   });
 
-  it('should build', async t => {
+  it('should build', async () => {
     await simpleExecp('npm run compile', execOpts);
     fs.accessSync(`${stagingPath}/kitchen/build/src/server.js`);
     fs.accessSync(`${stagingPath}/kitchen/build/src/server.js.map`);
