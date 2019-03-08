@@ -56,7 +56,14 @@ export async function withFixtures(
   const origDir = process.cwd();
   process.chdir(dir.name);
 
-  const result = await fn(dir.name);
+  let result;
+
+  try {
+    result = await fn(dir.name);
+  } catch (e) {
+    process.chdir(origDir);
+    throw e;
+  }
 
   process.chdir(origDir);
   if (!keep) {
