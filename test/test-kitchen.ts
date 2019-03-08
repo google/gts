@@ -142,7 +142,9 @@ describe('🚰 kitchen sink', () => {
         .endsWith('\n')
     );
     assert.ok(
-      fs.readFileSync(`${stagingPath}/kitchen/tslint.json`, 'utf8').endsWith('\n')
+      fs
+        .readFileSync(`${stagingPath}/kitchen/tslint.json`, 'utf8')
+        .endsWith('\n')
     );
   });
 
