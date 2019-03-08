@@ -56,19 +56,15 @@ export async function withFixtures(
   const origDir = process.cwd();
   process.chdir(dir.name);
 
-  let result;
-
   try {
-    result = await fn(dir.name);
-  } catch (e) {
+    const result = await fn(dir.name);
+
+    if (!keep) {
+      dir.removeCallback();
+    }
+
+    return result;
+  } finally {
     process.chdir(origDir);
-    throw e;
   }
-
-  process.chdir(origDir);
-  if (!keep) {
-    dir.removeCallback();
-  }
-
-  return result;
 }
