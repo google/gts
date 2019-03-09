@@ -47,7 +47,6 @@ function makeFakeFsExistsSync(
   return (path: PathLike) => expected.some(item => item === path);
 }
 describe('util', () => {
-
   it('get should parse the correct tsconfig file', async () => {
     const FAKE_DIRECTORY = '/some/fake/directory';
     const FAKE_CONFIG1 = { files: ['b'] };

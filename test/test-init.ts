@@ -66,14 +66,6 @@ describe('init', () => {
     assert.ok(hasExpectedScripts(pkg));
   });
 
-  it('addScripts should add a scripts section if none exists', async () => {
-    const pkg: PackageJson = {};
-    const result = await init.addScripts(pkg, OPTIONS);
-    assert.strictEqual(result, true); // made edits.
-    assert.ok(pkg.scripts);
-    assert.ok(hasExpectedScripts(pkg));
-  });
-
   it('addScripts should not edit existing scripts on no', async () => {
     const SCRIPTS = {
       check: `fake check`,
@@ -120,22 +112,6 @@ describe('init', () => {
     const result = await init.addDependencies(pkg, OPTIONS_NO);
     assert.strictEqual(result, false); // no edits.
     assert.deepStrictEqual(pkg.devDependencies, DEPS);
-  });
-
-  it('addScripts should edit existing scripts on yes', async () => {
-    const SCRIPTS = {
-      check: `fake check`,
-      clean: 'fake clean',
-      compile: `fake tsc -p .`,
-      fix: `fake fix`,
-      prepare: `fake run compile`,
-      pretest: `fake run compile`,
-      posttest: `fake run check`,
-    };
-    const pkg: PackageJson = { scripts: Object.assign({}, SCRIPTS) };
-    const result = await init.addScripts(pkg, OPTIONS_YES);
-    assert.strictEqual(result, true); // made edits.
-    assert.notDeepStrictEqual(pkg.scripts, SCRIPTS);
   });
 
   it('addDependencies should add a deps section if none exists', async () => {
