@@ -13,18 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import chalk from 'chalk';
 import * as cp from 'child_process';
 import * as inquirer from 'inquirer';
 import * as path from 'path';
 
-import { Options } from './cli';
 import {
+  getPkgManagerName,
   readFilep as read,
   readJsonp as readJson,
   writeFileAtomicp as write,
-  getPkgManagerName,
 } from './util';
+
+import { Options } from './cli';
+import { PackageJson } from 'package-json';
+import chalk from 'chalk';
 
 const pkg = require('../../package.json');
 
@@ -42,21 +44,6 @@ const DEFAULT_PACKAGE_JSON: PackageJson = {
 
 export interface Bag<T> {
   [script: string]: T;
-}
-
-// TODO: is this type available from definitelytyped.org? Find it, and drop the
-// local definition.
-export interface PackageJson {
-  version?: string;
-  devDependencies?: Bag<string>;
-  scripts?: Bag<string>;
-  name?: string;
-  description?: string;
-  main?: string;
-  types?: string;
-  files?: string[];
-  license?: string;
-  keywords?: string[];
 }
 
 async function query(

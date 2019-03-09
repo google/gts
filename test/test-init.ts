@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-import test from 'ava';
+import * as init from '../src/init';
 import * as path from 'path';
 
-import { Options } from '../src/cli';
-import * as init from '../src/init';
 import { nop, readJsonp as readJson } from '../src/util';
 
+import { Options } from '../src/cli';
+import { PackageJson } from 'package-json';
+import test from 'ava';
 import { withFixtures } from './fixtures';
 
 const OPTIONS: Options = {
@@ -35,7 +36,7 @@ const OPTIONS_YES = Object.assign({}, OPTIONS, { yes: true });
 const OPTIONS_NO = Object.assign({}, OPTIONS, { no: true });
 const OPTIONS_YARN = Object.assign({}, OPTIONS_YES, { yarn: true });
 
-function hasExpectedScripts(packageJson: init.PackageJson): boolean {
+function hasExpectedScripts(packageJson: PackageJson): boolean {
   return (
     !!packageJson.scripts &&
     [
@@ -50,7 +51,7 @@ function hasExpectedScripts(packageJson: init.PackageJson): boolean {
   );
 }
 
-function hasExpectedDependencies(packageJson: init.PackageJson): boolean {
+function hasExpectedDependencies(packageJson: PackageJson): boolean {
   return (
     !!packageJson.devDependencies &&
     ['gts', 'typescript'].every(d => !!packageJson.devDependencies![d])
@@ -58,7 +59,7 @@ function hasExpectedDependencies(packageJson: init.PackageJson): boolean {
 }
 
 test('addScripts should add a scripts section if none exists', async t => {
-  const pkg: init.PackageJson = {};
+  const pkg: PackageJson = {};
   const result = await init.addScripts(pkg, OPTIONS);
   t.is(result, true); // made edits.
   t.truthy(pkg.scripts);
@@ -75,7 +76,7 @@ test('addScripts should not edit existing scripts on no', async t => {
     pretest: `fake run compile`,
     posttest: `fake run check`,
   };
-  const pkg: init.PackageJson = { scripts: Object.assign({}, SCRIPTS) };
+  const pkg: PackageJson = { scripts: Object.assign({}, SCRIPTS) };
 
   const result = await init.addScripts(pkg, OPTIONS_NO);
   t.is(result, false); // no edits.
@@ -92,14 +93,14 @@ test('addScripts should edit existing scripts on yes', async t => {
     pretest: `fake run compile`,
     posttest: `fake run check`,
   };
-  const pkg: init.PackageJson = { scripts: Object.assign({}, SCRIPTS) };
+  const pkg: PackageJson = { scripts: Object.assign({}, SCRIPTS) };
   const result = await init.addScripts(pkg, OPTIONS_YES);
   t.is(result, true); // made edits.
   t.notDeepEqual(pkg.scripts, SCRIPTS);
 });
 
 test('addDependencies should add a deps section if none exists', async t => {
-  const pkg: init.PackageJson = {};
+  const pkg: PackageJson = {};
   const result = await init.addDependencies(pkg, OPTIONS);
   t.is(result, true); // made edits.
   t.truthy(pkg.devDependencies);
@@ -107,7 +108,7 @@ test('addDependencies should add a deps section if none exists', async t => {
 
 test('addDependencies should not edit existing deps on no', async t => {
   const DEPS = { gts: 'something', typescript: 'or the other' };
-  const pkg: init.PackageJson = { devDependencies: Object.assign({}, DEPS) };
+  const pkg: PackageJson = { devDependencies: Object.assign({}, DEPS) };
   const OPTIONS_NO = Object.assign({}, OPTIONS, { no: true });
   const result = await init.addDependencies(pkg, OPTIONS_NO);
   t.is(result, false); // no edits.
@@ -116,7 +117,7 @@ test('addDependencies should not edit existing deps on no', async t => {
 
 test('addDependencies should edit existing deps on yes', async t => {
   const DEPS = { gts: 'something', typescript: 'or the other' };
-  const pkg: init.PackageJson = { devDependencies: Object.assign({}, DEPS) };
+  const pkg: PackageJson = { devDependencies: Object.assign({}, DEPS) };
 
   const result = await init.addDependencies(pkg, OPTIONS_YES);
   t.is(result, true); // made edits.
