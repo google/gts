@@ -113,15 +113,6 @@ describe('init', () => {
     assert.deepStrictEqual(pkg.devDependencies, DEPS);
   });
 
-  it('addDependencies should not edit existing deps on no', async () => {
-    const DEPS = { gts: 'something', typescript: 'or the other' };
-    const pkg: PackageJson = { devDependencies: Object.assign({}, DEPS) };
-    const OPTIONS_NO = Object.assign({}, OPTIONS, { no: true });
-    const result = await init.addDependencies(pkg, OPTIONS_NO);
-    assert.strictEqual(result, false); // no edits.
-    assert.deepStrictEqual(pkg.devDependencies, DEPS);
-  });
-
   it('addDependencies should edit existing deps on yes', async () => {
     const DEPS = { gts: 'something', typescript: 'or the other' };
     const pkg: PackageJson = { devDependencies: Object.assign({}, DEPS) };
