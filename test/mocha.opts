@@ -1,3 +1,3 @@
 --require source-map-support/register
---timeout 10000
+--timeout 30000
 --throw-deprecation

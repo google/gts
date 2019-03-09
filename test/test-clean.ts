@@ -34,7 +34,7 @@ describe('clean', () => {
   };
 
   it('should gracefully error if tsconfig is missing', async () => {
-    await assert.rejects(
+    await assert.rejects(() =>
       withFixtures({}, async () => {
         await clean(OPTIONS);
       })
@@ -59,7 +59,7 @@ describe('clean', () => {
   });
 
   it('should ensure that outDir is local to targetRoot', async () => {
-    await assert.rejects(
+    await assert.rejects(() =>
       withFixtures(
         {
           'tsconfig.json': JSON.stringify({

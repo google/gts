@@ -119,10 +119,13 @@ describe('🚰 kitchen sink', () => {
       'utf8'
     );
     const tsconfig = JSON.parse(tsconfigJson);
-    //t.deepEqual(tsconfig.extends, './node_modules/gts/tsconfig-google.json');
+    assert.deepStrictEqual(
+      tsconfig.extends,
+      './node_modules/gts/tsconfig-google.json'
+    );
 
     // server.ts has a lint error. Should error.
-    //await t.throwsAsync(simpleExecp(`${GTS} check src/server.ts`, opts));
+    await assert.rejects(() => simpleExecp(`${GTS} check src/server.ts`, opts));
 
     if (!keep) {
       tmpDir.removeCallback();
@@ -142,7 +145,9 @@ describe('🚰 kitchen sink', () => {
         .endsWith('\n')
     );
     assert.ok(
-      fs.readFileSync(`${stagingPath}/kitchen/tslint.json`, 'utf8').endsWith('\n')
+      fs
+        .readFileSync(`${stagingPath}/kitchen/tslint.json`, 'utf8')
+        .endsWith('\n')
     );
   });
 
@@ -152,7 +157,7 @@ describe('🚰 kitchen sink', () => {
     assert.notStrictEqual(stdout.indexOf('prettier reported errors'), -1);
   });
 
-  it('should fix', async t => {
+  it('should fix', async () => {
     const preFix = fs
       .readFileSync(`${stagingPath}/kitchen/src/server.ts`, 'utf8')
       .split('\n');
@@ -167,7 +172,7 @@ describe('🚰 kitchen sink', () => {
     await simpleExecp('npm run check', execOpts);
   });
 
-  it('should build', async t => {
+  it('should build', async () => {
     await simpleExecp('npm run compile', execOpts);
     fs.accessSync(`${stagingPath}/kitchen/build/src/server.js`);
     fs.accessSync(`${stagingPath}/kitchen/build/src/server.js.map`);
@@ -180,9 +185,7 @@ describe('🚰 kitchen sink', () => {
    */
   it('should clean', async () => {
     await simpleExecp('npm run clean', execOpts);
-    // t.throws(() => {
-    //   fs.accessSync(`${stagingPath}/kitchen/build`);
-    // });
+    assert.throws(() => fs.accessSync(`${stagingPath}/kitchen/build`));
   });
 
   /**
