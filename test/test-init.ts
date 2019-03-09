@@ -30,7 +30,6 @@ const OPTIONS: Options = {
   no: false,
   logger: { log: nop, error: nop, dir: nop },
 };
-
 const OPTIONS_YES = Object.assign({}, OPTIONS, { yes: true });
 const OPTIONS_NO = Object.assign({}, OPTIONS, { no: true });
 const OPTIONS_YARN = Object.assign({}, OPTIONS_YES, { yarn: true });
@@ -112,13 +111,6 @@ describe('init', () => {
     const result = await init.addDependencies(pkg, OPTIONS_NO);
     assert.strictEqual(result, false); // no edits.
     assert.deepStrictEqual(pkg.devDependencies, DEPS);
-  });
-
-  it('addDependencies should add a deps section if none exists', async () => {
-    const pkg: PackageJson = {};
-    const result = await init.addDependencies(pkg, OPTIONS);
-    assert.strictEqual(result, true); // made edits.
-    assert.ok(pkg.devDependencies);
   });
 
   it('addDependencies should not edit existing deps on no', async () => {
