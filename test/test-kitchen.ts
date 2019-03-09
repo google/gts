@@ -119,10 +119,13 @@ describe('🚰 kitchen sink', () => {
       'utf8'
     );
     const tsconfig = JSON.parse(tsconfigJson);
-    //t.deepEqual(tsconfig.extends, './node_modules/gts/tsconfig-google.json');
+    assert.deepStrictEqual(
+      tsconfig.extends,
+      './node_modules/gts/tsconfig-google.json'
+    );
 
     // server.ts has a lint error. Should error.
-    //await t.throwsAsync(simpleExecp(`${GTS} check src/server.ts`, opts));
+    await assert.rejects(() => simpleExecp(`${GTS} check src/server.ts`, opts));
 
     if (!keep) {
       tmpDir.removeCallback();
@@ -182,9 +185,7 @@ describe('🚰 kitchen sink', () => {
    */
   it('should clean', async () => {
     await simpleExecp('npm run clean', execOpts);
-    // t.throws(() => {
-    //   fs.accessSync(`${stagingPath}/kitchen/build`);
-    // });
+    assert.throws(() => fs.accessSync(`${stagingPath}/kitchen/build`));
   });
 
   /**
