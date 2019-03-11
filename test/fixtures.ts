@@ -15,7 +15,7 @@
  */
 
 import * as fs from 'fs';
-import * as makeDir from 'make-dir';
+import makeDir from 'make-dir';
 import * as path from 'path';
 import * as pify from 'pify';
 import * as tmp from 'tmp';
