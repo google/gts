@@ -44,7 +44,7 @@ describe('format', () => {
     logger: { log: console.log, error: console.error, dir: nop },
   };
 
-  it('format should return true for well-formatted files', async () => {
+  it('format should return true for well-formatted files', () => {
     return withFixtures(
       {
         'tsconfig.json': JSON.stringify({ files: ['a.ts'] }),
@@ -52,7 +52,7 @@ describe('format', () => {
       },
       async () => {
         const result = await format.format(OPTIONS, [], false);
-        assert.ok(result);
+        assert.strictEqual(result, true);
       }
     );
   });
@@ -65,7 +65,7 @@ describe('format', () => {
       },
       async () => {
         const result = await format.format(OPTIONS, [], false);
-        assert.ok(!result);
+        assert.strictEqual(result, false);
       }
     );
   });
@@ -79,7 +79,7 @@ describe('format', () => {
       },
       async () => {
         const result = await format.format(OPTIONS, [], false);
-        assert.ok(result);
+        assert.strictEqual(result, true);
       }
     );
   });
@@ -92,7 +92,7 @@ describe('format', () => {
       },
       async fixturesDir => {
         const result = await format.format(OPTIONS, [], true);
-        assert.ok(result);
+        assert.strictEqual(result, true);
         const contents = fs.readFileSync(
           path.join(fixturesDir, 'a.ts'),
           'utf8'
@@ -111,7 +111,7 @@ describe('format', () => {
       },
       async () => {
         const okay = await format.format(OPTIONS);
-        assert.ok(okay);
+        assert.strictEqual(okay, true);
       }
     );
   });
@@ -125,7 +125,7 @@ describe('format', () => {
       },
       async () => {
         const okay = await format.format(OPTIONS);
-        assert.ok(!okay);
+        assert.strictEqual(okay, false);
       }
     );
   });
@@ -139,7 +139,7 @@ describe('format', () => {
       },
       async fixturesDir => {
         const okay = await format.format(OPTIONS, [], true);
-        assert.ok(okay);
+        assert.strictEqual(okay, true);
         const contents = fs.readFileSync(
           path.join(fixturesDir, 'a.ts'),
           'utf8'
@@ -158,7 +158,7 @@ describe('format', () => {
       },
       async () => {
         const okay = await format.format(OPTIONS);
-        assert.ok(okay);
+        assert.strictEqual(okay, true);
       }
     );
   });
@@ -204,13 +204,13 @@ describe('format', () => {
       },
       async () => {
         const result = await format.format(OPTIONS, [], false);
-        assert.ok(!result);
+        assert.strictEqual(result, false);
       }
     );
   });
 
-  it('format should use user provided prettier.config.js', async () => {
-    await withFixtures(
+  it('format should use user provided prettier.config.js', () => {
+    return withFixtures(
       {
         'tsconfig.json': JSON.stringify({ files: ['tabs.ts'] }),
         'prettier.config.js': `module.exports = { useTabs: true }`,
@@ -218,7 +218,7 @@ describe('format', () => {
       },
       async () => {
         const result = await format.format(OPTIONS, [], false);
-        assert.ok(result);
+        assert.strictEqual(result, true);
       }
     );
   });
@@ -232,7 +232,7 @@ describe('format', () => {
       },
       async () => {
         const result = await format.format(OPTIONS, [], false);
-        assert.ok(result);
+        assert.strictEqual(result, true);
       }
     );
   });
@@ -267,9 +267,12 @@ describe('format', () => {
         const options = Object.assign({}, OPTIONS, { logger: newLogger });
 
         await format.format(options, [], false);
-        assert.ok(output.search(PRETTIER_FORMAT_MESSAGE) !== -1);
-        assert.ok(output.indexOf("+export const foo = ['2'];") !== -1);
-        assert.ok(output.indexOf('-export const foo = [ "2" ];') !== -1);
+        assert.notStrictEqual(output.search(PRETTIER_FORMAT_MESSAGE), -1);
+        assert.notStrictEqual(output.indexOf("+export const foo = ['2'];"), -1);
+        assert.notStrictEqual(
+          output.indexOf('-export const foo = [ "2" ];'),
+          -1
+        );
       }
     );
   });
@@ -290,9 +293,12 @@ describe('format', () => {
         const options = Object.assign({}, OPTIONS, { logger: newLogger });
 
         await format.format(options, [], false);
-        assert.ok(output.search(PRETTIER_FORMAT_MESSAGE) !== -1);
-        assert.ok(output.indexOf('//🦄 This is a comment 🌷🏳️‍🌈	—') !== -1);
-        assert.ok(output.indexOf("const variable = '5'") !== -1);
+        assert.notStrictEqual(output.search(PRETTIER_FORMAT_MESSAGE), -1);
+        assert.notStrictEqual(
+          output.indexOf('//🦄 This is a comment 🌷🏳️‍🌈	—'),
+          -1
+        );
+        assert.notStrictEqual(output.indexOf("const variable = '5'"), -1);
       }
     );
   });
@@ -313,7 +319,7 @@ describe('format', () => {
       },
       async fixturesDir => {
         const result = await format.format(OPTIONS, ['kitty.kitty'], true);
-        assert.ok(!result); // Well structured JS, the kitty is not.
+        assert.strictEqual(result, false); // Well structured JS, the kitty is not.
         // Well structured or not, the kitty should be left alone.
         const contents = fs.readFileSync(
           path.join(fixturesDir, 'kitty.kitty'),

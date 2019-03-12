@@ -228,7 +228,7 @@ describe('lint', () => {
       },
       async () => {
         const okay = lint.lint(OPTIONS);
-        assert.ok(!okay);
+        assert.strictEqual(okay, false);
       }
     );
 
@@ -241,7 +241,7 @@ describe('lint', () => {
       },
       async () => {
         const okay = lint.lint(OPTIONS);
-        assert.ok(okay);
+        assert.strictEqual(okay, true);
       }
     );
   });
@@ -268,7 +268,7 @@ describe('lint', () => {
       },
       async () => {
         const okay = lint.lint(optionsWithLog, ['dira/a.ts', 'dirb/b.ts']);
-        assert.ok(!okay);
+        assert.strictEqual(okay, false);
         assert.ok(/dira\/a\.ts/.test(logBuffer));
         assert.ok(!/dirb\/b\.ts/.test(logBuffer));
       }
@@ -302,7 +302,7 @@ describe('lint', () => {
       },
       async () => {
         const okay = lint.lint(OPTIONS);
-        assert.ok(okay);
+        assert.strictEqual(okay, true);
       }
     );
   });

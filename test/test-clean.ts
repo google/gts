@@ -33,15 +33,15 @@ describe('clean', () => {
     logger: { log: nop, error: nop, dir: nop },
   };
 
-  it('should gracefully error if tsconfig is missing', async () => {
-    await assert.rejects(() =>
+  it('should gracefully error if tsconfig is missing', () => {
+    return assert.rejects(() =>
       withFixtures({}, async () => {
         await clean(OPTIONS);
       })
     );
   });
 
-  it('should gracefully error if tsconfig does not have valid outDir', async () => {
+  it('should gracefully error if tsconfig does not have valid outDir', () => {
     return withFixtures({ 'tsconfig.json': JSON.stringify({}) }, async () => {
       const deleted = await clean(OPTIONS);
       assert.strictEqual(deleted, false);
@@ -58,8 +58,8 @@ describe('clean', () => {
     );
   });
 
-  it('should ensure that outDir is local to targetRoot', async () => {
-    await assert.rejects(() =>
+  it('should ensure that outDir is local to targetRoot', () => {
+    return assert.rejects(() =>
       withFixtures(
         {
           'tsconfig.json': JSON.stringify({

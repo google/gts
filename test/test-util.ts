@@ -66,7 +66,7 @@ describe('util', () => {
     assert.deepStrictEqual(contents, FAKE_CONFIG1);
   });
 
-  it('should throw an error if it finds a circular reference', async () => {
+  it('should throw an error if it finds a circular reference', () => {
     const FAKE_DIRECTORY = '/some/fake/directory';
     const FAKE_CONFIG1 = { files: ['b'], extends: 'FAKE_CONFIG2' };
     const FAKE_CONFIG2 = { extends: 'FAKE_CONFIG3' };
@@ -76,7 +76,7 @@ describe('util', () => {
     myMap.set('/some/fake/directory/FAKE_CONFIG2', FAKE_CONFIG2);
     myMap.set('/some/fake/directory/FAKE_CONFIG3', FAKE_CONFIG3);
 
-    await assert.rejects(
+    return assert.rejects(
       () => getTSConfig(FAKE_DIRECTORY, createFakeReadFilep(myMap)),
       Error,
       'Circular Reference Detected'
@@ -152,38 +152,38 @@ describe('util', () => {
     assert.deepStrictEqual(contents, combinedConfig);
   });
 
-  it('function throws an error when reading a file that does not exist', async () => {
+  it('function throws an error when reading a file that does not exist', () => {
     const FAKE_DIRECTORY = '/some/fake/directory';
     const myMap = new Map();
 
-    await assert.rejects(
+    return assert.rejects(
       () => getTSConfig(FAKE_DIRECTORY, createFakeReadFilep(myMap)),
       Error,
       `${FAKE_DIRECTORY}/tsconfig.json Not Found`
     );
   });
 
-  it("isYarnUsed returns true if there's yarn.lock file only", async () => {
+  it("isYarnUsed returns true if there's yarn.lock file only", () => {
     const existsSync = makeFakeFsExistsSync(['yarn.lock']);
     assert.strictEqual(isYarnUsed(existsSync), true);
   });
 
-  it("isYarnUsed returns false if there's package-lock.json file only", async () => {
+  it("isYarnUsed returns false if there's package-lock.json file only", () => {
     const existsSync = makeFakeFsExistsSync(['package-lock.json']);
     assert.strictEqual(isYarnUsed(existsSync), false);
   });
 
-  it("isYarnUsed returns false if there're yarn.lock and package-lock.json files", async () => {
+  it("isYarnUsed returns false if there're yarn.lock and package-lock.json files", () => {
     const existsSync = makeFakeFsExistsSync(['package-lock.json', 'yarn.lock']);
     assert.strictEqual(isYarnUsed(existsSync), false);
   });
 
-  it('getPkgManagerName returns npm by default', async () => {
+  it('getPkgManagerName returns npm by default', () => {
     assert.strictEqual(getPkgManagerName(), 'npm');
     assert.strictEqual(getPkgManagerName(), getPkgManagerName(false));
   });
 
-  it('getPkgManagerName returns yarn', async () => {
+  it('getPkgManagerName returns yarn', () => {
     assert.strictEqual(getPkgManagerName(true), 'yarn');
   });
 

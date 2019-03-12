@@ -62,7 +62,7 @@ describe('init', () => {
     const result = await init.addScripts(pkg, OPTIONS);
     assert.strictEqual(result, true); // made edits.
     assert.ok(pkg.scripts);
-    assert.ok(hasExpectedScripts(pkg));
+    assert.strictEqual(hasExpectedScripts(pkg), true);
   });
 
   it('addScripts should not edit existing scripts on no', async () => {
@@ -133,7 +133,7 @@ describe('init', () => {
         // This may make it sensitive to the network, npm resiliency. Find a
         // way to mock npm.
         const result = await init.init(OPTIONS_YES);
-        assert.ok(result);
+        assert.strictEqual(result, true);
         const contents = await readJson('./package.json');
 
         assert.notStrictEqual(
@@ -156,14 +156,14 @@ describe('init', () => {
       // This may make it sensitive to the network, npm resiliency. Find a way to
       // mock npm.
       const result = await init.init(OPTIONS_YES);
-      assert.ok(result);
+      assert.strictEqual(result, true);
       const contents = await readJson('./package.json');
-      assert.ok(hasExpectedScripts(contents));
-      assert.ok(hasExpectedDependencies(contents));
+      assert.strictEqual(hasExpectedScripts(contents), true);
+      assert.strictEqual(hasExpectedDependencies(contents), true);
     });
   });
 
-  it('init should support yarn', async () => {
+  it('init should support yarn', () => {
     return withFixtures(
       {
         'package.json': JSON.stringify({ name: 'test' }),
@@ -171,10 +171,10 @@ describe('init', () => {
       },
       async () => {
         const result = await init.init(OPTIONS_YARN);
-        assert.ok(result);
+        assert.strictEqual(result, true);
 
         const contents = await readJson('./package.json');
-        assert.ok(contents.scripts.prepare === 'yarn run compile');
+        assert.strictEqual(contents.scripts.prepare, 'yarn run compile');
       }
     );
   });

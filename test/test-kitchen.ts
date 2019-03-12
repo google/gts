@@ -63,15 +63,19 @@ const execOpts = {
 console.log(`${chalk.blue(`${__filename} staging area: ${stagingPath}`)}`);
 
 describe('🚰 kitchen sink', () => {
-  /**
-   * Create a staging directory with temp fixtures used
-   * to test on a fresh application.
-   */
+  // Create a staging directory with temp fixtures used to test on a fresh application.
   before(async () => {
     await simpleExecp('npm pack');
     const tarball = `${pkg.name}-${pkg.version}.tgz`;
     await renamep(tarball, `${stagingPath}/gts.tgz`);
     await ncpp('test/fixtures', `${stagingPath}/`);
+  });
+
+  // CLEAN UP - remove the staging directory when done.
+  after('cleanup staging', () => {
+    if (!keep) {
+      stagingDir.removeCallback();
+    }
   });
 
   it('it should run init', async () => {
@@ -179,21 +183,9 @@ describe('🚰 kitchen sink', () => {
     fs.accessSync(`${stagingPath}/kitchen/build/src/server.d.ts`);
   });
 
-  /**
-   * Verify the `gts clean` command actually removes the
-   * output dir
-   */
+  // Verify the `gts clean` command actually removes the output dir
   it('should clean', async () => {
     await simpleExecp('npm run clean', execOpts);
     assert.throws(() => fs.accessSync(`${stagingPath}/kitchen/build`));
-  });
-
-  /**
-   * CLEAN UP - remove the staging directory when done.
-   */
-  after('cleanup staging', () => {
-    if (!keep) {
-      stagingDir.removeCallback();
-    }
   });
 });
