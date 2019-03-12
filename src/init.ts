@@ -174,7 +174,7 @@ async function writePackageJson(
 export const TSLINT_CONFIG = {
   extends: 'gts/tslint.json',
   linterOptions: {
-    exclude: ['*.json', '**/*.json'],
+    exclude: ['**/*.json'],
   },
 };
 
@@ -190,7 +190,7 @@ async function generateTsConfig(options: Options): Promise<void> {
   const config = formatJson({
     extends: './node_modules/gts/tsconfig-google.json',
     compilerOptions: { rootDir: '.', outDir: 'build' },
-    include: ['src/*.ts', 'src/**/*.ts', 'test/*.ts', 'test/**/*.ts'],
+    include: ['src/**/*.ts', 'test/**/*.ts'],
   });
   return generateConfigFile(options, './tsconfig.json', config);
 }
