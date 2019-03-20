@@ -21,7 +21,8 @@ import * as path from 'path';
 import { clean } from '../src/clean';
 import { Options } from '../src/cli';
 import { nop } from '../src/util';
-import { withFixtures } from './fixtures';
+
+import { withFixtures } from 'inline-fixtures';
 
 describe('clean', () => {
   const OPTIONS: Options = {
