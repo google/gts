@@ -23,7 +23,7 @@ import { TSLINT_CONFIG } from '../src/init';
 import * as lint from '../src/lint';
 import { nop } from '../src/util';
 
-import { withFixtures } from './fixtures';
+import { withFixtures } from 'inline-fixtures';
 
 describe('lint', () => {
   const OPTIONS: Options = {

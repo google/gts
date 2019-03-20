@@ -22,7 +22,7 @@ import { Options } from '../src/cli';
 import * as format from '../src/format';
 import { nop } from '../src/util';
 
-import { withFixtures } from './fixtures';
+import { withFixtures } from 'inline-fixtures';
 
 describe('format', () => {
   const BAD_CODE = 'export const foo = [ "2" ];';

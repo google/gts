@@ -19,7 +19,7 @@ import * as path from 'path';
 import { nop, readJsonp as readJson } from '../src/util';
 import { Options } from '../src/cli';
 import { PackageJson } from 'package-json';
-import { withFixtures } from './fixtures';
+import { withFixtures } from 'inline-fixtures';
 import * as init from '../src/init';
 
 const OPTIONS: Options = {
