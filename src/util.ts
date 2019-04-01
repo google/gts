@@ -76,8 +76,13 @@ async function getBase(
     throw new Error(`Circular reference in ${filePath}`);
   }
   readFiles.add(filePath);
+  let json: string;
   try {
-    const json = await customReadFilep(filePath, 'utf8');
+    json = await customReadFilep(filePath, 'utf8');
+  } catch (err) {
+    throw new Error(`${filePath} Not Found`);
+  }
+  try {
     let contents = JSON.parse(json);
 
     if (contents.extends) {
@@ -89,10 +94,9 @@ async function getBase(
       );
       contents = combineTSConfig(nextFile, contents);
     }
-
     return contents;
   } catch (err) {
-    throw new Error(`${filePath} Not Found`);
+    throw new Error(`Error parsing ${filePath}: ${err.message}`);
   }
 }
 
