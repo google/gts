@@ -283,11 +283,9 @@ export async function init(options: Options): Promise<boolean> {
     // source files yet.
     let command = getPkgManagerName(options.yarn);
     if (process.platform === 'win32') command += '.cmd';
-    cp.spawnSync(
-      command,
-      ['install', '--ignore-scripts'],
-      { stdio: 'inherit' }
-    );
+    cp.spawnSync(command, ['install', '--ignore-scripts'], {
+      stdio: 'inherit',
+    });
   }
 
   return true;
