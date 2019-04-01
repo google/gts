@@ -281,8 +281,10 @@ export async function init(options: Options): Promise<boolean> {
   if (!options.dryRun) {
     // --ignore-scripts so that compilation doesn't happen because there's no
     // source files yet.
+    let command = getPkgManagerName(options.yarn);
+    if (process.platform === 'win32') command += '.cmd';
     cp.spawnSync(
-      getPkgManagerName(options.yarn),
+      command,
       ['install', '--ignore-scripts'],
       { stdio: 'inherit' }
     );
