@@ -137,6 +137,8 @@ export function isYarnUsed(existsSync = fs.existsSync): boolean {
   return existsSync('yarn.lock');
 }
 
-export function getPkgManagerName(isYarnUsed?: boolean): 'yarn' | 'npm' {
-  return isYarnUsed ? 'yarn' : 'npm';
+export function getPkgManagerCommand(isYarnUsed?: boolean): string {
+  return (
+    (isYarnUsed ? 'yarn' : 'npm') + (process.platform === 'win32' ? '.cmd' : '')
+  );
 }

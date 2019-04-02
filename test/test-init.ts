@@ -174,7 +174,8 @@ describe('init', () => {
         assert.strictEqual(result, true);
 
         const contents = await readJson('./package.json');
-        assert.strictEqual(contents.scripts.prepare, 'yarn run compile');
+        const cmd = process.platform === 'win32' ? 'yarn.cmd' : 'yarn';
+        assert.strictEqual(contents.scripts.prepare, cmd + ' run compile');
       }
     );
   });
