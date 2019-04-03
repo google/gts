@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import * as sinon from 'sinon';
+import * as cp from 'child_process';
 import * as assert from 'assert';
 import * as path from 'path';
 import { nop, readJsonp as readJson } from '../src/util';
@@ -58,6 +60,16 @@ function hasExpectedDependencies(packageJson: PackageJson): boolean {
 }
 
 describe('init', () => {
+  const sandbox = sinon.createSandbox();
+
+  beforeEach(function() {
+    this.spawnSyncStub = sandbox.stub(cp, 'spawnSync');
+  });
+
+  afterEach(function() {
+    this.spawnSyncStub.restore();
+  });
+
   it('addScripts should add a scripts section if none exists', async () => {
     const pkg: PackageJson = { ...MINIMAL_PACKAGE_JSON };
     const result = await init.addScripts(pkg, OPTIONS);
@@ -142,9 +154,6 @@ describe('init', () => {
     return withFixtures(
       { 'package.json': JSON.stringify(originalContents) },
       async () => {
-        // TODO: this test causes `npm install` to run in the fixture directory.
-        // This may make it sensitive to the network, npm resiliency. Find a
-        // way to mock npm.
         const result = await init.init(OPTIONS_YES);
         assert.strictEqual(result, true);
         const contents = await readJson('./package.json');
@@ -165,9 +174,6 @@ describe('init', () => {
 
   it('init should handle missing package.json', () => {
     return withFixtures({}, async () => {
-      // TODO: this test causes `npm install` to run in the fixture directory.
-      // This may make it sensitive to the network, npm resiliency. Find a way to
-      // mock npm.
       const result = await init.init(OPTIONS_YES);
       assert.strictEqual(result, true);
       const contents = await readJson('./package.json');

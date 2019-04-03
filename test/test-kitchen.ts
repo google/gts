@@ -90,7 +90,6 @@ describe('🚰 kitchen sink', () => {
   it('it should run init', async () => {
     const nodeVersion = Number(process.version.slice(1).split('.')[0]);
     if (nodeVersion < 8 || process.platform === 'win32') {
-      spawn.sync('npm', ['install'], execOpts);
       spawn.sync('./node_modules/.bin/gts', ['init', '-y'], execOpts);
     } else {
       const args = [
