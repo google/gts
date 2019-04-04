@@ -77,7 +77,7 @@
     "nyc": "^13.3.0",
     "source-map-support": "^0.5.5",
     "tmp": "0.0.33",
-    "typescript": "~3.3.0"
+    "typescript": "~3.4.0"
   },
   "peerDependencies": {
     "typescript": "^3.0.0"
