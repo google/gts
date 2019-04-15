@@ -62,7 +62,6 @@
     "@types/mocha": "^5.2.6",
     "@types/ncp": "^2.0.1",
     "@types/node": "^10.0.3",
-    "@types/package-json": "^5.0.0",
     "@types/pify": "^3.0.2",
     "@types/prettier": "^1.15.2",
     "@types/rimraf": "^2.0.2",
