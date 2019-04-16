@@ -74,7 +74,7 @@
     "js-green-licenses": "^0.5.0",
     "mocha": "^6.0.0",
     "ncp": "^2.0.0",
-    "nyc": "^13.3.0",
+    "nyc": "^14.0.0",
     "source-map-support": "^0.5.5",
     "tmp": "0.1.0",
     "typescript": "~3.4.0"
