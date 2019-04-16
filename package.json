@@ -34,7 +34,7 @@
     "license-check": "jsgl --local ."
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=8.5"
   },
   "keywords": [],
   "author": "Google Inc.",
