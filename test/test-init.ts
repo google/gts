@@ -18,7 +18,7 @@ import * as assert from 'assert';
 import * as path from 'path';
 import { nop, readJsonp as readJson } from '../src/util';
 import { Options } from '../src/cli';
-import { PackageJson } from 'package-json';
+import { PackageJson } from '@npm/types';
 import { withFixtures, Fixtures } from 'inline-fixtures';
 import { accessSync } from 'fs';
 import * as init from '../src/init';
