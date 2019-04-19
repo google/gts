@@ -34,6 +34,7 @@ const OPTIONS: Options = {
 const OPTIONS_YES = Object.assign({}, OPTIONS, { yes: true });
 const OPTIONS_NO = Object.assign({}, OPTIONS, { no: true });
 const OPTIONS_YARN = Object.assign({}, OPTIONS_YES, { yarn: true });
+const MINIMAL_PACKAGE_JSON = { name: 'name', version: 'v1.1.1' };
 
 function hasExpectedScripts(packageJson: PackageJson): boolean {
   return (
@@ -59,7 +60,7 @@ function hasExpectedDependencies(packageJson: PackageJson): boolean {
 
 describe('init', () => {
   it('addScripts should add a scripts section if none exists', async () => {
-    const pkg: PackageJson = {};
+    const pkg: PackageJson = { ...MINIMAL_PACKAGE_JSON };
     const result = await init.addScripts(pkg, OPTIONS);
     assert.strictEqual(result, true); // made edits.
     assert.ok(pkg.scripts);
@@ -76,7 +77,10 @@ describe('init', () => {
       pretest: `fake run compile`,
       posttest: `fake run check`,
     };
-    const pkg: PackageJson = { scripts: Object.assign({}, SCRIPTS) };
+    const pkg: PackageJson = {
+      ...MINIMAL_PACKAGE_JSON,
+      scripts: { ...SCRIPTS },
+    };
     const result = await init.addScripts(pkg, OPTIONS_NO);
     assert.strictEqual(result, false); // no edits.
     assert.deepStrictEqual(pkg.scripts, SCRIPTS);
@@ -92,14 +96,17 @@ describe('init', () => {
       pretest: `fake run compile`,
       posttest: `fake run check`,
     };
-    const pkg: PackageJson = { scripts: Object.assign({}, SCRIPTS) };
+    const pkg: PackageJson = {
+      ...MINIMAL_PACKAGE_JSON,
+      scripts: { ...SCRIPTS },
+    };
     const result = await init.addScripts(pkg, OPTIONS_YES);
     assert.strictEqual(result, true); // made edits.
     assert.notDeepStrictEqual(pkg.scripts, SCRIPTS);
   });
 
   it('addDependencies should add a deps section if none exists', async () => {
-    const pkg: PackageJson = {};
+    const pkg: PackageJson = { ...MINIMAL_PACKAGE_JSON };
     const result = await init.addDependencies(pkg, OPTIONS);
     assert.strictEqual(result, true); // made edits.
     assert.ok(pkg.devDependencies);
@@ -107,7 +114,10 @@ describe('init', () => {
 
   it('addDependencies should not edit existing deps on no', async () => {
     const DEPS = { gts: 'something', typescript: 'or the other' };
-    const pkg: PackageJson = { devDependencies: Object.assign({}, DEPS) };
+    const pkg: PackageJson = {
+      ...MINIMAL_PACKAGE_JSON,
+      devDependencies: { ...DEPS },
+    };
     const OPTIONS_NO = Object.assign({}, OPTIONS, { no: true });
     const result = await init.addDependencies(pkg, OPTIONS_NO);
     assert.strictEqual(result, false); // no edits.
@@ -116,7 +126,10 @@ describe('init', () => {
 
   it('addDependencies should edit existing deps on yes', async () => {
     const DEPS = { gts: 'something', typescript: 'or the other' };
-    const pkg: PackageJson = { devDependencies: Object.assign({}, DEPS) };
+    const pkg: PackageJson = {
+      ...MINIMAL_PACKAGE_JSON,
+      devDependencies: { ...DEPS },
+    };
     const result = await init.addDependencies(pkg, OPTIONS_YES);
     assert.strictEqual(result, true); // made edits.
     assert.notDeepStrictEqual(pkg.devDependencies, DEPS);

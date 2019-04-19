@@ -27,7 +27,7 @@ import {
 } from './util';
 
 import { Options } from './cli';
-import { PackageJson } from 'package-json';
+import { PackageJson } from '@npm/types';
 import chalk from 'chalk';
 
 const pkg = require('../../package.json');
