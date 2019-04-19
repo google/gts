@@ -19,7 +19,8 @@ import * as path from 'path';
 import { nop, readJsonp as readJson } from '../src/util';
 import { Options } from '../src/cli';
 import { PackageJson } from 'package-json';
-import { withFixtures } from 'inline-fixtures';
+import { withFixtures, Fixtures } from 'inline-fixtures';
+import { accessSync } from 'fs';
 import * as init from '../src/init';
 
 const OPTIONS: Options = {
@@ -177,5 +178,33 @@ describe('init', () => {
         assert.strictEqual(contents.scripts.prepare, 'yarn run compile');
       }
     );
+  });
+
+  it('should install a default template if the source directory do not exists', () => {
+    return withFixtures({}, async dir => {
+      const newPath = path.join(dir, 'src');
+      const indexPath = path.join(newPath, 'index.ts');
+      await init.init(OPTIONS_YES);
+      assert.doesNotThrow(() => {
+        accessSync(indexPath);
+      });
+    });
+  });
+
+  it('should not install the default template if the source directory already exists and does contain ts files', () => {
+    const EXISTING = 'src';
+    const FIXTURES: Fixtures = {
+      [EXISTING]: {
+        'main.ts': '42;',
+      },
+    };
+    return withFixtures(FIXTURES, async dir => {
+      const newPath = path.join(dir, 'src');
+      const created = await init.installDefaultTemplate();
+      assert.strictEqual(created, false);
+      assert.doesNotThrow(() => {
+        accessSync(newPath);
+      });
+    });
   });
 });

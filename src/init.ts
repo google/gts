@@ -22,6 +22,8 @@ import {
   readFilep as read,
   readJsonp as readJson,
   writeFileAtomicp as write,
+  createSrcDir,
+  copyTemplate,
 } from './util';
 
 import { Options } from './cli';
@@ -241,6 +243,16 @@ async function generateConfigFile(
   }
 }
 
+export async function installDefaultTemplate(): Promise<boolean> {
+  const cwd = process.cwd();
+  const sourceDirName = path.join(__dirname, '../template');
+  const targetDirName = path.join(cwd, 'src');
+  if ((await createSrcDir(targetDirName)) === true) {
+    return copyTemplate(sourceDirName, targetDirName);
+  }
+  return false;
+}
+
 export async function init(options: Options): Promise<boolean> {
   let generatedPackageJson = false;
   let packageJson;
@@ -276,6 +288,12 @@ export async function init(options: Options): Promise<boolean> {
   await generateTsConfig(options);
   await generateTsLintConfig(options);
   await generatePrettierConfig(options);
+
+  if (await installDefaultTemplate()) {
+    options.logger.log('Default template installed.');
+  } else {
+    options.logger.log('Template install: abandon.');
+  }
 
   // Run `npm install` after initial setup so `npm run check` works right away.
   if (!options.dryRun) {

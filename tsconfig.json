@@ -9,6 +9,7 @@
     "test/**/*.ts"
   ],
   "exclude": [
-    "test/fixtures/**/*.*"
+    "test/fixtures/**/*.*",
+    "template/**/*.*",
   ]
 }

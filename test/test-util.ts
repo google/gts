@@ -15,14 +15,18 @@
  */
 import * as assert from 'assert';
 import * as path from 'path';
-import { PathLike } from 'fs';
+import { accessSync, PathLike, readFileSync } from 'fs';
 
 import {
   ConfigFile,
   getTSConfig,
   isYarnUsed,
   getPkgManagerName,
+  createSrcDir,
+  copyTemplate,
 } from '../src/util';
+
+import { withFixtures, Fixtures } from 'inline-fixtures';
 
 /**
  * Creates a fake promisified readFile function from a map
@@ -46,6 +50,15 @@ function makeFakeFsExistsSync(
 ): (path: PathLike) => boolean {
   return (path: PathLike) => expected.some(item => item === path);
 }
+
+async function srcDirCheck(path: string, expected = true) {
+  const created = await createSrcDir(path);
+  assert.strictEqual(created, expected);
+  assert.doesNotThrow(() => {
+    accessSync(path);
+  });
+}
+
 describe('util', () => {
   it('get should parse the correct tsconfig file', async () => {
     const FAKE_DIRECTORY = '/some/fake/directory';
@@ -186,6 +199,97 @@ describe('util', () => {
   it('getPkgManagerName returns yarn', () => {
     assert.strictEqual(getPkgManagerName(true), 'yarn');
   });
+
+  it('should copy the template', () => {
+    const SOURCE = 'sourceDirectory';
+    const DEST = 'destDirectory';
+    const WRONG = 'wrongDirectory';
+    const FIXTURES = {
+      [SOURCE]: {
+        'index.ts': '42;',
+      },
+    };
+    return withFixtures(FIXTURES, async dir => {
+      const sourcePath = path.join(dir, SOURCE);
+      const destPath = path.join(dir, DEST);
+      const wrongPath = path.join(dir, WRONG);
+
+      // make sure the source directory exists.
+      accessSync(sourcePath);
+      const copied = await copyTemplate(sourcePath, destPath);
+      assert.strictEqual(copied, true);
+
+      // make sure the target directory exists.
+      accessSync(destPath);
+
+      // make sure the copied file exists and has the same content.
+      const destFilename = path.join(destPath, 'index.ts');
+      const content = readFileSync(destFilename, 'utf8');
+      const same: string = FIXTURES[SOURCE]['index.ts'];
+      assert.strictEqual(content, same);
+
+      // make sure return false if can't copy.
+      const wrongResult = await copyTemplate(wrongPath, destPath);
+      assert.strictEqual(wrongResult, false);
+    });
+  });
+
+  it('should create the source directory if not existing', () => {
+    const NOTEXISTING = 'newDirectory';
+    return withFixtures({}, async dir => {
+      const newPath = path.join(dir, NOTEXISTING);
+      await srcDirCheck(newPath);
+    });
+  });
+
+  it('should allow template copy if src directory already exists and is empty', () => {
+    const EMPTY = 'emptyDirectory';
+    const FIXTURES = {
+      [EMPTY]: {},
+    };
+    return withFixtures(FIXTURES, async dir => {
+      const dirPath = path.join(dir, EMPTY);
+      await srcDirCheck(dirPath);
+    });
+  });
+
+  it('should allow template copy if src directory already exists and contains files other than ts', () => {
+    const EXISTING = 'sourceDirectory';
+    const FIXTURES = {
+      [EXISTING]: {
+        'README.md': '# Read this',
+      },
+    };
+    return withFixtures(FIXTURES, async dir => {
+      const dirPath = path.join(dir, EXISTING);
+      await srcDirCheck(dirPath);
+    });
+  });
+
+  it('should not allow template copy if src directory already exists and contains ts files ', () => {
+    const EXISTING = 'sourceDirectory';
+    const FIXTURES = {
+      [EXISTING]: {
+        'index.ts': '42;',
+      },
+    };
+    return withFixtures(FIXTURES, async dir => {
+      const dirPath = path.join(dir, EXISTING);
+      await srcDirCheck(dirPath, false);
+    });
+  });
+
+  // TODO: see ofrobots/inline-fixtures#1 (https://github.com/ofrobots/inline-fixtures/issues/1)
+  // it('should not allow template copy if src directory is not accessible', () => {
+  //   const WRONG = 'wrongDirectory';
+  //   const FIXTURES = {
+  //     [WRONG]: new WrongDirectory(EACCES),
+  //   };
+  //   return withFixtures(FIXTURES, async dir => {
+  //     const dirPath = path.join(dir, WRONG);
+  //     await dirCheck(dirPath, { expect: false, throw: true});
+  //   });
+  // });
 
   // TODO: test errors in readFile, JSON.parse.
 });

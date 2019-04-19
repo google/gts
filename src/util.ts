@@ -18,10 +18,13 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as pify from 'pify';
 import * as rimraf from 'rimraf';
+import * as ncp from 'ncp';
+import { Options } from './cli';
 
 export const readFilep = pify(fs.readFile);
 export const rimrafp = pify(rimraf);
 export const writeFileAtomicp = pify(require('write-file-atomic'));
+export const ncpp = pify(ncp.ncp);
 
 export async function readJsonp(jsonPath: string) {
   return JSON.parse(await readFilep(jsonPath));
@@ -139,4 +142,80 @@ export function isYarnUsed(existsSync = fs.existsSync): boolean {
 
 export function getPkgManagerName(isYarnUsed?: boolean): 'yarn' | 'npm' {
   return isYarnUsed ? 'yarn' : 'npm';
+}
+
+/**
+ * Create a directory if not exist
+ * If already exist check if contains any ts file.
+ * If it returns true we can expect that the directory
+ * exist and does not contain ts files.
+ */
+export async function createSrcDir(
+  dirpath: string,
+  options?: Options
+): Promise<boolean> {
+  try {
+    fs.mkdirSync(dirpath, { mode: 0o774 });
+  } catch (error) {
+    if (error.code === 'EEXIST' && !(await isAnyTsFileInDir(dirpath))) {
+      return true;
+    }
+    utilLog(new Error('Creation of source directory aborted'), options);
+    return false;
+  }
+  return true;
+}
+
+async function isAnyTsFileInDir(
+  dirpath: string,
+  options?: Options
+): Promise<boolean> {
+  try {
+    const extension = '.ts';
+    const files: string[] = fs.readdirSync(dirpath);
+    if (files && files.length) {
+      const firstTsFileName = files.find(
+        (file: string) => path.extname(file).toLowerCase() === extension
+      );
+      if (firstTsFileName !== undefined) {
+        return true;
+      }
+    }
+    return false;
+  } catch (error) {
+    utilLog(error, options);
+    return false;
+  }
+}
+
+/*
+ * Same as ```return ncpp(sourceDirName, targetDirName);```
+ * but returns a boolean.
+ */
+export async function copyTemplate(
+  sourceDirName: string,
+  targetDirName: string,
+  options?: Options
+): Promise<boolean> {
+  try {
+    await ncpp(sourceDirName, targetDirName);
+    return true;
+  } catch (error) {
+    utilLog(new Error('Template copy aborted'), options);
+    utilLog(error, options);
+    return false;
+  }
+}
+
+// TODO: implement Options.Logger.auto(msg: string | Error | {}) ?
+function utilLog(message: string | Error | {}, options?: Options) {
+  if (options && options.logger) {
+    if (typeof message === 'string') {
+      options.logger.log(message);
+    } else if (message instanceof Error) {
+      options.logger.error(message);
+    } else {
+      options.logger.dir(message);
+    }
+  }
 }
