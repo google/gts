@@ -18,10 +18,22 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as rimraf from 'rimraf';
 import { promisify } from 'util';
+import * as ncp from 'ncp';
 
 export const readFilep = promisify(fs.readFile);
 export const rimrafp = promisify(rimraf);
 export const writeFileAtomicp = promisify(require('write-file-atomic'));
+export const ncpp = promisify(ncp.ncp);
+
+export interface Bag<T> {
+  [script: string]: T;
+}
+
+export interface DefaultPackage extends Bag<string> {
+  gts: string;
+  typescript: string;
+  '@types/node': string;
+}
 
 export async function readJsonp(jsonPath: string) {
   const contents = await readFilep(jsonPath, { encoding: 'utf8' });

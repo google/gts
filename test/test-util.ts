@@ -15,7 +15,7 @@
  */
 import * as assert from 'assert';
 import * as path from 'path';
-import { PathLike } from 'fs';
+import { accessSync, PathLike, readFileSync } from 'fs';
 
 import {
   ConfigFile,
@@ -23,6 +23,8 @@ import {
   isYarnUsed,
   getPkgManagerCommand,
 } from '../src/util';
+
+import { withFixtures, Fixtures } from 'inline-fixtures';
 
 /**
  * Creates a fake promisified readFile function from a map
@@ -189,6 +191,4 @@ describe('util', () => {
   it('getPkgManagerCommand returns yarn', () => {
     assert.strictEqual(getPkgManagerCommand(true), yarnCmd);
   });
-
-  // TODO: test errors in readFile, JSON.parse.
 });

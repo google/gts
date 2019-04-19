@@ -35,6 +35,7 @@ When you run the `npx gts init` command, it's going to do a few things for you:
   - `clean`: Removes output files.
   - `compile`: Compiles the source code using TypeScript compiler.
   - `pretest`, `posttest` and `prepare`: convenience integrations.
+- If a source folder is not already present it will add a default template project.
 
 ### Individual files
 The commands above will all run in the scope of the current folder.  Some commands can be run on individual files:
