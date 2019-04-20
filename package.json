@@ -23,6 +23,7 @@
     "clean": "rimraf ./build/",
     "codecov": "nyc report --reporter=json && codecov -f coverage/*.json",
     "compile": "tsc -p .",
+    "postcompile": "ncp template build/template",
     "format-check": "prettier --list-different src/*.ts test/*.ts",
     "format": "prettier --write src/*.ts test/*.ts",
     "lint": "tslint -c tslint.json  --project . -t codeFrame",
