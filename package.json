@@ -13,6 +13,7 @@
     "README.md",
     "build/src",
     "build/types",
+    "build/template",
     "prettier.config.js",
     "tsconfig-google.json",
     "tsconfig.json",
