@@ -223,7 +223,6 @@ export async function copyTemplate(
   }
 }
 
-// TODO: implement Options.Logger.auto(msg: string | Error | {}) ?
 function utilLog(message: string | Error | {}, options?: Options) {
   if (options && options.logger) {
     if (typeof message === 'string') {
