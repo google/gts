@@ -243,12 +243,14 @@ async function generateConfigFile(
   }
 }
 
-export async function installDefaultTemplate(options: Options): Promise<boolean> {
+export async function installDefaultTemplate(
+  options: Options
+): Promise<boolean> {
   const cwd = process.cwd();
   const sourceDirName = path.join(__dirname, '../template');
   const targetDirName = path.join(cwd, 'src');
   if ((await createSrcDir(targetDirName, options)) === true) {
-    if (await copyTemplate(sourceDirName, targetDirName, options) === true) {
+    if ((await copyTemplate(sourceDirName, targetDirName, options)) === true) {
       options.logger.log('Default template installed.');
       return true;
     }
