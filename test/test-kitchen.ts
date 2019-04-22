@@ -15,8 +15,10 @@ interface ExecResult {
 const pkg = require('../../package.json');
 
 const simpleExecp = pify(cp.exec);
-const renamep = pify(fs.rename);
 const ncpp = pify(ncp.ncp);
+const copyFilep = pify(fs.copyFile);
+const unlinkp = pify(fs.unlink);
+const { COPYFILE_EXCL } = fs.constants;
 
 // TODO: improve the typedefinitions in @types/node. Right now they specify
 // the return type to be Error.
@@ -60,14 +62,16 @@ const execOpts = {
   cwd: `${stagingPath}/kitchen`,
 };
 
-console.log(`${chalk.blue(`${__filename} staging area: ${stagingPath}`)}`);
+const message = `${__filename} staging area: ${stagingPath}`;
+console.log(`${chalk.blue(message)}`);
 
 describe('🚰 kitchen sink', () => {
   // Create a staging directory with temp fixtures used to test on a fresh application.
   before(async () => {
     await simpleExecp('npm pack');
     const tarball = `${pkg.name}-${pkg.version}.tgz`;
-    await renamep(tarball, `${stagingPath}/gts.tgz`);
+    await copyFilep(tarball, `${stagingPath}/gts.tgz`, COPYFILE_EXCL);
+    await unlinkp(tarball);
     await ncpp('test/fixtures', `${stagingPath}/`);
   });
 

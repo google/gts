@@ -22,10 +22,14 @@ import {
   readFilep as read,
   readJsonp as readJson,
   writeFileAtomicp as write,
+  createSrcDir,
+  copyTemplate,
+  Bag,
+  DefaultPackage,
 } from './util';
 
 import { Options } from './cli';
-import { PackageJson } from 'package-json';
+import { PackageJson } from '@npm/types';
 import chalk from 'chalk';
 
 const pkg = require('../../package.json');
@@ -41,10 +45,6 @@ const DEFAULT_PACKAGE_JSON: PackageJson = {
   keywords: [],
   scripts: { test: 'echo "Error: no test specified" && exit 1' },
 };
-
-export interface Bag<T> {
-  [script: string]: T;
-}
 
 async function query(
   message: string,
@@ -118,9 +118,10 @@ export async function addDependencies(
   options: Options
 ): Promise<boolean> {
   let edits = false;
-  const deps: Bag<string> = {
+  const deps: DefaultPackage = {
     gts: `^${pkg.version}`,
     typescript: pkg.devDependencies.typescript,
+    '@types/node': pkg.devDependencies['@types/node'],
   };
 
   if (!packageJson.devDependencies) {
@@ -241,6 +242,22 @@ async function generateConfigFile(
   }
 }
 
+export async function installDefaultTemplate(
+  options: Options
+): Promise<boolean> {
+  const cwd = process.cwd();
+  const sourceDirName = path.join(__dirname, '../template');
+  const targetDirName = path.join(cwd, 'src');
+  if ((await createSrcDir(targetDirName, options)) === true) {
+    if ((await copyTemplate(sourceDirName, targetDirName, options)) === true) {
+      options.logger.log('Default template installed.');
+      return true;
+    }
+  }
+  options.logger.log('Template install: abandon.');
+  return false;
+}
+
 export async function init(options: Options): Promise<boolean> {
   let generatedPackageJson = false;
   let packageJson;
@@ -276,6 +293,7 @@ export async function init(options: Options): Promise<boolean> {
   await generateTsConfig(options);
   await generateTsLintConfig(options);
   await generatePrettierConfig(options);
+  await installDefaultTemplate(options);
 
   // Run `npm install` after initial setup so `npm run check` works right away.
   if (!options.dryRun) {

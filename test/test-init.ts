@@ -16,10 +16,11 @@
 
 import * as assert from 'assert';
 import * as path from 'path';
-import { nop, readJsonp as readJson } from '../src/util';
+import { nop, readJsonp as readJson, DefaultPackage } from '../src/util';
 import { Options } from '../src/cli';
-import { PackageJson } from 'package-json';
-import { withFixtures } from 'inline-fixtures';
+import { PackageJson } from '@npm/types';
+import { withFixtures, Fixtures } from 'inline-fixtures';
+import { accessSync } from 'fs';
 import * as init from '../src/init';
 
 const OPTIONS: Options = {
@@ -33,6 +34,8 @@ const OPTIONS: Options = {
 const OPTIONS_YES = Object.assign({}, OPTIONS, { yes: true });
 const OPTIONS_NO = Object.assign({}, OPTIONS, { no: true });
 const OPTIONS_YARN = Object.assign({}, OPTIONS_YES, { yarn: true });
+const MINIMAL_PACKAGE_JSON = { name: 'name', version: 'v1.1.1' };
+// const OPTIONS_LOG = Object.assign({}, OPTIONS_YES, { logger: console });
 
 function hasExpectedScripts(packageJson: PackageJson): boolean {
   return (
@@ -58,7 +61,7 @@ function hasExpectedDependencies(packageJson: PackageJson): boolean {
 
 describe('init', () => {
   it('addScripts should add a scripts section if none exists', async () => {
-    const pkg: PackageJson = {};
+    const pkg: PackageJson = { ...MINIMAL_PACKAGE_JSON };
     const result = await init.addScripts(pkg, OPTIONS);
     assert.strictEqual(result, true); // made edits.
     assert.ok(pkg.scripts);
@@ -75,7 +78,10 @@ describe('init', () => {
       pretest: `fake run compile`,
       posttest: `fake run check`,
     };
-    const pkg: PackageJson = { scripts: Object.assign({}, SCRIPTS) };
+    const pkg: PackageJson = {
+      ...MINIMAL_PACKAGE_JSON,
+      scripts: { ...SCRIPTS },
+    };
     const result = await init.addScripts(pkg, OPTIONS_NO);
     assert.strictEqual(result, false); // no edits.
     assert.deepStrictEqual(pkg.scripts, SCRIPTS);
@@ -91,22 +97,32 @@ describe('init', () => {
       pretest: `fake run compile`,
       posttest: `fake run check`,
     };
-    const pkg: PackageJson = { scripts: Object.assign({}, SCRIPTS) };
+    const pkg: PackageJson = {
+      ...MINIMAL_PACKAGE_JSON,
+      scripts: { ...SCRIPTS },
+    };
     const result = await init.addScripts(pkg, OPTIONS_YES);
     assert.strictEqual(result, true); // made edits.
     assert.notDeepStrictEqual(pkg.scripts, SCRIPTS);
   });
 
   it('addDependencies should add a deps section if none exists', async () => {
-    const pkg: PackageJson = {};
+    const pkg: PackageJson = { ...MINIMAL_PACKAGE_JSON };
     const result = await init.addDependencies(pkg, OPTIONS);
     assert.strictEqual(result, true); // made edits.
     assert.ok(pkg.devDependencies);
   });
 
   it('addDependencies should not edit existing deps on no', async () => {
-    const DEPS = { gts: 'something', typescript: 'or the other' };
-    const pkg: PackageJson = { devDependencies: Object.assign({}, DEPS) };
+    const DEPS: DefaultPackage = {
+      gts: 'something',
+      typescript: 'or the other',
+      '@types/node': 'or another',
+    };
+    const pkg: PackageJson = {
+      ...MINIMAL_PACKAGE_JSON,
+      devDependencies: { ...DEPS },
+    };
     const OPTIONS_NO = Object.assign({}, OPTIONS, { no: true });
     const result = await init.addDependencies(pkg, OPTIONS_NO);
     assert.strictEqual(result, false); // no edits.
@@ -115,7 +131,10 @@ describe('init', () => {
 
   it('addDependencies should edit existing deps on yes', async () => {
     const DEPS = { gts: 'something', typescript: 'or the other' };
-    const pkg: PackageJson = { devDependencies: Object.assign({}, DEPS) };
+    const pkg: PackageJson = {
+      ...MINIMAL_PACKAGE_JSON,
+      devDependencies: { ...DEPS },
+    };
     const result = await init.addDependencies(pkg, OPTIONS_YES);
     assert.strictEqual(result, true); // made edits.
     assert.notDeepStrictEqual(pkg.devDependencies, DEPS);
@@ -177,5 +196,32 @@ describe('init', () => {
         assert.strictEqual(contents.scripts.prepare, 'yarn run compile');
       }
     );
+  });
+
+  it('should install a default template if the source directory do not exists', () => {
+    return withFixtures({}, async dir => {
+      const indexPath = path.join(dir, 'src/index.ts');
+      await init.init(OPTIONS_YES);
+      assert.doesNotThrow(() => {
+        accessSync(indexPath);
+      });
+    });
+  });
+
+  it('should not install the default template if the source directory already exists and does contain ts files', () => {
+    const EXISTING = 'src';
+    const FIXTURES: Fixtures = {
+      [EXISTING]: {
+        'main.ts': '42;',
+      },
+    };
+    return withFixtures(FIXTURES, async dir => {
+      const newPath = path.join(dir, 'src');
+      const created = await init.installDefaultTemplate(OPTIONS_YES);
+      assert.strictEqual(created, false);
+      assert.doesNotThrow(() => {
+        accessSync(newPath);
+      });
+    });
   });
 });
