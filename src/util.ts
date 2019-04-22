@@ -167,8 +167,14 @@ export async function createSrcDir(
   try {
     fs.mkdirSync(dirpath, { mode: 0o774 });
   } catch (error) {
-    if (error.code === 'EEXIST' && !(await isAnyTsFileInDir(dirpath))) {
-      return true;
+    if (error.code === 'EEXIST') {
+      utilLog('Found existing src directory.', options);
+      if (await isAnyTsFileInDir(dirpath)) {
+        utilLog('src directory has already some Typescript files.', options);
+        return false;
+      } else {
+        return true;
+      }
     }
     utilLog(new Error('Creation of source directory aborted'), options);
     return false;
