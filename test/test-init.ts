@@ -16,7 +16,7 @@
 
 import * as assert from 'assert';
 import * as path from 'path';
-import { nop, readJsonp as readJson } from '../src/util';
+import { nop, readJsonp as readJson, DefaultPackage } from '../src/util';
 import { Options } from '../src/cli';
 import { PackageJson } from '@npm/types';
 import { withFixtures, Fixtures } from 'inline-fixtures';
@@ -35,6 +35,7 @@ const OPTIONS_YES = Object.assign({}, OPTIONS, { yes: true });
 const OPTIONS_NO = Object.assign({}, OPTIONS, { no: true });
 const OPTIONS_YARN = Object.assign({}, OPTIONS_YES, { yarn: true });
 const MINIMAL_PACKAGE_JSON = { name: 'name', version: 'v1.1.1' };
+// const OPTIONS_LOG = Object.assign({}, OPTIONS_YES, { logger: console });
 
 function hasExpectedScripts(packageJson: PackageJson): boolean {
   return (
@@ -113,7 +114,11 @@ describe('init', () => {
   });
 
   it('addDependencies should not edit existing deps on no', async () => {
-    const DEPS = { gts: 'something', typescript: 'or the other' };
+    const DEPS: DefaultPackage = {
+      gts: 'something',
+      typescript: 'or the other',
+      '@types/node': 'or another',
+    };
     const pkg: PackageJson = {
       ...MINIMAL_PACKAGE_JSON,
       devDependencies: { ...DEPS },
@@ -195,8 +200,7 @@ describe('init', () => {
 
   it('should install a default template if the source directory do not exists', () => {
     return withFixtures({}, async dir => {
-      const newPath = path.join(dir, 'src');
-      const indexPath = path.join(newPath, 'index.ts');
+      const indexPath = path.join(dir, 'src/index.ts');
       await init.init(OPTIONS_YES);
       assert.doesNotThrow(() => {
         accessSync(indexPath);

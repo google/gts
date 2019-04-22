@@ -24,6 +24,8 @@ import {
   writeFileAtomicp as write,
   createSrcDir,
   copyTemplate,
+  Bag,
+  DefaultPackage,
 } from './util';
 
 import { Options } from './cli';
@@ -43,10 +45,6 @@ const DEFAULT_PACKAGE_JSON: PackageJson = {
   keywords: [],
   scripts: { test: 'echo "Error: no test specified" && exit 1' },
 };
-
-export interface Bag<T> {
-  [script: string]: T;
-}
 
 async function query(
   message: string,
@@ -120,9 +118,10 @@ export async function addDependencies(
   options: Options
 ): Promise<boolean> {
   let edits = false;
-  const deps: Bag<string> = {
+  const deps: DefaultPackage = {
     gts: `^${pkg.version}`,
     typescript: pkg.devDependencies.typescript,
+    '@types/node': pkg.devDependencies['@types/node'],
   };
 
   if (!packageJson.devDependencies) {

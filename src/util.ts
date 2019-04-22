@@ -26,6 +26,16 @@ export const rimrafp = pify(rimraf);
 export const writeFileAtomicp = pify(require('write-file-atomic'));
 export const ncpp = pify(ncp.ncp);
 
+export interface Bag<T> {
+  [script: string]: T;
+}
+
+export interface DefaultPackage extends Bag<string> {
+  gts: string;
+  typescript: string;
+  '@types/node': string;
+}
+
 export async function readJsonp(jsonPath: string) {
   return JSON.parse(await readFilep(jsonPath));
 }
