@@ -243,13 +243,17 @@ async function generateConfigFile(
   }
 }
 
-export async function installDefaultTemplate(): Promise<boolean> {
+export async function installDefaultTemplate(options: Options): Promise<boolean> {
   const cwd = process.cwd();
   const sourceDirName = path.join(__dirname, '../template');
   const targetDirName = path.join(cwd, 'src');
-  if ((await createSrcDir(targetDirName)) === true) {
-    return copyTemplate(sourceDirName, targetDirName);
+  if ((await createSrcDir(targetDirName, options)) === true) {
+    if (await copyTemplate(sourceDirName, targetDirName, options) === true) {
+      options.logger.log('Default template installed.');
+      return true;
+    }
   }
+  options.logger.log('Template install: abandon.');
   return false;
 }
 
@@ -288,12 +292,7 @@ export async function init(options: Options): Promise<boolean> {
   await generateTsConfig(options);
   await generateTsLintConfig(options);
   await generatePrettierConfig(options);
-
-  if (await installDefaultTemplate()) {
-    options.logger.log('Default template installed.');
-  } else {
-    options.logger.log('Template install: abandon.');
-  }
+  await installDefaultTemplate(options);
 
   // Run `npm install` after initial setup so `npm run check` works right away.
   if (!options.dryRun) {

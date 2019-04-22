@@ -213,7 +213,7 @@ describe('init', () => {
     };
     return withFixtures(FIXTURES, async dir => {
       const newPath = path.join(dir, 'src');
-      const created = await init.installDefaultTemplate();
+      const created = await init.installDefaultTemplate(OPTIONS_YES);
       assert.strictEqual(created, false);
       assert.doesNotThrow(() => {
         accessSync(newPath);
