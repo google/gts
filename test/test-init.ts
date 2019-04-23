@@ -35,7 +35,6 @@ const OPTIONS_YES = Object.assign({}, OPTIONS, { yes: true });
 const OPTIONS_NO = Object.assign({}, OPTIONS, { no: true });
 const OPTIONS_YARN = Object.assign({}, OPTIONS_YES, { yarn: true });
 const MINIMAL_PACKAGE_JSON = { name: 'name', version: 'v1.1.1' };
-// const OPTIONS_LOG = Object.assign({}, OPTIONS_YES, { logger: console });
 
 function hasExpectedScripts(packageJson: PackageJson): boolean {
   return (
