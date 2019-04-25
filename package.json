@@ -81,8 +81,5 @@
   },
   "peerDependencies": {
     "typescript": "^3.0.0"
-  },
-  "publishConfig": {
-    "tag": "next"
   }
 }
