@@ -8,8 +8,6 @@
 [![codecov][codecov-image]][codecov-url]
 [![TypeScript Style Guide][gts-image]][gts-url]
 
-**NOTE: THIS README refers to the master branch which corresponds to the upcoming 1.0 release. To view documentation for the currently released version of this module see: https://github.com/google/gts/tree/v0.9.x.**
-
 [gts][npm-url] is Google's TypeScript style guide, and the configuration for our formatter, linter, and automatic code fixer. No lint rules to edit, no configuration to update, no more bike shedding over syntax.
 
 To borrow from [standardjs][standardjs-url]:
