@@ -18,7 +18,7 @@ import * as inquirer from 'inquirer';
 import * as path from 'path';
 
 import {
-  getPkgManagerName,
+  getPkgManagerCommand,
   readFilep as read,
   readJsonp as readJson,
   writeFileAtomicp as write,
@@ -76,7 +76,7 @@ export async function addScripts(
   options: Options
 ): Promise<boolean> {
   let edits = false;
-  const pkgManager = getPkgManagerName(options.yarn);
+  const pkgManager = getPkgManagerCommand(options.yarn);
   const scripts: Bag<string> = {
     check: `gts check`,
     clean: 'gts clean',
@@ -282,7 +282,7 @@ export async function init(options: Options): Promise<boolean> {
     // --ignore-scripts so that compilation doesn't happen because there's no
     // source files yet.
     cp.spawnSync(
-      getPkgManagerName(options.yarn),
+      getPkgManagerCommand(options.yarn),
       ['install', '--ignore-scripts'],
       { stdio: 'inherit' }
     );

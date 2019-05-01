@@ -21,7 +21,7 @@ import {
   ConfigFile,
   getTSConfig,
   isYarnUsed,
-  getPkgManagerName,
+  getPkgManagerCommand,
 } from '../src/util';
 
 /**
@@ -46,35 +46,37 @@ function makeFakeFsExistsSync(
 ): (path: PathLike) => boolean {
   return (path: PathLike) => expected.some(item => item === path);
 }
+
+const FAKE_DIRECTORY = '/some/fake/directory';
+const PATH_TO_TSCONFIG = path.resolve(FAKE_DIRECTORY, 'tsconfig.json');
+const PATH_TO_CONFIG2 = path.resolve(FAKE_DIRECTORY, 'FAKE_CONFIG2');
+const PATH_TO_CONFIG3 = path.resolve(FAKE_DIRECTORY, 'FAKE_CONFIG3');
+
 describe('util', () => {
   it('get should parse the correct tsconfig file', async () => {
-    const FAKE_DIRECTORY = '/some/fake/directory';
     const FAKE_CONFIG1 = { files: ['b'] };
 
     function fakeReadFilep(
       configPath: string,
       encoding: string
     ): Promise<string> {
-      assert.strictEqual(
-        configPath,
-        path.join(FAKE_DIRECTORY, 'tsconfig.json')
-      );
+      assert.strictEqual(configPath, PATH_TO_TSCONFIG);
       assert.strictEqual(encoding, 'utf8');
       return Promise.resolve(JSON.stringify(FAKE_CONFIG1));
     }
     const contents = await getTSConfig(FAKE_DIRECTORY, fakeReadFilep);
+
     assert.deepStrictEqual(contents, FAKE_CONFIG1);
   });
 
   it('should throw an error if it finds a circular reference', () => {
-    const FAKE_DIRECTORY = '/some/fake/directory';
     const FAKE_CONFIG1 = { files: ['b'], extends: 'FAKE_CONFIG2' };
     const FAKE_CONFIG2 = { extends: 'FAKE_CONFIG3' };
     const FAKE_CONFIG3 = { extends: 'tsconfig.json' };
     const myMap = new Map();
-    myMap.set('/some/fake/directory/tsconfig.json', FAKE_CONFIG1);
-    myMap.set('/some/fake/directory/FAKE_CONFIG2', FAKE_CONFIG2);
-    myMap.set('/some/fake/directory/FAKE_CONFIG3', FAKE_CONFIG3);
+    myMap.set(PATH_TO_TSCONFIG, FAKE_CONFIG1);
+    myMap.set(PATH_TO_CONFIG2, FAKE_CONFIG2);
+    myMap.set(PATH_TO_CONFIG3, FAKE_CONFIG3);
 
     return assert.rejects(
       () => getTSConfig(FAKE_DIRECTORY, createFakeReadFilep(myMap)),
@@ -84,7 +86,6 @@ describe('util', () => {
   });
 
   it('should follow dependency chain caused by extends files', async () => {
-    const FAKE_DIRECTORY = '/some/fake/directory';
     const FAKE_CONFIG1 = {
       compilerOptions: { a: 'n' },
       files: ['b'],
@@ -100,9 +101,9 @@ describe('util', () => {
     };
 
     const myMap = new Map();
-    myMap.set('/some/fake/directory/tsconfig.json', FAKE_CONFIG1);
-    myMap.set('/some/fake/directory/FAKE_CONFIG2', FAKE_CONFIG2);
-    myMap.set('/some/fake/directory/FAKE_CONFIG3', FAKE_CONFIG3);
+    myMap.set(PATH_TO_TSCONFIG, FAKE_CONFIG1);
+    myMap.set(PATH_TO_CONFIG2, FAKE_CONFIG2);
+    myMap.set(PATH_TO_CONFIG3, FAKE_CONFIG3);
 
     const contents = await getTSConfig(
       FAKE_DIRECTORY,
@@ -112,15 +113,14 @@ describe('util', () => {
   });
 
   it('when a file contains an extends field, the base file is loaded first then overridden by the inherited files', async () => {
-    const FAKE_DIRECTORY = '/some/fake/directory';
     const FAKE_CONFIG1 = { files: ['b'], extends: 'FAKE_CONFIG2' };
     const FAKE_CONFIG2 = { files: ['c'], extends: 'FAKE_CONFIG3' };
     const FAKE_CONFIG3 = { files: ['d'] };
     const combinedConfig = { compilerOptions: {}, files: ['b'] };
     const myMap = new Map();
-    myMap.set('/some/fake/directory/tsconfig.json', FAKE_CONFIG1);
-    myMap.set('/some/fake/directory/FAKE_CONFIG2', FAKE_CONFIG2);
-    myMap.set('/some/fake/directory/FAKE_CONFIG3', FAKE_CONFIG3);
+    myMap.set(PATH_TO_TSCONFIG, FAKE_CONFIG1);
+    myMap.set(PATH_TO_CONFIG2, FAKE_CONFIG2);
+    myMap.set(PATH_TO_CONFIG3, FAKE_CONFIG3);
 
     const contents = await getTSConfig(
       FAKE_DIRECTORY,
@@ -130,7 +130,6 @@ describe('util', () => {
   });
 
   it('when reading a file, all filepaths should be relative to the config file currently being read', async () => {
-    const FAKE_DIRECTORY = '/some/fake/directory';
     const FAKE_CONFIG1 = { files: ['b'], extends: './foo/FAKE_CONFIG2' };
     const FAKE_CONFIG2 = { include: ['c'], extends: './bar/FAKE_CONFIG3' };
     const FAKE_CONFIG3 = { exclude: ['d'] };
@@ -141,9 +140,12 @@ describe('util', () => {
       include: ['c'],
     };
     const myMap = new Map();
-    myMap.set('/some/fake/directory/tsconfig.json', FAKE_CONFIG1);
-    myMap.set('/some/fake/directory/foo/FAKE_CONFIG2', FAKE_CONFIG2);
-    myMap.set('/some/fake/directory/foo/bar/FAKE_CONFIG3', FAKE_CONFIG3);
+    myMap.set(PATH_TO_TSCONFIG, FAKE_CONFIG1);
+    myMap.set(path.resolve(FAKE_DIRECTORY, './foo/FAKE_CONFIG2'), FAKE_CONFIG2);
+    myMap.set(
+      path.resolve(FAKE_DIRECTORY, './foo/bar/FAKE_CONFIG3'),
+      FAKE_CONFIG3
+    );
 
     const contents = await getTSConfig(
       FAKE_DIRECTORY,
@@ -153,7 +155,6 @@ describe('util', () => {
   });
 
   it('function throws an error when reading a file that does not exist', () => {
-    const FAKE_DIRECTORY = '/some/fake/directory';
     const myMap = new Map();
 
     return assert.rejects(
@@ -178,13 +179,15 @@ describe('util', () => {
     assert.strictEqual(isYarnUsed(existsSync), false);
   });
 
-  it('getPkgManagerName returns npm by default', () => {
-    assert.strictEqual(getPkgManagerName(), 'npm');
-    assert.strictEqual(getPkgManagerName(), getPkgManagerName(false));
+  const npmCmd = process.platform !== 'win32' ? 'npm' : 'npm.cmd';
+  const yarnCmd = process.platform !== 'win32' ? 'yarn' : 'yarn.cmd';
+  it('getPkgManagerCommand returns npm by default', () => {
+    assert.strictEqual(getPkgManagerCommand(), npmCmd);
+    assert.strictEqual(getPkgManagerCommand(), getPkgManagerCommand(false));
   });
 
-  it('getPkgManagerName returns yarn', () => {
-    assert.strictEqual(getPkgManagerName(true), 'yarn');
+  it('getPkgManagerCommand returns yarn', () => {
+    assert.strictEqual(getPkgManagerCommand(true), yarnCmd);
   });
 
   // TODO: test errors in readFile, JSON.parse.
