@@ -5,6 +5,7 @@ import * as ncp from 'ncp';
 import * as pify from 'pify';
 import * as tmp from 'tmp';
 import * as assert from 'assert';
+import * as path from 'path';
 
 interface ExecResult {
   exitCode: number;
@@ -58,7 +59,7 @@ const keep = !!process.env.GTS_KEEP_TEMPDIRS;
 const stagingDir = tmp.dirSync({ keep, unsafeCleanup: true });
 const stagingPath = stagingDir.name;
 const execOpts = {
-  cwd: `${stagingPath}/kitchen`,
+  cwd: `${stagingPath}${path.sep}kitchen`,
 };
 
 console.log(`${chalk.blue(`${__filename} staging area: ${stagingPath}`)}`);
@@ -69,8 +70,8 @@ describe('🚰 kitchen sink', () => {
     await simpleExecp('npm pack');
     const tarball = `${pkg.name}-${pkg.version}.tgz`;
     await renamep(tarball, 'gts.tgz');
-    await movep('gts.tgz', `${stagingPath}/gts.tgz`);
-    await ncpp('test/fixtures', `${stagingPath}/`);
+    await movep('gts.tgz', path.resolve(stagingPath,'gts.tgz'));
+    await ncpp('test/fixtures', `${stagingPath}${path.sep}`);
   });
 
   // CLEAN UP - remove the staging directory when done.
@@ -89,7 +90,7 @@ describe('🚰 kitchen sink', () => {
       // It's important to use `-n` here because we don't want to overwrite
       // the version of gts installed, as it will trigger the npm install.
       await simpleExecp(
-        `npx -p "${stagingPath}"/gts.tgz --ignore-existing gts init -n`,
+        `npx -p "${stagingPath}${path.sep}gts.tgz" --ignore-existing gts init -n`,
         execOpts
       );
     }
@@ -107,7 +108,7 @@ describe('🚰 kitchen sink', () => {
   it('should use as a non-locally installed module', async () => {
     // Use from a directory different from where we have locally installed. This
     // simulates use as a globally installed module.
-    const GTS = `"${stagingPath}"/kitchen/node_modules/.bin/gts`;
+    const GTS = path.resolve(stagingPath,"kitchen/node_modules/.bin/gts");
     const tmpDir = tmp.dirSync({ keep, unsafeCleanup: true });
     const opts = { cwd: `${tmpDir.name}/kitchen` };
 
@@ -139,7 +140,7 @@ describe('🚰 kitchen sink', () => {
   });
 
   it('should terminate generated json files with newline', async () => {
-    const GTS = `"${stagingPath}"/kitchen/node_modules/.bin/gts`;
+    const GTS = path.resolve(stagingPath,"/kitchen/node_modules/.bin/gts");
     await simpleExecp(`${GTS} init -y`, execOpts);
     assert.ok(
       fs
