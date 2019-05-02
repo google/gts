@@ -17,6 +17,8 @@ import * as cp from 'child_process';
 import * as inquirer from 'inquirer';
 import * as path from 'path';
 
+const crossSpawn = require('cross-spawn');
+
 import {
   getPkgManagerCommand,
   readFilep as read,
@@ -281,11 +283,18 @@ export async function init(options: Options): Promise<boolean> {
   if (!options.dryRun) {
     // --ignore-scripts so that compilation doesn't happen because there's no
     // source files yet.
+    crossSpawn.sync(
+      getPkgManagerCommand(options.yarn),
+      ['install', '--ignore-scripts'],
+      { stdio: 'inherit' }
+    );
+    /*
     cp.spawnSync(
       getPkgManagerCommand(options.yarn),
       ['install', '--ignore-scripts'],
       { stdio: 'inherit' }
     );
+    */
   }
 
   return true;
