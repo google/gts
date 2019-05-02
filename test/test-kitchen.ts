@@ -7,6 +7,8 @@ import * as tmp from 'tmp';
 import * as assert from 'assert';
 import * as path from 'path';
 
+const spawn = require('cross-spawn');
+
 interface ExecResult {
   exitCode: number;
   stdout: string;
@@ -89,10 +91,16 @@ describe('🚰 kitchen sink', () => {
     } else {
       // It's important to use `-n` here because we don't want to overwrite
       // the version of gts installed, as it will trigger the npm install.
-      await simpleExecp(
-        `npx -p "${stagingPath}${
-          path.sep
-        }gts.tgz" --ignore-existing gts init -n`,
+      spawn.sync(
+        'npx',
+        [
+          '-p',
+          path.resolve(stagingPath, 'gts.tgz'),
+          '--ignore-existing',
+          'gts',
+          'init',
+          '-n',
+        ],
         execOpts
       );
     }
@@ -120,7 +128,8 @@ describe('🚰 kitchen sink', () => {
     await ncpp(`${stagingPath}/gts.tgz`, `${tmpDir.name}/gts.tgz`);
     // It's important to use `-n` here because we don't want to overwrite
     // the version of gts installed, as it will trigger the npm install.
-    await simpleExecp(`${GTS} init -n`, opts);
+    //await simpleExecp(`${GTS} init -n`, opts);
+    spawn.sync(GTS, ['init', '-n'], opts);
 
     // The `extends` field must use the local gts path.
     const tsconfigJson = fs.readFileSync(
@@ -143,7 +152,7 @@ describe('🚰 kitchen sink', () => {
 
   it('should terminate generated json files with newline', async () => {
     const GTS = path.resolve(stagingPath, 'kitchen/node_modules/.bin/gts');
-    await simpleExecp(`${GTS} init -y`, execOpts);
+    spawn.sync(GTS, ['init', '-y'], execOpts);
     assert.ok(
       fs
         .readFileSync(`${stagingPath}/kitchen/package.json`, 'utf8')
@@ -171,6 +180,7 @@ describe('🚰 kitchen sink', () => {
     const preFix = fs
       .readFileSync(`${stagingPath}/kitchen/src/server.ts`, 'utf8')
       .split(/[\n\r]+/);
+
     await simpleExecp('npm run fix', execOpts);
     const postFix = fs
       .readFileSync(`${stagingPath}/kitchen/src/server.ts`, 'utf8')
