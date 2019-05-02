@@ -69,13 +69,17 @@ console.log(`${chalk.blue(`${__filename} staging area: ${stagingPath}`)}`);
 describe('🚰 kitchen sink', () => {
   // Create a staging directory with temp fixtures used to test on a fresh application.
   before(async () => {
+    console.log('running before hook.');
     await simpleExecp('npm pack');
     const tarball = `${pkg.name}-${pkg.version}.tgz`;
     await renamep(tarball, 'gts.tgz');
-    await movep('gts.tgz', path.resolve(stagingPath, 'gts.tgz'));
+    const targetPath = path.resolve(stagingPath, 'gts.tgz');
+    console.log('moving packed tar to ', targetPath);
+    await movep('gts.tgz', targetPath);
     await ncpp('test/fixtures', `${stagingPath}${path.sep}`);
+    console.log(fs.readdirSync(stagingPath));
+    
   });
-
   // CLEAN UP - remove the staging directory when done.
   after('cleanup staging', () => {
     if (!keep) {
