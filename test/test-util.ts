@@ -280,17 +280,24 @@ describe('util', () => {
     });
   });
 
-  // TODO: see ofrobots/inline-fixtures#1 (https://github.com/ofrobots/inline-fixtures/issues/1)
-  // it('should not allow template copy if src directory is not accessible', () => {
-  //   const WRONG = 'wrongDirectory';
-  //   const FIXTURES = {
-  //     [WRONG]: new WrongDirectory(EACCES),
-  //   };
-  //   return withFixtures(FIXTURES, async dir => {
-  //     const dirPath = path.join(dir, WRONG);
-  //     await dirCheck(dirPath, { expect: false, throw: true});
-  //   });
-  // });
+  it('should not allow template copy if src directory is not accessible', () => {
+    const FIXTURES = {
+      private: {
+        mode: 0o000,
+        content: {
+          'README.md': 'Hello World.',
+        },
+      },
+    };
+    return withFixtures(FIXTURES, async dir => {
+      const dirPath = path.join(dir, 'private', 'newDirectory');
+      const created = await createSrcDir(dirPath);
+      assert.strictEqual(created, false);
+      assert.throws(() => {
+        accessSync(dirPath);
+      });
+    });
+  });
 
   // TODO: test errors in readFile, JSON.parse.
 });
