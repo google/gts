@@ -124,7 +124,7 @@ describe('🚰 kitchen sink', () => {
       if (process.platform !== 'linux') {
         args.unshift(
           '--npm',
-          "'C:Program Files (x86)\nodejs\node_modules\npm\bin\npm-cli.js'"
+          "'C:Program Files (x86)\\nodejs\\node_modules\\npm\\bin\\npm-cli.js'"
         );
       }
 
