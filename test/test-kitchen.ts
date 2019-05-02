@@ -112,18 +112,23 @@ describe('🚰 kitchen sink', () => {
       console.log('---------------------npx version!!!-------------');
       spawn.sync('npx', ['--version'], { stdio: 'inherit' });
 
-      const res = spawn.sync(
-        'npx',
-        [
-          '-p',
-          path.resolve(stagingPath, 'gts.tgz'),
-          '--ignore-existing',
-          'gts',
-          'init',
-          '-n',
-        ],
-        execOpts
-      );
+      //process.platform
+      const args = [
+        '-p',
+        path.resolve(stagingPath, 'gts.tgz'),
+        '--ignore-existing',
+        'gts',
+        'init',
+        '-n',
+      ];
+      if (process.platform !== 'linux') {
+        args.unshift(
+          '--npm',
+          "'C:Program Files (x86)\nodejs\node_modules\npm\bin\npm-cli.js'"
+        );
+      }
+
+      const res = spawn.sync('npx', args, execOpts);
 
       console.log('out: ', res.stdout + '');
       console.log('error: ', res.stderr + '');
