@@ -78,7 +78,7 @@ describe('🚰 kitchen sink', () => {
     await movep('gts.tgz', targetPath);
     await ncpp('test/fixtures', `${stagingPath}${path.sep}`);
     console.log(fs.readdirSync(stagingPath));
-    
+    console.log(fs.readdirSync(path.join(stagingPath, 'kitchen')));
   });
   // CLEAN UP - remove the staging directory when done.
   after('cleanup staging', () => {
