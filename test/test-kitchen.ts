@@ -95,7 +95,7 @@ describe('🚰 kitchen sink', () => {
     } else {
       // It's important to use `-n` here because we don't want to overwrite
       // the version of gts installed, as it will trigger the npm install.
-      spawn.sync(
+      const res = spawn.sync(
         'npx',
         [
           '-p',
@@ -107,6 +107,9 @@ describe('🚰 kitchen sink', () => {
         ],
         execOpts
       );
+
+      console.log('out: ', res.stdout + '');
+      console.log('error: ', res.stderr + '');
     }
 
     // Ensure config files got generated.
