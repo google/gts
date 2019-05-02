@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import * as cp from 'child_process';
-import * as fs from 'fs';
+import * as fs from 'fs-extra';
 import * as ncp from 'ncp';
 import * as pify from 'pify';
 import * as tmp from 'tmp';
@@ -15,6 +15,8 @@ interface ExecResult {
 const pkg = require('../../package.json');
 
 const simpleExecp = pify(cp.exec);
+const renamep = pify(fs.rename);
+const movep = pify(fs.move);
 const ncpp = pify(ncp.ncp);
 const copyFilep = pify(fs.copyFile);
 const unlinkp = pify(fs.unlink);
@@ -70,8 +72,8 @@ describe('🚰 kitchen sink', () => {
   before(async () => {
     await simpleExecp('npm pack');
     const tarball = `${pkg.name}-${pkg.version}.tgz`;
-    await copyFilep(tarball, `${stagingPath}/gts.tgz`, COPYFILE_EXCL);
-    await unlinkp(tarball);
+    await renamep(tarball, 'gts.tgz');
+    await movep('gts.tgz', `${stagingPath}/gts.tgz`);
     await ncpp('test/fixtures', `${stagingPath}/`);
   });
 
@@ -141,7 +143,8 @@ describe('🚰 kitchen sink', () => {
   });
 
   it('should terminate generated json files with newline', async () => {
-    await simpleExecp('./node_modules/.bin/gts init -y', execOpts);
+    const GTS = `${stagingPath}/kitchen/node_modules/.bin/gts`;
+    await simpleExecp(`${GTS} init -y`, execOpts);
     assert.ok(
       fs
         .readFileSync(`${stagingPath}/kitchen/package.json`, 'utf8')
@@ -168,11 +171,11 @@ describe('🚰 kitchen sink', () => {
   it('should fix', async () => {
     const preFix = fs
       .readFileSync(`${stagingPath}/kitchen/src/server.ts`, 'utf8')
-      .split('\n');
+      .split(/[\n\r]+/);
     await simpleExecp('npm run fix', execOpts);
     const postFix = fs
       .readFileSync(`${stagingPath}/kitchen/src/server.ts`, 'utf8')
-      .split('\n');
+      .split(/[\n\r]+/);
     assert.strictEqual(preFix[0].trim() + ';', postFix[0]); // fix should have added a semi-colon
   });
 
