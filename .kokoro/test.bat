@@ -17,8 +17,10 @@
 cd /d %~dp0
 cd ..
 
+call npm install node@8.16.0 || goto :error
 call npm install -g npm@latest || goto :error
-call npm install node@11.15.0 || goto :error
+call npm install -g npx@latest || goto :error
+
 call npm install || goto :error
 call npm run test || goto :error
 

@@ -281,6 +281,7 @@ export async function init(options: Options): Promise<boolean> {
   if (!options.dryRun) {
     // --ignore-scripts so that compilation doesn't happen because there's no
     // source files yet.
+
     cp.spawnSync(
       getPkgManagerCommand(options.yarn),
       ['install', '--ignore-scripts'],

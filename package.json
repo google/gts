@@ -31,7 +31,9 @@
     "test": "nyc mocha build/test",
     "pretest": "npm run compile",
     "posttest": "npm run lint && npm run format-check && npm run license-check",
-    "license-check": "jsgl --local ."
+    "license-check": "jsgl --local .",
+    "check": "gts check",
+    "fix": "gts fix"
   },
   "engines": {
     "node": ">=8"
@@ -53,11 +55,12 @@
     "write-file-atomic": "^2.3.0"
   },
   "devDependencies": {
-    "@types/fs-extra": "^5.0.5",
     "@npm/types": "^1.0.1",
+    "@types/cross-spawn": "^6.0.0",
     "@types/diff": "^4.0.0",
     "@types/entities": "^1.1.0",
     "@types/execa": "^0.9.0",
+    "@types/fs-extra": "^5.0.5",
     "@types/glob": "^7.0.0",
     "@types/inquirer": "^6.0.0",
     "@types/meow": "^5.0.0",
@@ -72,6 +75,7 @@
     "codecov": "^3.0.1",
     "execa": "^1.0.0",
     "fs-extra": "^7.0.1",
+    "gts": "^1.0.0",
     "inline-fixtures": "^1.0.0",
     "js-green-licenses": "^0.5.0",
     "mocha": "^6.0.0",
@@ -79,7 +83,8 @@
     "nyc": "^14.0.0",
     "source-map-support": "^0.5.5",
     "tmp": "0.1.0",
-    "typescript": "~3.4.0"
+    "typescript": "~3.4.0",
+    "cross-spawn": "^6.0.5"
   },
   "peerDependencies": {
     "typescript": "^3.0.0"
