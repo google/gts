@@ -89,47 +89,24 @@ describe('🚰 kitchen sink', () => {
 
   it('it should run init', async () => {
     const nodeVersion = Number(process.version.slice(1).split('.')[0]);
-    if (nodeVersion < 8) {
-      await simpleExecp('npm install', execOpts);
-      await simpleExecp('./node_modules/.bin/gts init -y', execOpts);
+    if (nodeVersion < 8 || process.platform === 'win32') {
+      spawn.sync('npm', ['install'], execOpts);
+      spawn.sync('./node_modules/.bin/gts', ['init', '-y'], execOpts);
     } else {
-      // It's important to use `-n` here because we don't want to overwrite
-      // the version of gts installed, as it will trigger the npm install.
-      console.log(
-        'npx with ',
-        'npx',
-        [
-          '-p',
-          path.resolve(stagingPath, 'gts.tgz'),
-          '--ignore-existing',
-          'gts',
-          'init',
-          '-n',
-        ],
-        execOpts
-      );
-
-      console.log('---------------------npx version!!!-------------');
-      spawn.sync('npx', ['--version'], { stdio: 'inherit' });
-
-      //process.platform
       const args = [
         '-p',
         path.resolve(stagingPath, 'gts.tgz'),
         '--ignore-existing',
         'gts',
         'init',
+        // It's important to use `-n` here because we don't want to overwrite
+        // the version of gts installed, as it will trigger the npm install.
         '-n',
       ];
-      if (process.platform !== 'linux') {
-        args.unshift(
-          '--npm',
-          "'C:Program Files (x86)\\nodejs\\node_modules\\npm\\bin\\npm-cli.js'"
-        );
-      }
+
+      console.log('npx with ', args, execOpts);
 
       const res = spawn.sync('npx', args, execOpts);
-
       console.log('out: ', res.stdout + '');
       console.log('error: ', res.stderr + '');
     }
