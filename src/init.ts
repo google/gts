@@ -289,7 +289,6 @@ export async function init(options: Options): Promise<boolean> {
       ['install', '--ignore-scripts'],
       { stdio: 'inherit' }
     );
-    
   }
 
   return true;
