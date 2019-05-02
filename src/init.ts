@@ -17,8 +17,6 @@ import * as cp from 'child_process';
 import * as inquirer from 'inquirer';
 import * as path from 'path';
 
-const crossSpawn = require('cross-spawn');
-
 import {
   getPkgManagerCommand,
   readFilep as read,

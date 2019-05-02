@@ -52,8 +52,7 @@
     "rimraf": "^2.6.2",
     "tslint": "^5.12.0",
     "update-notifier": "^2.5.0",
-    "write-file-atomic": "^2.3.0",
-    "cross-spawn": "^6.0.5"
+    "write-file-atomic": "^2.3.0"
   },
   "devDependencies": {
     "@npm/types": "^1.0.1",
@@ -84,7 +83,8 @@
     "nyc": "^14.0.0",
     "source-map-support": "^0.5.5",
     "tmp": "0.1.0",
-    "typescript": "~3.4.0"
+    "typescript": "~3.4.0",
+    "cross-spawn": "^6.0.5"
   },
   "peerDependencies": {
     "typescript": "^3.0.0"
