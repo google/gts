@@ -104,8 +104,6 @@ describe('🚰 kitchen sink', () => {
         '-n',
       ];
 
-      console.log('npx with ', args, execOpts);
-
       const res = spawn.sync('npx', args, execOpts);
       console.log('out: ', res.stdout + '');
       console.log('error: ', res.stderr + '');
