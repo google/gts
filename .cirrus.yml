@@ -1,0 +1,11 @@
+task:
+  name: Windows
+  windows_container:
+    dockerfile: .ci/docker/windows/Dockerfile
+    os_version: 2019
+    docker_arguments:
+      matrix:
+        - node_version: 12.1.0
+        - node_version: 11.14.0
+  install_script: npm ci
+  test_script: npm test
