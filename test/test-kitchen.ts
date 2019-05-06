@@ -5,6 +5,9 @@ import * as ncp from 'ncp';
 import * as pify from 'pify';
 import * as tmp from 'tmp';
 import * as assert from 'assert';
+import * as path from 'path';
+
+const spawn = require('cross-spawn');
 
 interface ExecResult {
   exitCode: number;
@@ -61,7 +64,7 @@ const keep = !!process.env.GTS_KEEP_TEMPDIRS;
 const stagingDir = tmp.dirSync({ keep, unsafeCleanup: true });
 const stagingPath = stagingDir.name;
 const execOpts = {
-  cwd: `${stagingPath}/kitchen`,
+  cwd: `${stagingPath}${path.sep}kitchen`,
 };
 
 const message = `${__filename} staging area: ${stagingPath}`;
@@ -70,13 +73,17 @@ console.log(`${chalk.blue(message)}`);
 describe('🚰 kitchen sink', () => {
   // Create a staging directory with temp fixtures used to test on a fresh application.
   before(async () => {
+    console.log('running before hook.');
     await simpleExecp('npm pack');
     const tarball = `${pkg.name}-${pkg.version}.tgz`;
     await renamep(tarball, 'gts.tgz');
-    await movep('gts.tgz', `${stagingPath}/gts.tgz`);
-    await ncpp('test/fixtures', `${stagingPath}/`);
+    const targetPath = path.resolve(stagingPath, 'gts.tgz');
+    console.log('moving packed tar to ', targetPath);
+    await movep('gts.tgz', targetPath);
+    await ncpp('test/fixtures', `${stagingPath}${path.sep}`);
+    console.log(fs.readdirSync(stagingPath));
+    console.log(fs.readdirSync(path.join(stagingPath, 'kitchen')));
   });
-
   // CLEAN UP - remove the staging directory when done.
   after('cleanup staging', () => {
     if (!keep) {
@@ -86,16 +93,23 @@ describe('🚰 kitchen sink', () => {
 
   it('it should run init', async () => {
     const nodeVersion = Number(process.version.slice(1).split('.')[0]);
-    if (nodeVersion < 8) {
-      await simpleExecp('npm install', execOpts);
-      await simpleExecp('./node_modules/.bin/gts init -y', execOpts);
+    if (nodeVersion < 8 || process.platform === 'win32') {
+      spawn.sync('./node_modules/.bin/gts', ['init', '-y'], execOpts);
     } else {
-      // It's important to use `-n` here because we don't want to overwrite
-      // the version of gts installed, as it will trigger the npm install.
-      await simpleExecp(
-        `npx -p ${stagingPath}/gts.tgz --ignore-existing gts init -n`,
-        execOpts
-      );
+      const args = [
+        '-p',
+        path.resolve(stagingPath, 'gts.tgz'),
+        '--ignore-existing',
+        'gts',
+        'init',
+        // It's important to use `-n` here because we don't want to overwrite
+        // the version of gts installed, as it will trigger the npm install.
+        '-n',
+      ];
+
+      const res = spawn.sync('npx', args, execOpts);
+      console.log('out: ', res.stdout + '');
+      console.log('error: ', res.stderr + '');
     }
 
     // Ensure config files got generated.
@@ -111,7 +125,7 @@ describe('🚰 kitchen sink', () => {
   it('should use as a non-locally installed module', async () => {
     // Use from a directory different from where we have locally installed. This
     // simulates use as a globally installed module.
-    const GTS = `${stagingPath}/kitchen/node_modules/.bin/gts`;
+    const GTS = path.resolve(stagingPath, 'kitchen/node_modules/.bin/gts');
     const tmpDir = tmp.dirSync({ keep, unsafeCleanup: true });
     const opts = { cwd: `${tmpDir.name}/kitchen` };
 
@@ -121,7 +135,8 @@ describe('🚰 kitchen sink', () => {
     await ncpp(`${stagingPath}/gts.tgz`, `${tmpDir.name}/gts.tgz`);
     // It's important to use `-n` here because we don't want to overwrite
     // the version of gts installed, as it will trigger the npm install.
-    await simpleExecp(`${GTS} init -n`, opts);
+    //await simpleExecp(`${GTS} init -n`, opts);
+    spawn.sync(GTS, ['init', '-n'], opts);
 
     // The `extends` field must use the local gts path.
     const tsconfigJson = fs.readFileSync(
@@ -143,8 +158,8 @@ describe('🚰 kitchen sink', () => {
   });
 
   it('should terminate generated json files with newline', async () => {
-    const GTS = `${stagingPath}/kitchen/node_modules/.bin/gts`;
-    await simpleExecp(`${GTS} init -y`, execOpts);
+    const GTS = path.resolve(stagingPath, 'kitchen/node_modules/.bin/gts');
+    spawn.sync(GTS, ['init', '-y'], execOpts);
     assert.ok(
       fs
         .readFileSync(`${stagingPath}/kitchen/package.json`, 'utf8')
@@ -172,6 +187,7 @@ describe('🚰 kitchen sink', () => {
     const preFix = fs
       .readFileSync(`${stagingPath}/kitchen/src/server.ts`, 'utf8')
       .split(/[\n\r]+/);
+
     await simpleExecp('npm run fix', execOpts);
     const postFix = fs
       .readFileSync(`${stagingPath}/kitchen/src/server.ts`, 'utf8')

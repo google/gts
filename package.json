@@ -33,7 +33,9 @@
     "test": "nyc mocha build/test",
     "pretest": "npm run compile",
     "posttest": "npm run lint && npm run format-check && npm run license-check",
-    "license-check": "jsgl --local ."
+    "license-check": "jsgl --local .",
+    "check": "gts check",
+    "fix": "gts fix"
   },
   "engines": {
     "node": ">=8.5"
@@ -57,6 +59,7 @@
   },
   "devDependencies": {
     "@npm/types": "^1.0.1",
+    "@types/cross-spawn": "^6.0.0",
     "@types/diff": "^4.0.0",
     "@types/entities": "^1.1.0",
     "@types/execa": "^0.9.0",
@@ -70,18 +73,22 @@
     "@types/pify": "^3.0.2",
     "@types/prettier": "^1.15.2",
     "@types/rimraf": "^2.0.2",
+    "@types/sinon": "^7.0.11",
     "@types/tmp": "^0.1.0",
     "@types/update-notifier": "^2.2.0",
     "codecov": "^3.0.1",
     "execa": "^1.0.0",
     "fs-extra": "^7.0.1",
     "inline-fixtures": "github:ofrobots/inline-fixtures#master",
+    "gts": "^1.0.0",
     "js-green-licenses": "^0.5.0",
     "mocha": "^6.0.0",
     "nyc": "^14.0.0",
+    "sinon": "^7.3.1",
     "source-map-support": "^0.5.5",
     "tmp": "0.1.0",
-    "typescript": "~3.4.0"
+    "typescript": "~3.4.0",
+    "cross-spawn": "^6.0.5"
   },
   "peerDependencies": {
     "typescript": "^3.0.0"
