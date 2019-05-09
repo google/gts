@@ -16,15 +16,16 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import * as pify from 'pify';
 import * as rimraf from 'rimraf';
+import { promisify } from 'util';
 
-export const readFilep = pify(fs.readFile);
-export const rimrafp = pify(rimraf);
-export const writeFileAtomicp = pify(require('write-file-atomic'));
+export const readFilep = promisify(fs.readFile);
+export const rimrafp = promisify(rimraf);
+export const writeFileAtomicp = promisify(require('write-file-atomic'));
 
 export async function readJsonp(jsonPath: string) {
-  return JSON.parse(await readFilep(jsonPath));
+  const contents = await readFilep(jsonPath, { encoding: 'utf8' });
+  return JSON.parse(contents);
 }
 
 export interface ReadFileP {
