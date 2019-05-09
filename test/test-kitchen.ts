@@ -1,82 +1,33 @@
 import chalk from 'chalk';
 import * as cp from 'child_process';
 import * as fs from 'fs-extra';
-import * as ncp from 'ncp';
-import * as pify from 'pify';
 import * as tmp from 'tmp';
 import * as assert from 'assert';
 import * as path from 'path';
 
 const spawn = require('cross-spawn');
-
-interface ExecResult {
-  exitCode: number;
-  stdout: string;
-  stderr: string;
-}
-
 const pkg = require('../../package.json');
-
-const simpleExecp = pify(cp.exec);
-const renamep = pify(fs.rename);
-const movep = pify(fs.move);
-const ncpp = pify(ncp.ncp);
-
-// TODO: improve the typedefinitions in @types/node. Right now they specify
-// the return type to be Error.
-interface ExecError extends Error {
-  code: number;
-}
-
-function isExecError(err: Error | ExecError): err is ExecError {
-  return err && (err as ExecError).code !== undefined;
-}
-
-// cp.exec doesn't fit the (err ^ result) pattern because a process can write
-// to stdout/stderr and still exit with error code != 0.
-// In most cases simply promisifying cp.exec is adequate, but it's not if we
-// need to see console output for a process that exited with a non-zero exit
-// code, so we define a more exhaustive promsified cp.exec here.
-// TODO: replace this code with a npm modules that promisifies exec.
-const execp = (
-  command: string,
-  execOptions?: cp.ExecOptions
-): Promise<ExecResult> => {
-  return new Promise(resolve => {
-    cp.exec(
-      command,
-      execOptions || {},
-      (err: cp.ExecException | null, stdout, stderr) => {
-        resolve({
-          exitCode: err && isExecError(err) ? err.code : 0,
-          stdout,
-          stderr,
-        });
-      }
-    );
-  });
-};
-
 const keep = !!process.env.GTS_KEEP_TEMPDIRS;
 const stagingDir = tmp.dirSync({ keep, unsafeCleanup: true });
 const stagingPath = stagingDir.name;
 const execOpts = {
   cwd: `${stagingPath}${path.sep}kitchen`,
+  encoding: 'utf8',
 };
 
 console.log(`${chalk.blue(`${__filename} staging area: ${stagingPath}`)}`);
 
 describe('🚰 kitchen sink', () => {
   // Create a staging directory with temp fixtures used to test on a fresh application.
-  before(async () => {
+  before(() => {
     console.log('running before hook.');
-    await simpleExecp('npm pack');
+    cp.execSync('npm pack');
     const tarball = `${pkg.name}-${pkg.version}.tgz`;
-    await renamep(tarball, 'gts.tgz');
+    fs.renameSync(tarball, 'gts.tgz');
     const targetPath = path.resolve(stagingPath, 'gts.tgz');
     console.log('moving packed tar to ', targetPath);
-    await movep('gts.tgz', targetPath);
-    await ncpp('test/fixtures', `${stagingPath}${path.sep}`);
+    fs.moveSync('gts.tgz', targetPath);
+    fs.copySync('test/fixtures', `${stagingPath}${path.sep}`);
     console.log(fs.readdirSync(stagingPath));
     console.log(fs.readdirSync(path.join(stagingPath, 'kitchen')));
   });
@@ -87,7 +38,7 @@ describe('🚰 kitchen sink', () => {
     }
   });
 
-  it('it should run init', async () => {
+  it('it should run init', () => {
     const nodeVersion = Number(process.version.slice(1).split('.')[0]);
     if (nodeVersion < 8 || process.platform === 'win32') {
       spawn.sync('./node_modules/.bin/gts', ['init', '-y'], execOpts);
@@ -118,7 +69,7 @@ describe('🚰 kitchen sink', () => {
     assert.strictEqual(dirContents.indexOf('build'), -1);
   });
 
-  it('should use as a non-locally installed module', async () => {
+  it('should use as a non-locally installed module', () => {
     // Use from a directory different from where we have locally installed. This
     // simulates use as a globally installed module.
     const GTS = path.resolve(stagingPath, 'kitchen/node_modules/.bin/gts');
@@ -126,12 +77,11 @@ describe('🚰 kitchen sink', () => {
     const opts = { cwd: `${tmpDir.name}/kitchen` };
 
     // Copy test files.
-    await ncpp('test/fixtures', `${tmpDir.name}/`);
+    fs.copySync('test/fixtures', `${tmpDir.name}/`);
     // Test package.json expects a gts tarball from ../gts.tgz.
-    await ncpp(`${stagingPath}/gts.tgz`, `${tmpDir.name}/gts.tgz`);
+    fs.copySync(`${stagingPath}/gts.tgz`, `${tmpDir.name}/gts.tgz`);
     // It's important to use `-n` here because we don't want to overwrite
     // the version of gts installed, as it will trigger the npm install.
-    //await simpleExecp(`${GTS} init -n`, opts);
     spawn.sync(GTS, ['init', '-n'], opts);
 
     // The `extends` field must use the local gts path.
@@ -146,14 +96,14 @@ describe('🚰 kitchen sink', () => {
     );
 
     // server.ts has a lint error. Should error.
-    await assert.rejects(() => simpleExecp(`${GTS} check src/server.ts`, opts));
+    assert.throws(() => cp.execSync(`${GTS} check src/server.ts`, opts));
 
     if (!keep) {
       tmpDir.removeCallback();
     }
   });
 
-  it('should terminate generated json files with newline', async () => {
+  it('should terminate generated json files with newline', () => {
     const GTS = path.resolve(stagingPath, 'kitchen/node_modules/.bin/gts');
     spawn.sync(GTS, ['init', '-y'], execOpts);
     assert.ok(
@@ -173,38 +123,46 @@ describe('🚰 kitchen sink', () => {
     );
   });
 
-  it('should check before fix', async () => {
-    const { exitCode, stdout } = await execp('npm run check', execOpts);
-    assert.strictEqual(exitCode, 1);
-    assert.notStrictEqual(stdout.indexOf('prettier reported errors'), -1);
+  it('should check before fix', () => {
+    assert.throws(
+      () => {
+        cp.execSync('npm run check', execOpts);
+      },
+      // tslint:disable-next-line no-any
+      (err: any) => {
+        assert.strictEqual(err.status, 1);
+        assert.ok(err.stdout.includes('prettier reported errors'));
+        return true;
+      }
+    );
   });
 
-  it('should fix', async () => {
+  it('should fix', () => {
     const preFix = fs
       .readFileSync(`${stagingPath}/kitchen/src/server.ts`, 'utf8')
       .split(/[\n\r]+/);
 
-    await simpleExecp('npm run fix', execOpts);
+    cp.execSync('npm run fix', execOpts);
     const postFix = fs
       .readFileSync(`${stagingPath}/kitchen/src/server.ts`, 'utf8')
       .split(/[\n\r]+/);
     assert.strictEqual(preFix[0].trim() + ';', postFix[0]); // fix should have added a semi-colon
   });
 
-  it('should check after fix', async () => {
-    await simpleExecp('npm run check', execOpts);
+  it('should check after fix', () => {
+    cp.execSync('npm run check', execOpts);
   });
 
-  it('should build', async () => {
-    await simpleExecp('npm run compile', execOpts);
+  it('should build', () => {
+    cp.execSync('npm run compile', execOpts);
     fs.accessSync(`${stagingPath}/kitchen/build/src/server.js`);
     fs.accessSync(`${stagingPath}/kitchen/build/src/server.js.map`);
     fs.accessSync(`${stagingPath}/kitchen/build/src/server.d.ts`);
   });
 
   // Verify the `gts clean` command actually removes the output dir
-  it('should clean', async () => {
-    await simpleExecp('npm run clean', execOpts);
+  it('should clean', () => {
+    cp.execSync('npm run clean', execOpts);
     assert.throws(() => fs.accessSync(`${stagingPath}/kitchen/build`));
   });
 });
