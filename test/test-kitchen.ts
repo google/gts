@@ -18,6 +18,10 @@ const execOpts = {
 console.log(`${chalk.blue(`${__filename} staging area: ${stagingPath}`)}`);
 
 describe('🚰 kitchen sink', () => {
+  const fixturesPath = path.join('test', 'fixtures');
+  const gtsPath = path.join('node_modules', '.bin', 'gts');
+  const kitchenPath = path.join(stagingPath, 'kitchen');
+
   // Create a staging directory with temp fixtures used to test on a fresh application.
   before(() => {
     console.log('running before hook.');
@@ -27,7 +31,7 @@ describe('🚰 kitchen sink', () => {
     const targetPath = path.resolve(stagingPath, 'gts.tgz');
     console.log('moving packed tar to ', targetPath);
     fs.moveSync('gts.tgz', targetPath);
-    fs.copySync('test/fixtures', `${stagingPath}${path.sep}`);
+    fs.copySync(fixturesPath, `${stagingPath}${path.sep}`);
     console.log(fs.readdirSync(stagingPath));
     console.log(fs.readdirSync(path.join(stagingPath, 'kitchen')));
   });
@@ -41,7 +45,7 @@ describe('🚰 kitchen sink', () => {
   it('it should run init', () => {
     const nodeVersion = Number(process.version.slice(1).split('.')[0]);
     if (nodeVersion < 8 || process.platform === 'win32') {
-      spawn.sync('./node_modules/.bin/gts', ['init', '-y'], execOpts);
+      spawn.sync(gtsPath, ['init', '-y'], execOpts);
     } else {
       const args = [
         '-p',
@@ -60,12 +64,12 @@ describe('🚰 kitchen sink', () => {
     }
 
     // Ensure config files got generated.
-    fs.accessSync(`${stagingPath}/kitchen/tsconfig.json`);
-    fs.accessSync(`${stagingPath}/kitchen/tslint.json`);
-    fs.accessSync(`${stagingPath}/kitchen/prettier.config.js`);
+    fs.accessSync(path.join(kitchenPath, 'tsconfig.json'));
+    fs.accessSync(path.join(kitchenPath, 'tslint.json'));
+    fs.accessSync(path.join(kitchenPath, 'prettier.config.js'));
 
     // Compilation shouldn't have happened. Hence no `build` directory.
-    const dirContents = fs.readdirSync(`${stagingPath}/kitchen`);
+    const dirContents = fs.readdirSync(kitchenPath);
     assert.strictEqual(dirContents.indexOf('build'), -1);
   });
 
@@ -74,19 +78,22 @@ describe('🚰 kitchen sink', () => {
     // simulates use as a globally installed module.
     const GTS = path.resolve(stagingPath, 'kitchen/node_modules/.bin/gts');
     const tmpDir = tmp.dirSync({ keep, unsafeCleanup: true });
-    const opts = { cwd: `${tmpDir.name}/kitchen` };
+    const opts = { cwd: path.join(tmpDir.name, 'kitchen') };
 
     // Copy test files.
-    fs.copySync('test/fixtures', `${tmpDir.name}/`);
+    fs.copySync(fixturesPath, tmpDir.name);
     // Test package.json expects a gts tarball from ../gts.tgz.
-    fs.copySync(`${stagingPath}/gts.tgz`, `${tmpDir.name}/gts.tgz`);
+    fs.copySync(
+      path.join(stagingPath, 'gts.tgz'),
+      path.join(tmpDir.name, 'gts.tgz')
+    );
     // It's important to use `-n` here because we don't want to overwrite
     // the version of gts installed, as it will trigger the npm install.
     spawn.sync(GTS, ['init', '-n'], opts);
 
     // The `extends` field must use the local gts path.
     const tsconfigJson = fs.readFileSync(
-      `${tmpDir.name}/kitchen/tsconfig.json`,
+      path.join(tmpDir.name, 'kitchen', 'tsconfig.json'),
       'utf8'
     );
     const tsconfig = JSON.parse(tsconfigJson);
@@ -104,21 +111,21 @@ describe('🚰 kitchen sink', () => {
   });
 
   it('should terminate generated json files with newline', () => {
-    const GTS = path.resolve(stagingPath, 'kitchen/node_modules/.bin/gts');
+    const GTS = path.resolve(stagingPath, gtsPath);
     spawn.sync(GTS, ['init', '-y'], execOpts);
     assert.ok(
       fs
-        .readFileSync(`${stagingPath}/kitchen/package.json`, 'utf8')
+        .readFileSync(path.join(kitchenPath, 'package.json'), 'utf8')
         .endsWith('\n')
     );
     assert.ok(
       fs
-        .readFileSync(`${stagingPath}/kitchen/tsconfig.json`, 'utf8')
+        .readFileSync(path.join(kitchenPath, 'tsconfig.json'), 'utf8')
         .endsWith('\n')
     );
     assert.ok(
       fs
-        .readFileSync(`${stagingPath}/kitchen/tslint.json`, 'utf8')
+        .readFileSync(path.join(kitchenPath, 'tslint.json'), 'utf8')
         .endsWith('\n')
     );
   });
@@ -139,12 +146,12 @@ describe('🚰 kitchen sink', () => {
 
   it('should fix', () => {
     const preFix = fs
-      .readFileSync(`${stagingPath}/kitchen/src/server.ts`, 'utf8')
+      .readFileSync(path.join(kitchenPath, 'src', 'server.ts'), 'utf8')
       .split(/[\n\r]+/);
 
     cp.execSync('npm run fix', execOpts);
     const postFix = fs
-      .readFileSync(`${stagingPath}/kitchen/src/server.ts`, 'utf8')
+      .readFileSync(path.join(kitchenPath, 'src', 'server.ts'), 'utf8')
       .split(/[\n\r]+/);
     assert.strictEqual(preFix[0].trim() + ';', postFix[0]); // fix should have added a semi-colon
   });
@@ -155,14 +162,14 @@ describe('🚰 kitchen sink', () => {
 
   it('should build', () => {
     cp.execSync('npm run compile', execOpts);
-    fs.accessSync(`${stagingPath}/kitchen/build/src/server.js`);
-    fs.accessSync(`${stagingPath}/kitchen/build/src/server.js.map`);
-    fs.accessSync(`${stagingPath}/kitchen/build/src/server.d.ts`);
+    fs.accessSync(path.join(kitchenPath, 'build', 'src', 'server.js'));
+    fs.accessSync(path.join(kitchenPath, 'build', 'src', 'server.js.map'));
+    fs.accessSync(path.join(kitchenPath, 'build', 'src', 'server.d.ts'));
   });
 
   // Verify the `gts clean` command actually removes the output dir
   it('should clean', () => {
     cp.execSync('npm run clean', execOpts);
-    assert.throws(() => fs.accessSync(`${stagingPath}/kitchen/build`));
+    assert.throws(() => fs.accessSync(path.join(kitchenPath, 'build')));
   });
 });
