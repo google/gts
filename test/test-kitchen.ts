@@ -127,14 +127,11 @@ describe('🚰 kitchen sink', () => {
     assert.throws(
       () => {
         cp.execSync('npm run check', execOpts);
-        // tslint:disable-next-line no-any
       },
+      // tslint:disable-next-line no-any
       (err: any) => {
         assert.strictEqual(err.status, 1);
-        assert.notStrictEqual(
-          err.stdout.indexOf('prettier reported errors'),
-          -1
-        );
+        assert.ok(err.stdout.includes('prettier reported errors'));
         return true;
       }
     );
