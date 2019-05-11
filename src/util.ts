@@ -17,11 +17,14 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as rimraf from 'rimraf';
+import * as ncp from 'ncp';
 import { promisify } from 'util';
+import { Options } from './cli';
 
 export const readFilep = promisify(fs.readFile);
 export const rimrafp = promisify(rimraf);
 export const writeFileAtomicp = promisify(require('write-file-atomic'));
+export const ncpp = promisify(ncp.ncp);
 
 export interface Bag<T> {
   [script: string]: T;
