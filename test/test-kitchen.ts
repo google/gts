@@ -43,25 +43,20 @@ describe('🚰 kitchen sink', () => {
   });
 
   it('it should run init', () => {
-    const nodeVersion = Number(process.version.slice(1).split('.')[0]);
-    if (nodeVersion < 8 || process.platform === 'win32') {
-      spawn.sync(gtsPath, ['init', '-y'], execOpts);
-    } else {
-      const args = [
-        '-p',
-        path.resolve(stagingPath, 'gts.tgz'),
-        '--ignore-existing',
-        'gts',
-        'init',
-        // It's important to use `-n` here because we don't want to overwrite
-        // the version of gts installed, as it will trigger the npm install.
-        '-n',
-      ];
+    const args = [
+      '-p',
+      path.resolve(stagingPath, 'gts.tgz'),
+      '--ignore-existing',
+      'gts',
+      'init',
+      // It's important to use `-n` here because we don't want to overwrite
+      // the version of gts installed, as it will trigger the npm install.
+      '-n',
+    ];
 
-      const res = spawn.sync('npx', args, execOpts);
-      console.log('out: ', res.stdout + '');
-      console.log('error: ', res.stderr + '');
-    }
+    const res = spawn.sync('npx', args, execOpts);
+    console.log('out: ', res.stdout + '');
+    console.log('error: ', res.stderr + '');
 
     // Ensure config files got generated.
     fs.accessSync(path.join(kitchenPath, 'tsconfig.json'));
