@@ -209,7 +209,7 @@ async function isAnyTsFileInDir(
 
 /**
  * Copy the default template into consumer directory
- * @param sourceDirName // files will be copied FROM this directory 
+ * @param sourceDirName // files will be copied FROM this directory
  * @param targetDirName // files will be copied TO this directory
  * @param options // cli options: only for the logger
  */
@@ -229,7 +229,7 @@ export async function copyTemplate(
 }
 
 /**
- * 
+ *
  * @param message // string or Error object to be logged
  * @param options // contains the logger
  */
