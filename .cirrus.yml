@@ -35,9 +35,9 @@ coverage_task:
 publish_task:
   only_if: $CIRRUS_TAG =~ '^v.*'
   depends_on:
-    - test_task
-    - lint_task
-    - windows_task
+    - test
+    - lint
+    - windows
   environment:
     NPM_TOKEN: ENCRYPTED[188593d2219e49e28e05c983a768a7e89ef89441f07f450a58744161674b2e7f127caff0a8021bb5bb75a09d4e18750f]
   script:
