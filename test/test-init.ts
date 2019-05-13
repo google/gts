@@ -26,6 +26,8 @@ import { PackageJson } from '@npm/types';
 import { withFixtures, Fixtures } from 'inline-fixtures';
 import * as init from '../src/init';
 
+const assertRejects = require('assert-rejects');
+
 const OPTIONS: Options = {
   gtsRootDir: path.resolve(__dirname, '../..'),
   targetRootDir: './',
@@ -277,7 +279,7 @@ describe('init', () => {
       },
     };
     return withFixtures(FIXTURES, async dir => {
-      assert.rejects(init.installDefaultTemplate(OPTIONS_YES), 'EACCESS');
+      await assertRejects(init.installDefaultTemplate(OPTIONS_YES));
     });
   });
 
