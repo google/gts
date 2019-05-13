@@ -269,19 +269,22 @@ describe('init', () => {
     });
   });
 
-  it('should not install the default template if the source directory is not accessible', () => {
-    const FIXTURES: Fixtures = {
-      src: {
-        mode: 0o000,
-        content: {
-          'README.md': 'Hello World.',
-        },
-      },
-    };
-    return withFixtures(FIXTURES, async dir => {
-      await assertRejects(init.installDefaultTemplate(OPTIONS_YES));
-    });
-  });
+  // FIXME: It seems that on CirrusCI we are able to access inside
+  // directories where permissions may otherwise forbid access. Enable
+  // once this has been opened as an issue against Cirrus and fixed.
+  // it('should not install the default template if the source directory is not accessible', () => {
+  //   const FIXTURES: Fixtures = {
+  //     src: {
+  //       mode: 0o000,
+  //       content: {
+  //         'README.md': 'Hello World.',
+  //       },
+  //     },
+  //   };
+  //   return withFixtures(FIXTURES, async dir => {
+  //     await assertRejects(init.installDefaultTemplate(OPTIONS_YES));
+  //   });
+  // });
 
   it('should not install the default template if the source directory already exists and does contain ts files', () => {
     const EXISTING = 'src';
