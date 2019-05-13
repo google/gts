@@ -31,7 +31,7 @@ describe('🚰 kitchen sink', () => {
     const targetPath = path.resolve(stagingPath, 'gts.tgz');
     console.log('moving packed tar to ', targetPath);
     fs.moveSync('gts.tgz', targetPath);
-    fs.copySync(fixturesPath, `${stagingPath}${path.sep}`);
+    fs.copySync(fixturesPath, path.join(stagingPath, path.sep));
     console.log(fs.readdirSync(stagingPath));
     console.log(fs.readdirSync(path.join(stagingPath, 'kitchen')));
   });
