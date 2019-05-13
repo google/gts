@@ -56,7 +56,7 @@
     "@npm/types": "^1.0.1",
     "@types/cross-spawn": "^6.0.0",
     "@types/diff": "^4.0.0",
-    "@types/fs-extra": "^5.0.5",
+    "@types/fs-extra": "^7.0.0",
     "@types/inquirer": "^6.0.0",
     "@types/meow": "^5.0.0",
     "@types/mocha": "^5.2.6",
