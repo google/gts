@@ -26,7 +26,7 @@ import {
   getPkgManagerCommand,
 } from '../src/util';
 
-import { withFixtures, Fixtures } from 'inline-fixtures';
+import { withFixtures } from 'inline-fixtures';
 
 /**
  * Creates a fake promisified readFile function from a map

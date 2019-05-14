@@ -1,0 +1,47 @@
+container:
+  image: node:10
+
+windows_task:
+  windows_container:
+    dockerfile: .ci/docker/windows/Dockerfile
+    os_version: 2019
+    docker_arguments:
+      matrix:
+        - node_version: 12.1.0
+        - node_version: 11.14.0
+  install_script: npm ci
+  test_script: npm test
+
+lint_task:
+  install_script: npm ci
+  test_script: npm run lint
+
+test_task:
+  container:
+    matrix:
+      image: node:12
+      image: node:11
+      image: node:10
+      image: node:8
+  install_script: npm ci
+  test_script: npm test
+
+coverage_task:
+  script:
+    - npm ci
+    - npm test
+    - npm run codecov
+
+publish_task:
+  only_if: $CIRRUS_TAG =~ '^v.*'
+  depends_on:
+    - test
+    - lint
+    - windows
+  environment:
+    NPM_TOKEN: ENCRYPTED[188593d2219e49e28e05c983a768a7e89ef89441f07f450a58744161674b2e7f127caff0a8021bb5bb75a09d4e18750f]
+  script:
+    - npm ci
+    - npm run compile
+    - echo "//wombat-dressing-room.appspot.com/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+    - npm publish --registry https://wombat-dressing-room.appspot.com/
