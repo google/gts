@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 import * as cp from 'child_process';
+import * as fs from 'fs';
 import * as inquirer from 'inquirer';
 import * as path from 'path';
+import { ncp } from 'ncp';
+import * as util from 'util';
 
 import {
   getPkgManagerCommand,
   readFilep as read,
   readJsonp as readJson,
   writeFileAtomicp as write,
+  Bag,
+  DefaultPackage,
 } from './util';
 
 import { Options } from './cli';
@@ -29,6 +34,8 @@ import { PackageJson } from '@npm/types';
 import chalk from 'chalk';
 
 const pkg = require('../../package.json');
+
+const ncpp = util.promisify(ncp);
 
 const DEFAULT_PACKAGE_JSON: PackageJson = {
   name: '',
@@ -41,10 +48,6 @@ const DEFAULT_PACKAGE_JSON: PackageJson = {
   keywords: [],
   scripts: { test: 'echo "Error: no test specified" && exit 1' },
 };
-
-export interface Bag<T> {
-  [script: string]: T;
-}
 
 async function query(
   message: string,
@@ -118,9 +121,10 @@ export async function addDependencies(
   options: Options
 ): Promise<boolean> {
   let edits = false;
-  const deps: Bag<string> = {
+  const deps: DefaultPackage = {
     gts: `^${pkg.version}`,
     typescript: pkg.devDependencies.typescript,
+    '@types/node': pkg.devDependencies['@types/node'],
   };
 
   if (!packageJson.devDependencies) {
@@ -241,6 +245,37 @@ async function generateConfigFile(
   }
 }
 
+export async function installDefaultTemplate(
+  options: Options
+): Promise<boolean> {
+  const cwd = process.cwd();
+  const sourceDirName = path.join(__dirname, '../template');
+  const targetDirName = path.join(cwd, 'src');
+
+  try {
+    fs.mkdirSync(targetDirName);
+  } catch (error) {
+    if (error.code !== 'EEXIST') {
+      throw error;
+    }
+    // Else, continue and populate files into the existing directory.
+  }
+
+  // Only install the template if no ts files exist in target directory.
+  const files = fs.readdirSync(targetDirName);
+  const tsFiles = files.filter(file => file.toLowerCase().endsWith('.ts'));
+  if (tsFiles.length !== 0) {
+    options.logger.log(
+      'Target src directory already has ts files. ' +
+        'Template files not installed.'
+    );
+    return false;
+  }
+  await ncpp(sourceDirName, targetDirName);
+  options.logger.log('Default template installed.');
+  return true;
+}
+
 export async function init(options: Options): Promise<boolean> {
   let generatedPackageJson = false;
   let packageJson;
@@ -276,6 +311,7 @@ export async function init(options: Options): Promise<boolean> {
   await generateTsConfig(options);
   await generateTsLintConfig(options);
   await generatePrettierConfig(options);
+  await installDefaultTemplate(options);
 
   // Run `npm install` after initial setup so `npm run check` works right away.
   if (!options.dryRun) {
