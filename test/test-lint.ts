@@ -21,6 +21,7 @@ import * as path from 'path';
 import { Options } from '../src/cli';
 import { TSLINT_CONFIG } from '../src/init';
 import * as lint from '../src/lint';
+import * as format from '../src/format';
 import { nop } from '../src/util';
 
 import { withFixtures } from 'inline-fixtures';
@@ -39,7 +40,7 @@ describe('lint', () => {
   const GOOD_CODE = `throw new Error('hello world');`;
 
   // missing semicolon, array-type simple.
-  const FIXABLE_CODE = 'const x : Array<string> = []';
+  const FIXABLE_CODE = 'const x : Array<string> = [];';
   const FIXABLE_CODE_FIXED = 'const x : string[] = [];';
 
   it('createProgram should return an object', () => {
@@ -275,6 +276,47 @@ describe('lint', () => {
     );
   });
 
+  it('should not conflict with format', async () => {
+    const FIXTURE = {
+      'tsconfig.json': JSON.stringify({ files: ['far.ts'] }),
+      'far.ts': `export function far(
+  ceiling: string,
+  vines: string,
+  sailed: number,
+  ocean: number,
+  tumbled: string,
+): string {
+  return 'where the wild things are';
+}
+`,
+    };
+
+    // tslint should not complain about the trailing comma in functions,
+    // and let prettier complain.
+    await withFixtures(FIXTURE, async () => {
+      const lintOkay = await lint.lint(OPTIONS, [], false);
+      assert.strictEqual(lintOkay, true);
+      const formatOkay = await format.format(OPTIONS, [], false);
+      assert.strictEqual(formatOkay, false);
+    });
+
+    const fixtureWithPrettierConfig = {
+      ...FIXTURE,
+      'prettier.config.js': `module.exports = {
+  singleQuote: true,
+  trailingComma: 'all',
+};`,
+    };
+
+    // Both the linter and the formatter should be okay with this.
+    await withFixtures(fixtureWithPrettierConfig, async () => {
+      const lintOkay = await lint.lint(OPTIONS, [], false);
+      assert.strictEqual(lintOkay, true);
+      const formatOkay = await format.format(OPTIONS, [], false);
+      assert.strictEqual(formatOkay, true);
+    });
+  });
+
   it('should handle json files correctly resolveJsonModule', () => {
     return withFixtures(
       {
@@ -289,6 +331,7 @@ describe('lint', () => {
         'tslint.json': JSON.stringify(TSLINT_CONFIG),
         node_modules: {
           gts: {
+            'tslint-rules.json': fs.readFileSync('tslint-rules.json', 'utf8'),
             'tslint.json': fs.readFileSync('tslint.json', 'utf8'),
           },
         },

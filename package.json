@@ -17,6 +17,7 @@
     "prettier.config.js",
     "tsconfig-google.json",
     "tsconfig.json",
+    "tslint-rules.json",
     "tslint.json"
   ],
   "scripts": {
@@ -52,6 +53,7 @@
     "prettier": "^1.15.3",
     "rimraf": "^2.6.2",
     "tslint": "^5.12.0",
+    "tslint-config-prettier": "^1.18.0",
     "update-notifier": "^3.0.0",
     "write-file-atomic": "^2.3.0"
   },
