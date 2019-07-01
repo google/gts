@@ -79,7 +79,7 @@
     "fs-extra": "^8.0.0",
     "gts": "^1.0.0",
     "inline-fixtures": "^1.1.0",
-    "js-green-licenses": "^0.5.0",
+    "js-green-licenses": "^1.0.0",
     "mocha": "^6.0.0",
     "sinon": "^7.3.1",
     "source-map-support": "^0.5.5",
