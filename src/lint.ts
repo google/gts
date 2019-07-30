@@ -75,8 +75,7 @@ export function lint(
 
     const configuration = Configuration.loadConfigurationFromPath(configPath);
 
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
+    for (let file of files) {
       const sourceFile = program.getSourceFile(file);
       if (sourceFile) {
         const fileContents = sourceFile.getFullText();
