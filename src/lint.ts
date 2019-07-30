@@ -74,19 +74,19 @@ export function lint(
       : path.resolve(options.gtsRootDir, 'tslint.json');
 
     const configuration = Configuration.loadConfigurationFromPath(configPath);
-    const linter = new Linter({ fix, formatter: 'codeFrame' }, program);
 
-    files.forEach(file => {
+    for (const file of files) {
       const sourceFile = program.getSourceFile(file);
       if (sourceFile) {
         const fileContents = sourceFile.getFullText();
+        const linter = new Linter({ fix, formatter: 'codeFrame' }, program);
         linter.lint(file, fileContents, configuration);
+        const result = linter.getResult();
+        if (result.errorCount || result.warningCount) {
+          options.logger.log(result.output);
+          return false;
+        }
       }
-    });
-    const result = linter.getResult();
-    if (result.errorCount || result.warningCount) {
-      options.logger.log(result.output);
-      return false;
     }
     return true;
   }
