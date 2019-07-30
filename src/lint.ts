@@ -20,8 +20,7 @@ import * as ts from 'typescript';
 
 import { Options } from './cli';
 
-// how many files should we lint in conjunction before creating a new linter?
-const MAX_FILES_LINTED = 25;
+const MAX_PARALLEL_FILES = 25;
 
 /**
  * Run tslint with the default configuration. Returns true on success.
@@ -80,9 +79,9 @@ export function lint(
 
     let linter: Linter | undefined = undefined;
     for (let i = 0; i < files.length; i++) {
-      // only lint MAX_FILES_LINTED at one time, to prevent OOM errors
-      // on code-bases with large numbers of files:
-      if (i % MAX_FILES_LINTED === 0) {
+      // only lint MAX_PARALLEL_FILES at one time, this prevents OOM errors
+      // on codebases with large numbers of files:
+      if (i % MAX_PARALLEL_FILES === 0) {
         if (linter) {
           const result = linter!.getResult();
           if (result.errorCount || result.warningCount) {
@@ -100,7 +99,7 @@ export function lint(
       }
     }
 
-    // handle source files most recently added to linter:
+    // handle the final set of source files added to the linter:
     if (linter) {
       const result = linter.getResult();
       if (result.errorCount || result.warningCount) {
