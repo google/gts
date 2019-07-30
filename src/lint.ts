@@ -20,6 +20,9 @@ import * as ts from 'typescript';
 
 import { Options } from './cli';
 
+// how many files should we lint in conjunction before creating a new linter?
+const MAX_FILES_LINTED = 25;
+
 /**
  * Run tslint with the default configuration. Returns true on success.
  * @param options gts options
@@ -74,19 +77,36 @@ export function lint(
       : path.resolve(options.gtsRootDir, 'tslint.json');
 
     const configuration = Configuration.loadConfigurationFromPath(configPath);
-    const linter = new Linter({ fix, formatter: 'codeFrame' }, program);
 
-    files.forEach(file => {
+    let linter: Linter | undefined = undefined;
+    for (let i = 0; i < files.length; i++) {
+      // only lint MAX_FILES_LINTED at one time, to prevent OOM errors
+      // on code-bases with large numbers of files:
+      if (i % MAX_FILES_LINTED === 0) {
+        if (linter) {
+          const result = linter!.getResult();
+          if (result.errorCount || result.warningCount) {
+            options.logger.log(result.output);
+            return false;
+          }
+        }
+        linter = new Linter({ fix, formatter: 'codeFrame' }, program);
+      }
+      const file = files[i];
       const sourceFile = program.getSourceFile(file);
       if (sourceFile) {
         const fileContents = sourceFile.getFullText();
-        linter.lint(file, fileContents, configuration);
+        linter!.lint(file, fileContents, configuration);
       }
-    });
-    const result = linter.getResult();
-    if (result.errorCount || result.warningCount) {
-      options.logger.log(result.output);
-      return false;
+    }
+
+    // handle source files most recently added to linter:
+    if (linter) {
+      const result = linter.getResult();
+      if (result.errorCount || result.warningCount) {
+        options.logger.log(result.output);
+        return false;
+      }
     }
     return true;
   }
