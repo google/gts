@@ -20,8 +20,6 @@ import * as ts from 'typescript';
 
 import { Options } from './cli';
 
-const MAX_PARALLEL_FILES = 25;
-
 /**
  * Run tslint with the default configuration. Returns true on success.
  * @param options gts options
@@ -77,34 +75,18 @@ export function lint(
 
     const configuration = Configuration.loadConfigurationFromPath(configPath);
 
-    let linter: Linter | undefined = undefined;
     for (let i = 0; i < files.length; i++) {
-      // only lint MAX_PARALLEL_FILES at one time, this prevents OOM errors
-      // on codebases with large numbers of files:
-      if (i % MAX_PARALLEL_FILES === 0) {
-        if (linter) {
-          const result = linter!.getResult();
-          if (result.errorCount || result.warningCount) {
-            options.logger.log(result.output);
-            return false;
-          }
-        }
-        linter = new Linter({ fix, formatter: 'codeFrame' }, program);
-      }
       const file = files[i];
       const sourceFile = program.getSourceFile(file);
       if (sourceFile) {
         const fileContents = sourceFile.getFullText();
-        linter!.lint(file, fileContents, configuration);
-      }
-    }
-
-    // handle the final set of source files added to the linter:
-    if (linter) {
-      const result = linter.getResult();
-      if (result.errorCount || result.warningCount) {
-        options.logger.log(result.output);
-        return false;
+        const linter = new Linter({ fix, formatter: 'codeFrame' }, program);
+        linter.lint(file, fileContents, configuration);
+        const result = linter.getResult();
+        if (result.errorCount || result.warningCount) {
+          options.logger.log(result.output);
+          return false;
+        }
       }
     }
     return true;
