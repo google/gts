@@ -51,7 +51,7 @@
     "meow": "^5.0.0",
     "ncp": "^2.0.0",
     "prettier": "^1.15.3",
-    "rimraf": "^2.6.2",
+    "rimraf": "^3.0.0",
     "tslint": "^5.12.0",
     "tslint-config-prettier": "^1.18.0",
     "update-notifier": "^3.0.0",
