@@ -75,7 +75,7 @@
     "assert-rejects": "^1.0.0",
     "c8": "^5.0.0",
     "codecov": "^3.0.1",
-    "cross-spawn": "^6.0.5",
+    "cross-spawn": "^7.0.0",
     "fs-extra": "^8.0.0",
     "gts": "^1.0.0",
     "inline-fixtures": "^1.1.0",
