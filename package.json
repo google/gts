@@ -55,7 +55,7 @@
     "tslint": "^5.12.0",
     "tslint-config-prettier": "^1.18.0",
     "update-notifier": "^3.0.0",
-    "write-file-atomic": "^2.3.0"
+    "write-file-atomic": "^3.0.0"
   },
   "devDependencies": {
     "@npm/types": "^1.0.1",
