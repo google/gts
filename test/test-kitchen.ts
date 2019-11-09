@@ -1,4 +1,4 @@
-import chalk from 'chalk';
+import chalk = require('chalk');
 import * as cp from 'child_process';
 import * as fs from 'fs-extra';
 import * as tmp from 'tmp';
