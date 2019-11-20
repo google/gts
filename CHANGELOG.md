@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.1.2](https://www.github.com/google/gts/compare/v1.1.1...v1.1.2) (2019-11-20)
+
+
+### Bug Fixes
+
+* **deps:** update to newest prettier (with support for optional chain) ([#396](https://www.github.com/google/gts/issues/396)) ([ce8ad06](https://www.github.com/google/gts/commit/ce8ad06c8489c44a9e2ed5292382637b3ebb7601))
+
 ### [1.1.1](https://www.github.com/google/gts/compare/v1.1.0...v1.1.1) (2019-11-11)
 
 
