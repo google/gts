@@ -19,13 +19,13 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 import { clean } from '../src/clean';
-import { Options } from '../src/cli';
 import { nop } from '../src/util';
 
 import { withFixtures } from 'inline-fixtures';
+import { describe, it } from 'mocha';
 
 describe('clean', () => {
-  const OPTIONS: Options = {
+  const OPTIONS = {
     gtsRootDir: path.resolve(__dirname, '../..'),
     targetRootDir: './',
     dryRun: false,
@@ -35,6 +35,7 @@ describe('clean', () => {
   };
 
   it('should gracefully error if tsconfig is missing', () => {
+    // eslint-disable-next-line node/no-unsupported-features/node-builtins
     return assert.rejects(() =>
       withFixtures({}, async () => {
         await clean(OPTIONS);
@@ -60,6 +61,7 @@ describe('clean', () => {
   });
 
   it('should ensure that outDir is local to targetRoot', () => {
+    // eslint-disable-next-line node/no-unsupported-features/node-builtins
     return assert.rejects(() =>
       withFixtures(
         {

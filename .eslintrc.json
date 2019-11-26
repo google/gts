@@ -1,0 +1,42 @@
+{
+  "extends": [
+    "eslint:recommended",
+    "plugin:node/recommended",
+    "prettier"
+  ],
+  "plugins": [
+    "node",
+    "prettier"
+  ],
+  "rules": {
+    "prettier/prettier": "error",
+    "block-scoped-var": "error",
+    "eqeqeq": "error",
+    "no-warning-comments": "warn",
+    "no-var": "error",
+    "prefer-const": "error"
+  },
+  "overrides": [
+    {
+      "files": "**/*.ts",
+      "parser": "@typescript-eslint/parser",
+      "extends": [
+        "plugin:@typescript-eslint/recommended"
+      ],
+      "rules": {
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "node/no-missing-import": "off",
+        "node/no-unsupported-features/es-syntax": "off",
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/camelcase": "off",
+        "node/no-missing-require": "off",
+        "no-dupe-class-members": "off",
+        "node/shebang": "off"
+      },
+      "parserOptions": {
+        "ecmaVersion": 2018,
+        "sourceType": "module"
+      }
+    }
+  ]
+}

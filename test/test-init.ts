@@ -20,13 +20,13 @@ import * as assert from 'assert';
 import * as fs from 'fs';
 import * as path from 'path';
 import { accessSync } from 'fs';
-import { nop, readJsonp as readJson, DefaultPackage } from '../src/util';
-import { Options } from '../src/cli';
 import { PackageJson } from '@npm/types';
 import { withFixtures, Fixtures } from 'inline-fixtures';
-import * as init from '../src/init';
+import { describe, it, beforeEach, afterEach } from 'mocha';
 
-const assertRejects = require('assert-rejects');
+import { nop, readJsonp as readJson, DefaultPackage } from '../src/util';
+import { Options } from '../src/cli';
+import * as init from '../src/init';
 
 const OPTIONS: Options = {
   gtsRootDir: path.resolve(__dirname, '../..'),

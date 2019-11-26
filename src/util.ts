@@ -19,10 +19,11 @@ import * as path from 'path';
 import * as rimraf from 'rimraf';
 import { promisify } from 'util';
 import * as ncp from 'ncp';
+import * as writeFileAtomic from 'write-file-atomic';
 
 export const readFilep = promisify(fs.readFile);
 export const rimrafp = promisify(rimraf);
-export const writeFileAtomicp = promisify(require('write-file-atomic'));
+export const writeFileAtomicp = promisify(writeFileAtomic);
 export const ncpp = promisify(ncp.ncp);
 
 export interface Bag<T> {
@@ -46,22 +47,6 @@ export interface ReadFileP {
 
 export function nop() {
   /* empty */
-}
-
-/**
- * Find the tsconfig.json, read it, and return parsed contents.
- * @param rootDir Directory where the tsconfig.json should be found.
- * If the tsconfig.json file has an "extends" field hop down the dependency tree
- * until it ends or a circular reference is found in which case an error will be
- * thrown
- */
-export async function getTSConfig(
-  rootDir: string,
-  customReadFilep?: ReadFileP
-): Promise<ConfigFile> {
-  customReadFilep = customReadFilep || readFilep;
-  const readArr = new Set<string>();
-  return getBase('tsconfig.json', customReadFilep, readArr, rootDir);
 }
 
 /**
@@ -100,6 +85,7 @@ async function getBase(
         readFiles,
         path.dirname(filePath)
       );
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       contents = combineTSConfig(nextFile, contents);
     }
 
@@ -154,4 +140,20 @@ export function getPkgManagerCommand(isYarnUsed?: boolean): string {
   return (
     (isYarnUsed ? 'yarn' : 'npm') + (process.platform === 'win32' ? '.cmd' : '')
   );
+}
+
+/**
+ * Find the tsconfig.json, read it, and return parsed contents.
+ * @param rootDir Directory where the tsconfig.json should be found.
+ * If the tsconfig.json file has an "extends" field hop down the dependency tree
+ * until it ends or a circular reference is found in which case an error will be
+ * thrown
+ */
+export async function getTSConfig(
+  rootDir: string,
+  customReadFilep?: ReadFileP
+): Promise<ConfigFile> {
+  customReadFilep = customReadFilep || readFilep;
+  const readArr = new Set<string>();
+  return getBase('tsconfig.json', customReadFilep, readArr, rootDir);
 }
