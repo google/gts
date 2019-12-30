@@ -178,11 +178,8 @@ async function writePackageJson(
   options.logger.dir(preview);
 }
 
-export const TSLINT_CONFIG = {
-  extends: 'gts/tslint.json',
-  linterOptions: {
-    exclude: ['**/*.json'],
-  },
+export const ESLINT_CONFIG = {
+  extends: './node_modules/gts/build/src/index.js',
 };
 
 async function generateConfigFile(
@@ -223,11 +220,11 @@ async function generateConfigFile(
   }
 }
 
-async function generateTsLintConfig(options: Options): Promise<void> {
+async function generateESLintConfig(options: Options): Promise<void> {
   return generateConfigFile(
     options,
-    './tslint.json',
-    formatJson(TSLINT_CONFIG)
+    './.eslintrc.json',
+    formatJson(ESLINT_CONFIG)
   );
 }
 
@@ -312,7 +309,7 @@ export async function init(options: Options): Promise<boolean> {
     options.logger.log('No edits needed in package.json.');
   }
   await generateTsConfig(options);
-  await generateTsLintConfig(options);
+  await generateESLintConfig(options);
   await generatePrettierConfig(options);
   await installDefaultTemplate(options);
 
