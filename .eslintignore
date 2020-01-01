@@ -1,5 +1,2 @@
-**/node_modules
-src/**/doc/*
 build/
-docs/
-protos/
+test/fixtures/
