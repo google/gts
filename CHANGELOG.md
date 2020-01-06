@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.1.3](https://www.github.com/google/gts/compare/v1.1.2...v1.1.3) (2020-01-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency update-notifier to v4 ([#403](https://www.github.com/google/gts/issues/403)) ([57393b7](https://www.github.com/google/gts/commit/57393b74c6cf299e8ae09311f0382226b8baa3e3))
+
 ### [1.1.2](https://www.github.com/google/gts/compare/v1.1.1...v1.1.2) (2019-11-20)
 
 
