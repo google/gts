@@ -70,7 +70,7 @@
     "@types/sinon": "^7.0.11",
     "@types/tmp": "^0.1.0",
     "@types/update-notifier": "^2.2.0",
-    "@types/write-file-atomic": "^2.1.2",
+    "@types/write-file-atomic": "^3.0.0",
     "assert-rejects": "^1.0.0",
     "c8": "^7.0.0",
     "chai": "^4.2.0",
