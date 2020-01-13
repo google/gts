@@ -8,7 +8,6 @@ windows_task:
     docker_arguments:
       matrix:
         - node_version: 12.1.0
-        - node_version: 11.14.0
   install_script: npm ci
   test_script: npm test
 
@@ -30,7 +29,6 @@ test_task:
       image: node:13
       image: node:12
       image: node:10
-      image: node:8
   install_script: npm ci
   test_script: npm test
 
