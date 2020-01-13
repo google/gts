@@ -2,10 +2,13 @@ import chalk = require('chalk');
 import * as cp from 'child_process';
 import * as fs from 'fs-extra';
 import * as tmp from 'tmp';
-import * as assert from 'assert';
+import { assert } from 'chai';
 import * as path from 'path';
+import { describe, it, before, after } from 'mocha';
 
-const spawn = require('cross-spawn');
+import spawn = require('cross-spawn');
+import execa = require('execa');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const pkg = require('../../package.json');
 const keep = !!process.env.GTS_KEEP_TEMPDIRS;
 const stagingDir = tmp.dirSync({ keep, unsafeCleanup: true });
@@ -15,8 +18,6 @@ const execOpts = {
   encoding: 'utf8',
 };
 
-console.log(`${chalk.blue(`${__filename} staging area: ${stagingPath}`)}`);
-
 describe('🚰 kitchen sink', () => {
   const fixturesPath = path.join('test', 'fixtures');
   const gtsPath = path.join('node_modules', '.bin', 'gts');
@@ -24,7 +25,7 @@ describe('🚰 kitchen sink', () => {
 
   // Create a staging directory with temp fixtures used to test on a fresh application.
   before(() => {
-    console.log('running before hook.');
+    console.log(`${chalk.blue(`${__filename} staging area: ${stagingPath}`)}`);
     cp.execSync('npm pack');
     const tarball = `${pkg.name}-${pkg.version}.tgz`;
     fs.renameSync(tarball, 'gts.tgz');
@@ -32,8 +33,6 @@ describe('🚰 kitchen sink', () => {
     console.log('moving packed tar to ', targetPath);
     fs.moveSync('gts.tgz', targetPath);
     fs.copySync(fixturesPath, path.join(stagingPath, path.sep));
-    console.log(fs.readdirSync(stagingPath));
-    console.log(fs.readdirSync(path.join(stagingPath, 'kitchen')));
   });
   // CLEAN UP - remove the staging directory when done.
   after('cleanup staging', () => {
@@ -60,7 +59,7 @@ describe('🚰 kitchen sink', () => {
 
     // Ensure config files got generated.
     fs.accessSync(path.join(kitchenPath, 'tsconfig.json'));
-    fs.accessSync(path.join(kitchenPath, 'tslint.json'));
+    fs.accessSync(path.join(kitchenPath, '.eslintrc.json'));
     fs.accessSync(path.join(kitchenPath, 'prettier.config.js'));
 
     // Compilation shouldn't have happened. Hence no `build` directory.
@@ -120,23 +119,19 @@ describe('🚰 kitchen sink', () => {
     );
     assert.ok(
       fs
-        .readFileSync(path.join(kitchenPath, 'tslint.json'), 'utf8')
+        .readFileSync(path.join(kitchenPath, '.eslintrc.json'), 'utf8')
         .endsWith('\n')
     );
   });
 
-  it('should check before fix', () => {
-    assert.throws(
-      () => {
-        cp.execSync('npm run check', execOpts);
-      },
-      // tslint:disable-next-line no-any
-      (err: any) => {
-        assert.strictEqual(err.status, 1);
-        assert.ok(err.stdout.includes('prettier reported errors'));
-        return true;
-      }
+  it('should check before fix', async () => {
+    const res = await execa(
+      'npm',
+      ['run', 'check'],
+      Object.assign({}, { reject: false }, execOpts)
     );
+    assert.strictEqual(res.exitCode, 1);
+    assert.include(res.stdout, 'assigned a value but');
   });
 
   it('should fix', () => {

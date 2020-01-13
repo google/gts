@@ -2,7 +2,8 @@
   "extends": "./tsconfig-google.json",
   "compilerOptions": {
     "rootDir": ".",
-    "outDir": "build"
+    "outDir": "build",
+    "resolveJsonModule": true
   },
   "include": [
     "src/**/*.ts",

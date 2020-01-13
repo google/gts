@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 /**
  * Copyright 2017 Google Inc. All Rights Reserved.
  *
@@ -14,13 +15,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import * as path from 'path';
 import * as meow from 'meow';
 import * as updateNotifier from 'update-notifier';
 import { init } from './init';
 import { clean } from './clean';
 import { isYarnUsed } from './util';
+import * as execa from 'execa';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const packageJson = require('../../package.json');
 
 export interface Logger {
@@ -105,15 +109,38 @@ async function run(verb: string, files: string[]): Promise<boolean> {
     return init(options);
   }
 
-  const lint: VerbFilesFunction = require('./lint').lint;
-  const format: VerbFilesFunction = require('./format').format;
+  const flags = Object.assign([], files);
+  if (flags.length === 0) {
+    flags.push('**/*.ts', '**/*.js');
+  }
+
   switch (verb) {
-    case 'check':
-      const passLint = await lint(options, files);
-      const passFormat = await format(options, files);
-      return passLint && passFormat;
-    case 'fix':
-      return (await lint(options, files, true)) && format(options, files, true);
+    case 'check': {
+      try {
+        await execa('node', ['./node_modules/eslint/bin/eslint', ...flags], {
+          stdio: 'inherit',
+        });
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+    case 'fix': {
+      const fixFlag = options.dryRun ? '--fix-dry-run' : '--fix';
+      try {
+        await execa(
+          'node',
+          ['./node_modules/eslint/bin/eslint', fixFlag, ...flags],
+          {
+            stdio: 'inherit',
+          }
+        );
+        return true;
+      } catch (e) {
+        console.error(e);
+        return false;
+      }
+    }
     case 'clean':
       return clean(options);
     default:
@@ -130,6 +157,7 @@ if (cli.input.length < 1) {
 
 run(cli.input[0], cli.input.slice(1)).then(success => {
   if (!success) {
+    // eslint-disable-next-line no-process-exit
     process.exit(1);
   }
 });

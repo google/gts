@@ -33,6 +33,7 @@ import { Options } from './cli';
 import { PackageJson } from '@npm/types';
 import chalk = require('chalk');
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const pkg = require('../../package.json');
 
 const ncpp = util.promisify(ncp);
@@ -108,6 +109,7 @@ export async function addScripts(
       }
 
       if (install) {
+        // eslint-disable-next-line require-atomic-updates
         packageJson.scripts[script] = scripts[script];
         edits = true;
       }
@@ -145,6 +147,7 @@ export async function addDependencies(
       }
 
       if (install) {
+        // eslint-disable-next-line require-atomic-updates
         packageJson.devDependencies[dep] = deps[dep];
         edits = true;
       }
@@ -175,37 +178,9 @@ async function writePackageJson(
   options.logger.dir(preview);
 }
 
-export const TSLINT_CONFIG = {
-  extends: 'gts/tslint.json',
-  linterOptions: {
-    exclude: ['**/*.json'],
-  },
+export const ESLINT_CONFIG = {
+  extends: './node_modules/gts/build/src/index.js',
 };
-
-async function generateTsLintConfig(options: Options): Promise<void> {
-  return generateConfigFile(
-    options,
-    './tslint.json',
-    formatJson(TSLINT_CONFIG)
-  );
-}
-
-async function generateTsConfig(options: Options): Promise<void> {
-  const config = formatJson({
-    extends: './node_modules/gts/tsconfig-google.json',
-    compilerOptions: { rootDir: '.', outDir: 'build' },
-    include: ['src/**/*.ts', 'test/**/*.ts'],
-  });
-  return generateConfigFile(options, './tsconfig.json', config);
-}
-
-async function generatePrettierConfig(options: Options): Promise<void> {
-  const style = await read(
-    path.join(__dirname, '../../prettier.config.js'),
-    'utf8'
-  );
-  return generateConfigFile(options, './prettier.config.js', style);
-}
 
 async function generateConfigFile(
   options: Options,
@@ -243,6 +218,31 @@ async function generateConfigFile(
     }
     options.logger.log(contents);
   }
+}
+
+async function generateESLintConfig(options: Options): Promise<void> {
+  return generateConfigFile(
+    options,
+    './.eslintrc.json',
+    formatJson(ESLINT_CONFIG)
+  );
+}
+
+async function generateTsConfig(options: Options): Promise<void> {
+  const config = formatJson({
+    extends: './node_modules/gts/tsconfig-google.json',
+    compilerOptions: { rootDir: '.', outDir: 'build' },
+    include: ['src/**/*.ts', 'test/**/*.ts'],
+  });
+  return generateConfigFile(options, './tsconfig.json', config);
+}
+
+async function generatePrettierConfig(options: Options): Promise<void> {
+  const style = await read(
+    path.join(__dirname, '../../prettier.config.js'),
+    'utf8'
+  );
+  return generateConfigFile(options, './prettier.config.js', style);
 }
 
 export async function installDefaultTemplate(
@@ -309,7 +309,7 @@ export async function init(options: Options): Promise<boolean> {
     options.logger.log('No edits needed in package.json.');
   }
   await generateTsConfig(options);
-  await generateTsLintConfig(options);
+  await generateESLintConfig(options);
   await generatePrettierConfig(options);
   await installDefaultTemplate(options);
 

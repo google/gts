@@ -16,7 +16,7 @@ To borrow from [standardjs][standardjs-url]:
 - **Catch style issues & programmer errors early**. Save precious code review time by eliminating back-and-forth between reviewer & contributor.
 - **Opinionated, but not to a fault**. We recommend you use the default configuration, but if you *need* to customize compiler or linter config, you can.
 
-Under the covers, we use [tslint][tslint-url] to enforce the style guide and provide automated fixes, and [prettier][prettier-url] to re-format code.
+Under the covers, we use [eslint][eslint-url] to enforce the style guide and provide automated fixes, and [prettier][prettier-url] to re-format code.
 
 ## Getting Started
 
@@ -77,4 +77,4 @@ Made with ❤️ by the Google Node.js team.
 [snyk-image]: https://snyk.io/test/github/google/gts/badge.svg
 [snyk-url]: https://snyk.io/test/github/google/gts
 [standardjs-url]: https://www.npmjs.com/package/standard
-[tslint-url]: https://palantir.github.io/tslint/
+[eslint-url]: https://eslint.org/
