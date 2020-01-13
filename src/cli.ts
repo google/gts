@@ -92,7 +92,7 @@ function usage(msg?: string): void {
 }
 
 async function run(verb: string, files: string[]): Promise<boolean> {
-  const options: Options = {
+  const options = {
     dryRun: cli.flags.dryRun || false,
     // Paths are relative to the transpiled output files.
     gtsRootDir: path.resolve(__dirname, '../..'),
@@ -101,7 +101,7 @@ async function run(verb: string, files: string[]): Promise<boolean> {
     no: cli.flags.no || cli.flags.n || false,
     logger,
     yarn: cli.flags.yarn || isYarnUsed(),
-  };
+  } as Options;
   // Linting/formatting depend on typescript. We don't want to load the
   // typescript module during init, since it might not exist.
   // See: https://github.com/google/gts/issues/48
