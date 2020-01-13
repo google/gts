@@ -7,7 +7,7 @@ windows_task:
     os_version: 2019
     docker_arguments:
       matrix:
-        - node_version: 12.14.1
+        - node_version: 12.1.0
   install_script: npm ci
   test_script: npm test
 
