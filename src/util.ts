@@ -17,7 +17,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as rimraf from 'rimraf';
-import { promisify } from 'util';
+import {promisify} from 'util';
 import * as ncp from 'ncp';
 import * as writeFileAtomic from 'write-file-atomic';
 
@@ -37,7 +37,7 @@ export interface DefaultPackage extends Bag<string> {
 }
 
 export async function readJsonp(jsonPath: string) {
-  const contents = await readFilep(jsonPath, { encoding: 'utf8' });
+  const contents = await readFilep(jsonPath, {encoding: 'utf8'});
   return JSON.parse(contents);
 }
 
@@ -101,7 +101,7 @@ async function getBase(
  * @param inherited is then loaded and overwrites base
  */
 function combineTSConfig(base: ConfigFile, inherited: ConfigFile): ConfigFile {
-  const result: ConfigFile = { compilerOptions: {} };
+  const result: ConfigFile = {compilerOptions: {}};
 
   Object.assign(result, base, inherited);
   Object.assign(

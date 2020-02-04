@@ -17,7 +17,7 @@ import * as cp from 'child_process';
 import * as fs from 'fs';
 import * as inquirer from 'inquirer';
 import * as path from 'path';
-import { ncp } from 'ncp';
+import {ncp} from 'ncp';
 import * as util from 'util';
 
 import {
@@ -29,8 +29,8 @@ import {
   DefaultPackage,
 } from './util';
 
-import { Options } from './cli';
-import { PackageJson } from '@npm/types';
+import {Options} from './cli';
+import {PackageJson} from '@npm/types';
 import chalk = require('chalk');
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -47,7 +47,7 @@ const DEFAULT_PACKAGE_JSON: PackageJson = {
   files: ['build/src'],
   license: 'Apache-2.0',
   keywords: [],
-  scripts: { test: 'echo "Error: no test specified" && exit 1' },
+  scripts: {test: 'echo "Error: no test specified" && exit 1'},
 };
 
 async function query(
@@ -158,7 +158,6 @@ export async function addDependencies(
 }
 
 function formatJson(object: {}) {
-  // TODO: preserve the indent from the input file.
   const json = JSON.stringify(object, null, '  ');
   return `${json}\n`;
 }
@@ -231,7 +230,7 @@ async function generateESLintConfig(options: Options): Promise<void> {
 async function generateTsConfig(options: Options): Promise<void> {
   const config = formatJson({
     extends: './node_modules/gts/tsconfig-google.json',
-    compilerOptions: { rootDir: '.', outDir: 'build' },
+    compilerOptions: {rootDir: '.', outDir: 'build'},
     include: ['src/**/*.ts', 'test/**/*.ts'],
   });
   return generateConfigFile(options, './tsconfig.json', config);
@@ -239,10 +238,10 @@ async function generateTsConfig(options: Options): Promise<void> {
 
 async function generatePrettierConfig(options: Options): Promise<void> {
   const style = await read(
-    path.join(__dirname, '../../.prettierrc.js'),
+    path.join(__dirname, '../../.prettierrc.json'),
     'utf8'
   );
-  return generateConfigFile(options, './.prettierrc.js', style);
+  return generateConfigFile(options, './.prettierrc.json', style);
 }
 
 export async function installDefaultTemplate(
@@ -321,7 +320,7 @@ export async function init(options: Options): Promise<boolean> {
     cp.spawnSync(
       getPkgManagerCommand(options.yarn),
       ['install', '--ignore-scripts'],
-      { stdio: 'inherit' }
+      {stdio: 'inherit'}
     );
   }
 
