@@ -18,11 +18,11 @@ import * as assert from 'assert';
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { clean } from '../src/clean';
-import { nop } from '../src/util';
+import {clean} from '../src/clean';
+import {nop} from '../src/util';
 
-import { withFixtures } from 'inline-fixtures';
-import { describe, it } from 'mocha';
+import {withFixtures} from 'inline-fixtures';
+import {describe, it} from 'mocha';
 
 describe('clean', () => {
   const OPTIONS = {
@@ -31,7 +31,7 @@ describe('clean', () => {
     dryRun: false,
     yes: false,
     no: false,
-    logger: { log: nop, error: nop, dir: nop },
+    logger: {log: nop, error: nop, dir: nop},
   };
 
   it('should gracefully error if tsconfig is missing', () => {
@@ -44,7 +44,7 @@ describe('clean', () => {
   });
 
   it('should gracefully error if tsconfig does not have valid outDir', () => {
-    return withFixtures({ 'tsconfig.json': JSON.stringify({}) }, async () => {
+    return withFixtures({'tsconfig.json': JSON.stringify({})}, async () => {
       const deleted = await clean(OPTIONS);
       assert.strictEqual(deleted, false);
     });
@@ -52,7 +52,7 @@ describe('clean', () => {
 
   it('should avoid deleting .', () => {
     return withFixtures(
-      { 'tsconfig.json': JSON.stringify({ compilerOptions: { outDir: '.' } }) },
+      {'tsconfig.json': JSON.stringify({compilerOptions: {outDir: '.'}})},
       async () => {
         const deleted = await clean(OPTIONS);
         assert.strictEqual(deleted, false);
@@ -66,7 +66,7 @@ describe('clean', () => {
       withFixtures(
         {
           'tsconfig.json': JSON.stringify({
-            compilerOptions: { outDir: '../out' },
+            compilerOptions: {outDir: '../out'},
           }),
         },
         async () => {
@@ -81,7 +81,7 @@ describe('clean', () => {
     const OUT = 'outputDirectory';
     return withFixtures(
       {
-        'tsconfig.json': JSON.stringify({ compilerOptions: { outDir: OUT } }),
+        'tsconfig.json': JSON.stringify({compilerOptions: {outDir: OUT}}),
         [OUT]: {},
       },
       async dir => {

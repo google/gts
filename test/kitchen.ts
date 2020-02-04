@@ -2,16 +2,16 @@ import chalk = require('chalk');
 import * as cp from 'child_process';
 import * as fs from 'fs-extra';
 import * as tmp from 'tmp';
-import { assert } from 'chai';
+import {assert} from 'chai';
 import * as path from 'path';
-import { describe, it, before, after } from 'mocha';
+import {describe, it, before, after} from 'mocha';
 
 import spawn = require('cross-spawn');
 import execa = require('execa');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const pkg = require('../../package.json');
 const keep = !!process.env.GTS_KEEP_TEMPDIRS;
-const stagingDir = tmp.dirSync({ keep, unsafeCleanup: true });
+const stagingDir = tmp.dirSync({keep, unsafeCleanup: true});
 const stagingPath = stagingDir.name;
 const execOpts = {
   cwd: `${stagingPath}${path.sep}kitchen`,
@@ -60,7 +60,7 @@ describe('🚰 kitchen sink', () => {
     // Ensure config files got generated.
     fs.accessSync(path.join(kitchenPath, 'tsconfig.json'));
     fs.accessSync(path.join(kitchenPath, '.eslintrc.json'));
-    fs.accessSync(path.join(kitchenPath, '.prettierrc.js'));
+    fs.accessSync(path.join(kitchenPath, '.prettierrc.json'));
 
     // Compilation shouldn't have happened. Hence no `build` directory.
     const dirContents = fs.readdirSync(kitchenPath);
@@ -71,8 +71,8 @@ describe('🚰 kitchen sink', () => {
     // Use from a directory different from where we have locally installed. This
     // simulates use as a globally installed module.
     const GTS = path.resolve(stagingPath, 'kitchen/node_modules/.bin/gts');
-    const tmpDir = tmp.dirSync({ keep, unsafeCleanup: true });
-    const opts = { cwd: path.join(tmpDir.name, 'kitchen') };
+    const tmpDir = tmp.dirSync({keep, unsafeCleanup: true});
+    const opts = {cwd: path.join(tmpDir.name, 'kitchen')};
 
     // Copy test files.
     fs.copySync(fixturesPath, tmpDir.name);
@@ -128,7 +128,7 @@ describe('🚰 kitchen sink', () => {
     const res = await execa(
       'npm',
       ['run', 'check'],
-      Object.assign({}, { reject: false }, execOpts)
+      Object.assign({}, {reject: false}, execOpts)
     );
     assert.strictEqual(res.exitCode, 1);
     assert.include(res.stdout, 'assigned a value but');
