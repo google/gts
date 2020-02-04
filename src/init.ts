@@ -179,7 +179,7 @@ async function writePackageJson(
 }
 
 export const ESLINT_CONFIG = {
-  extends: './node_modules/gts/build/src/index.js',
+  extends: './node_modules/gts/',
 };
 
 async function generateConfigFile(
@@ -239,10 +239,10 @@ async function generateTsConfig(options: Options): Promise<void> {
 
 async function generatePrettierConfig(options: Options): Promise<void> {
   const style = await read(
-    path.join(__dirname, '../../prettier.config.js'),
+    path.join(__dirname, '../../.prettierrc.js'),
     'utf8'
   );
-  return generateConfigFile(options, './prettier.config.js', style);
+  return generateConfigFile(options, './.prettierrc.js', style);
 }
 
 export async function installDefaultTemplate(
