@@ -60,7 +60,7 @@ describe('🚰 kitchen sink', () => {
     // Ensure config files got generated.
     fs.accessSync(path.join(kitchenPath, 'tsconfig.json'));
     fs.accessSync(path.join(kitchenPath, '.eslintrc.json'));
-    fs.accessSync(path.join(kitchenPath, 'prettier.config.js'));
+    fs.accessSync(path.join(kitchenPath, '.prettierrc.js'));
 
     // Compilation shouldn't have happened. Hence no `build` directory.
     const dirContents = fs.readdirSync(kitchenPath);
