@@ -78,7 +78,7 @@
     "inline-fixtures": "^1.1.0",
     "js-green-licenses": "^1.0.0",
     "mocha": "^7.0.0",
-    "sinon": "^8.0.0",
+    "sinon": "^9.0.0",
     "tmp": "0.1.0",
     "typescript": "~3.8.0"
   },
