@@ -86,7 +86,7 @@ describe('init', () => {
     const SCRIPTS = {
       check: `fake check`,
       clean: 'fake clean',
-      compile: `fake tsc -p .`,
+      compile: `fake tsc`,
       fix: `fake fix`,
       prepare: `fake run compile`,
       pretest: `fake run compile`,
@@ -105,7 +105,7 @@ describe('init', () => {
     const SCRIPTS = {
       check: `fake check`,
       clean: 'fake clean',
-      compile: `fake tsc -p .`,
+      compile: `fake tsc`,
       fix: `fake fix`,
       prepare: `fake run compile`,
       pretest: `fake run compile`,
