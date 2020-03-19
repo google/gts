@@ -20,7 +20,7 @@
     "build": "npm run compile",
     "clean": "rimraf ./build/",
     "codecov": "c8 report --reporter=json && codecov -f coverage/*.json",
-    "compile": "tsc -p .",
+    "compile": "tsc",
     "postcompile": "ncp template build/template",
     "lint": "eslint '**/*.ts'",
     "prepare": "npm run compile",
