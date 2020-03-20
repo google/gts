@@ -30,7 +30,6 @@
         "@typescript-eslint/no-warning-comments": "off",
         "@typescript-eslint/explicit-function-return-type": "off",
         "@typescript-eslint/camelcase": "off",
-        "@typescript-eslint/no-var-requires": "off",
         "node/no-missing-import": "off",
         "node/no-empty-function": "off",
         "node/no-unsupported-features/es-syntax": "off",
