@@ -237,11 +237,10 @@ async function generateTsConfig(options: Options): Promise<void> {
 }
 
 async function generatePrettierConfig(options: Options): Promise<void> {
-  const style = await read(
-    path.join(__dirname, '../../.prettierrc.json'),
-    'utf8'
-  );
-  return generateConfigFile(options, './.prettierrc.json', style);
+  const style = `module.exports = {
+  ...require('gts/.prettierrc.json')
+}`;
+  return generateConfigFile(options, './.prettierrc.js', style);
 }
 
 export async function installDefaultTemplate(
