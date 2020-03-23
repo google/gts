@@ -12,10 +12,11 @@
     "prettier/prettier": "error",
     "block-scoped-var": "error",
     "eqeqeq": "error",
-    "no-warning-comments": "warn",
     "no-var": "error",
     "prefer-const": "error",
-    "eol-last": "error"
+    "eol-last": "error",
+    "prefer-arrow-callback": "error",
+    "no-trailing-spaces": "error"
   },
   "overrides": [
     {
