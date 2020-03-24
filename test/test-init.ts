@@ -66,11 +66,11 @@ function hasExpectedDependencies(packageJson: PackageJson): boolean {
 describe('init', () => {
   const sandbox = sinon.createSandbox();
 
-  beforeEach(function() {
+  beforeEach(function () {
     this.spawnSyncStub = sandbox.stub(cp, 'spawnSync');
   });
 
-  afterEach(function() {
+  afterEach(function () {
     this.spawnSyncStub.restore();
   });
 

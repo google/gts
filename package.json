@@ -49,7 +49,7 @@
     "inquirer": "^7.0.0",
     "meow": "^6.0.0",
     "ncp": "^2.0.0",
-    "prettier": "^1.19.1",
+    "prettier": "^2.0.0",
     "rimraf": "^3.0.0",
     "update-notifier": "^4.0.0",
     "write-file-atomic": "^3.0.0"
@@ -65,7 +65,7 @@
     "@types/ncp": "^2.0.1",
     "@types/node": "^10.0.3",
     "@types/prettier": "^1.15.2",
-    "@types/rimraf": "^2.0.2",
+    "@types/rimraf": "^3.0.0",
     "@types/sinon": "^7.0.11",
     "@types/tmp": "^0.1.0",
     "@types/update-notifier": "^4.0.0",
