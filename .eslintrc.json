@@ -37,7 +37,8 @@
         "node/no-unsupported-features/es-syntax": "off",
         "node/no-missing-require": "off",
         "node/shebang": "off",
-        "no-dupe-class-members": "off"
+        "no-dupe-class-members": "off",
+        "require-atomic-updates": "off"
       },
       "parserOptions": {
         "ecmaVersion": 2018,
