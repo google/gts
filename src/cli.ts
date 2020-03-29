@@ -111,7 +111,7 @@ async function run(verb: string, files: string[]): Promise<boolean> {
 
   const flags = Object.assign([], files);
   if (flags.length === 0) {
-    flags.push('**/*.ts', '**/*.js');
+    flags.push('**/*.ts', '**/*.js', '**/*.tsx', '**/*.jsx');
   }
 
   switch (verb) {
