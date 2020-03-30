@@ -19,7 +19,6 @@ export function doSomeStuff(
   console.log(withThis);
   console.log(andThat);
   console.dir(andThose);
-  
   return;
 }
 // TODO: more examples
