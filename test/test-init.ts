@@ -84,13 +84,13 @@ describe('init', () => {
 
   it('addScripts should not edit existing scripts on no', async () => {
     const SCRIPTS = {
-      check: `fake check`,
+      check: 'fake check',
       clean: 'fake clean',
-      compile: `fake tsc`,
-      fix: `fake fix`,
-      prepare: `fake run compile`,
-      pretest: `fake run compile`,
-      posttest: `fake run check`,
+      compile: 'fake tsc',
+      fix: 'fake fix',
+      prepare: 'fake run compile',
+      pretest: 'fake run compile',
+      posttest: 'fake run check',
     };
     const pkg: PackageJson = {
       ...MINIMAL_PACKAGE_JSON,
@@ -103,13 +103,13 @@ describe('init', () => {
 
   it('addScripts should edit existing scripts on yes', async () => {
     const SCRIPTS = {
-      check: `fake check`,
+      check: 'fake check',
       clean: 'fake clean',
-      compile: `fake tsc`,
-      fix: `fake fix`,
-      prepare: `fake run compile`,
-      pretest: `fake run compile`,
-      posttest: `fake run check`,
+      compile: 'fake tsc',
+      fix: 'fake fix',
+      prepare: 'fake run compile',
+      pretest: 'fake run compile',
+      posttest: 'fake run check',
     };
     const pkg: PackageJson = {
       ...MINIMAL_PACKAGE_JSON,

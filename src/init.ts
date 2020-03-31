@@ -82,10 +82,10 @@ export async function addScripts(
   let edits = false;
   const pkgManager = getPkgManagerCommand(options.yarn);
   const scripts: Bag<string> = {
-    check: `gts check`,
+    check: 'gts check',
     clean: 'gts clean',
-    compile: `tsc`,
-    fix: `gts fix`,
+    compile: 'tsc',
+    fix: 'gts fix',
     prepare: `${pkgManager} run compile`,
     pretest: `${pkgManager} run compile`,
     posttest: `${pkgManager} run check`,
@@ -285,7 +285,7 @@ export async function init(options: Options): Promise<boolean> {
     }
     const generate = await query(
       `${chalk.bold('package.json')} does not exist.`,
-      `Generate`,
+      'Generate',
       true,
       options
     );
