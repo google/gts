@@ -16,7 +16,8 @@
     "prefer-const": "error",
     "eol-last": "error",
     "prefer-arrow-callback": "error",
-    "no-trailing-spaces": "error"
+    "no-trailing-spaces": "error",
+    "quotes": ["warn", "single", { "avoidEscape": true }]
   },
   "overrides": [
     {
