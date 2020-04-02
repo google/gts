@@ -64,7 +64,7 @@
     "@types/mocha": "^7.0.0",
     "@types/ncp": "^2.0.1",
     "@types/node": "^10.0.3",
-    "@types/prettier": "^1.15.2",
+    "@types/prettier": "^2.0.0",
     "@types/rimraf": "^3.0.0",
     "@types/sinon": "^9.0.0",
     "@types/tmp": "^0.1.0",
