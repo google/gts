@@ -2,13 +2,46 @@
 
 ## [2.0.0](https://www.github.com/google/gts/compare/v1.1.2...v2.0.0) (2020-04-02)
 
+### ⚠ BREAKING CHANGES ⚠
+This is a major rewrite of the tool.  Based on community guidance, we've switched from using [tslint](https://palantir.github.io/tslint/) to [eslint](https://eslint.org/).  *Please read all of the steps below to upgrade*.
 
-### ⚠ BREAKING CHANGES
+#### Configuring `eslint`
+With the shift to `eslint`, `gts` now will format and lint JavaScript *as well* as TypeScript. Upgrading will require a number of manual steps.  To format JavaScript and TypeScript, you can run:
 
-* prefer single quotes if possible (#475)
-* drop support for node 8 (#422)
-* add the eol-last rule (#425)
-* Switch from tslint to eslint. This will impact all lint rules, and tslint specific configuration.
+```
+$ npx gts fix
+```
+
+To specify only TypeScript:
+
+```
+$ npx gts fix '**/*.ts'
+```
+
+#### Delete `tslint.json`
+This file is no longer used, and can lead to confusion.
+
+#### Create a `.eslintrc.json`
+Now that we're using eslint, you need to extend the eslint configuration baked into the module.  Create a new file named `.eslintrc.json`, and paste the following:
+```js
+{
+  "extends": "./node_modules/gts"
+}
+```
+
+#### Create a `.eslintignore`
+The `.eslintignore` file lets you ignore specific directories.  This tool now lints and formats JavaScript, so it's _really_ important to ignore your build directory!  Here is an example of a `.eslintignore` file:
+
+```
+**/node_modules
+build/
+```
+
+#### Rule changes
+The underlying linter was changed, so naturally there are going to be a variety of rule changes along the way.  To see the full list, check out [.eslintrc.json](https://github.com/google/gts/blob/master/.eslintrc.json).
+
+#### Require Node.js 10.x and up
+Node.js 8.x is now end of life - this module now requires Ndoe.js 10.x and up.
 
 ### Features
 
