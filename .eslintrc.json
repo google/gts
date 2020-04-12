@@ -33,6 +33,19 @@
         "@typescript-eslint/no-empty-function": "off",
         "@typescript-eslint/explicit-function-return-type": "off",
         "@typescript-eslint/camelcase": "off",
+        "@typescript-eslint/naming-convention": [
+          "warn",
+          {
+            "selector": "variable",
+            "format": ["camelCase", "UPPER_CASE"],
+            "leadingUnderscore": "allow",
+            "trailingUnderscore": "allow",
+            "custom": {
+              "regex": "any|[Nn]umber|[Ss]tring|[Bb]oolean|[Uu]ndefined",
+              "match": false
+            }
+          }
+        ],
         "node/no-missing-import": "off",
         "node/no-empty-function": "off",
         "node/no-unsupported-features/es-syntax": "off",
