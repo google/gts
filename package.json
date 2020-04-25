@@ -79,7 +79,7 @@
     "js-green-licenses": "^1.1.0",
     "mocha": "^7.1.1",
     "sinon": "^9.0.2",
-    "tmp": "0.1.0",
+    "tmp": "0.2.0",
     "typescript": "^3.8.3"
   },
   "peerDependencies": {
