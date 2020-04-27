@@ -2,7 +2,7 @@
 > Google TypeScript Style
 
 [![NPM Version][npm-image]][npm-url]
-[![CircleCI][circle-image]][circle-url]
+[![GitHub Actions][github-image]][github-url]
 [![Dependency Status][david-image]][david-url]
 [![Known Vulnerabilities][snyk-image]][snyk-url]
 [![codecov][codecov-image]][codecov-url]
@@ -74,6 +74,9 @@ Show your love for `gts` and include a badge!
 [![Code Style: Google](https://img.shields.io/badge/code%20style-google-blueviolet.svg)](https://github.com/google/gts)
 ```
 
+## Supported Node.js Versions
+Our client libraries follow the [Node.js release schedule](https://nodejs.org/en/about/releases/). Libraries are compatible with all current _active_ and _maintenance_ versions of Node.js.
+
 ## License
 [Apache-2.0](LICENSE)
 
@@ -82,8 +85,8 @@ Made with ❤️ by the Google Node.js team.
 
 > ***NOTE: This is not an official Google product.***
 
-[circle-image]: https://circleci.com/gh/google/gts.svg?style=shield
-[circle-url]: https://circleci.com/gh/google/gts
+[github-image]: https://github.com/google/gts/workflows/ci/badge.svg
+[github-url]: https://github.com/google/gts/actions
 [prettier-url]: https://prettier.io/
 [codecov-image]: https://codecov.io/gh/google/gts/branch/master/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/google/gts
