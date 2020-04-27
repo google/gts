@@ -34,7 +34,7 @@
         "@typescript-eslint/explicit-function-return-type": "off",
         "@typescript-eslint/camelcase": "off",
         "@typescript-eslint/naming-convention": [
-          "warn",
+          "error",
           {
             "selector": "variable",
             "format": ["camelCase", "UPPER_CASE"],
