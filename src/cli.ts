@@ -84,6 +84,15 @@ const cli = meow({
   },
 });
 
+/**
+ * Get the current version of node.js being run.
+ * Exported purely for stubbing purposes.
+ * @private
+ */
+export function getNodeVersion() {
+  return process.version;
+}
+
 function usage(msg?: string): void {
   if (msg) {
     logger.error(msg);
@@ -91,7 +100,18 @@ function usage(msg?: string): void {
   cli.showHelp(1);
 }
 
-async function run(verb: string, files: string[]): Promise<boolean> {
+export async function run(verb: string, files: string[]): Promise<boolean> {
+  // throw if running on an old version of nodejs
+  const nodeMajorVersion = Number(getNodeVersion().slice(1).split('.')[0]);
+  console.log(`version: ${nodeMajorVersion}`);
+  if (nodeMajorVersion < 10) {
+    throw new Error(
+      `gts requires node.js 10.x or up. You are currently running
+      ${process.version}, which is not supported. Please upgrade to
+      a safe, secure version of nodejs!`
+    );
+  }
+
   const options = {
     dryRun: cli.flags.dryRun || false,
     // Paths are relative to the transpiled output files.
