@@ -39,11 +39,7 @@
             "selector": "variable",
             "format": ["camelCase", "UPPER_CASE"],
             "leadingUnderscore": "allow",
-            "trailingUnderscore": "allow",
-            "custom": {
-              "regex": "any|[Nn]umber|[Ss]tring|[Bb]oolean|[Uu]ndefined",
-              "match": false
-            }
+            "trailingUnderscore": "allow"
           }
         ],
         "node/no-missing-import": "off",
