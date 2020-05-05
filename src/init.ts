@@ -243,6 +243,19 @@ async function generatePrettierConfig(options: Options): Promise<void> {
   return generateConfigFile(options, './.prettierrc.js', style);
 }
 
+async function generateEditorConfig(options: Options): Promise<void> {
+  const config = `root = true
+
+[*]
+indent_style = space
+indent_size = 2
+end_of_line = lf
+charset = utf-8
+insert_final_newline = true
+`;
+  return generateConfigFile(options, './.editorconfig', config);
+}
+
 export async function installDefaultTemplate(
   options: Options
 ): Promise<boolean> {
@@ -309,6 +322,7 @@ export async function init(options: Options): Promise<boolean> {
   await generateTsConfig(options);
   await generateESLintConfig(options);
   await generatePrettierConfig(options);
+  await generateEditorConfig(options);
   await installDefaultTemplate(options);
 
   // Run `npm install` after initial setup so `npm run check` works right away.
