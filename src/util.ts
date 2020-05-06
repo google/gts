@@ -76,10 +76,6 @@ async function getBase(
   readFiles.add(filePath);
   try {
     const json = await customReadFilep(filePath, 'utf8');
-  } catch (err) {
-    throw new Error(`${filePath} not found`);
-  }
-  try {
     let contents = JSON.parse(json);
 
     if (contents.extends) {
@@ -95,7 +91,7 @@ async function getBase(
 
     return contents;
   } catch (err) {
-    throw new Error(`${filePath} cannot be parsed`);
+    throw new Error(`Error: ${filePath}: ${err}`);
   }
 }
 
