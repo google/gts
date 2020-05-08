@@ -1,5 +1,13 @@
 # Changelog
 
+### [2.0.1](https://www.github.com/google/gts/compare/v2.0.0...v2.0.1) (2020-05-07)
+
+
+### Bug Fixes
+
+* throw an error if running with an unsupported version of nodejs ([#493](https://www.github.com/google/gts/issues/493)) ([94fdf1e](https://www.github.com/google/gts/commit/94fdf1eaed634aa73c3e44c7a3d9f1325f773b07))
+* **deps:** update dependency meow to v7 ([#502](https://www.github.com/google/gts/issues/502)) ([cf91cda](https://www.github.com/google/gts/commit/cf91cda1afab25759427511d3c97d0037d61c649))
+
 ## [2.0.0](https://www.github.com/google/gts/compare/v1.1.2...v2.0.0) (2020-04-02)
 
 ### ⚠ BREAKING CHANGES ⚠
