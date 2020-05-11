@@ -1,5 +1,14 @@
 # Changelog
 
+### [2.0.2](https://www.github.com/google/gts/compare/v2.0.1...v2.0.2) (2020-05-11)
+
+
+### Bug Fixes
+
+* Revert 'update dependency eslint to v7'" ([#507](https://www.github.com/google/gts/issues/507)) ([0f9950b](https://www.github.com/google/gts/commit/0f9950b273329dbcce5f3cc20864c3dcd076f08c))
+* **deps:** pin release of eslint-typescript ([#508](https://www.github.com/google/gts/issues/508)) ([bd86b42](https://www.github.com/google/gts/commit/bd86b42e2bb904d3765dee82262e4691a11b9958))
+* **deps:** update dependency eslint to v7 ([#504](https://www.github.com/google/gts/issues/504)) ([6aee159](https://www.github.com/google/gts/commit/6aee1595d0486ae2c7fd68d16b1b59c4c4015753))
+
 ### [2.0.1](https://www.github.com/google/gts/compare/v2.0.0...v2.0.1) (2020-05-07)
 
 
