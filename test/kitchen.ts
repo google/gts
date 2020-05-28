@@ -60,6 +60,7 @@ describe('🚰 kitchen sink', () => {
     // Ensure config files got generated.
     fs.accessSync(path.join(kitchenPath, 'tsconfig.json'));
     fs.accessSync(path.join(kitchenPath, '.eslintrc.json'));
+    fs.accessSync(path.join(kitchenPath, '.eslintignore'));
     fs.accessSync(path.join(kitchenPath, '.prettierrc.js'));
 
     // Compilation shouldn't have happened. Hence no `build` directory.
@@ -120,6 +121,11 @@ describe('🚰 kitchen sink', () => {
     assert.ok(
       fs
         .readFileSync(path.join(kitchenPath, '.eslintrc.json'), 'utf8')
+        .endsWith('\n')
+    );
+    assert.ok(
+      fs
+        .readFileSync(path.join(kitchenPath, '.eslintignore'), 'utf8')
         .endsWith('\n')
     );
   });
