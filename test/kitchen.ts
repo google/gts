@@ -15,7 +15,7 @@ const stagingDir = tmp.dirSync({keep, unsafeCleanup: true});
 const stagingPath = stagingDir.name;
 const execOpts = {
   cwd: `${stagingPath}${path.sep}kitchen`,
-  encoding: 'utf8',
+  encoding: 'utf8' as BufferEncoding,
 };
 
 describe('🚰 kitchen sink', () => {

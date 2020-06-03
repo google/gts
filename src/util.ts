@@ -20,6 +20,7 @@ import * as rimraf from 'rimraf';
 import {promisify} from 'util';
 import * as ncp from 'ncp';
 import * as writeFileAtomic from 'write-file-atomic';
+import {PackageJson} from '@npm/types';
 
 export const readFilep = promisify(fs.readFile);
 export const rimrafp = promisify(rimraf);
@@ -36,7 +37,7 @@ export interface DefaultPackage extends Bag<string> {
   '@types/node': string;
 }
 
-export async function readJsonp(jsonPath: string) {
+export async function readJsonp(jsonPath: string): Promise<PackageJson> {
   const contents = await readFilep(jsonPath, {encoding: 'utf8'});
   return JSON.parse(contents);
 }
@@ -45,7 +46,7 @@ export interface ReadFileP {
   (path: string, encoding: string): Promise<string>;
 }
 
-export function nop() {
+export function nop(): void {
   /* empty */
 }
 
@@ -118,7 +119,7 @@ function combineTSConfig(base: ConfigFile, inherited: ConfigFile): ConfigFile {
  */
 export interface ConfigFile {
   files?: string[];
-  compilerOptions?: {};
+  compilerOptions?: unknown;
   include?: string[];
   exclude?: string[];
   extends?: string[];

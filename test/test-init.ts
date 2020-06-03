@@ -156,7 +156,7 @@ describe('init', () => {
 
   // init
   it('init should read local package.json', () => {
-    const originalContents = {some: 'property'};
+    const originalContents = {author: 'Sun Tzu'};
     return withFixtures(
       {'package.json': JSON.stringify(originalContents)},
       async () => {
@@ -170,8 +170,8 @@ describe('init', () => {
           'the file should have been modified'
         );
         assert.strictEqual(
-          contents.some,
-          originalContents.some,
+          contents.author,
+          originalContents.author,
           'unrelated property should have preserved'
         );
       }
@@ -200,7 +200,7 @@ describe('init', () => {
 
         const contents = await readJson('./package.json');
         const cmd = process.platform === 'win32' ? 'yarn.cmd' : 'yarn';
-        assert.strictEqual(contents.scripts.prepare, cmd + ' run compile');
+        assert.strictEqual(contents.scripts!.prepare, cmd + ' run compile');
       }
     );
   });

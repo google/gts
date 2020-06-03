@@ -157,7 +157,7 @@ export async function addDependencies(
   return edits;
 }
 
-function formatJson(object: {}) {
+function formatJson(object: unknown) {
   const json = JSON.stringify(object, null, '  ');
   return `${json}\n`;
 }
@@ -276,7 +276,7 @@ export async function installDefaultTemplate(
 
 export async function init(options: Options): Promise<boolean> {
   let generatedPackageJson = false;
-  let packageJson;
+  let packageJson: PackageJson;
   try {
     packageJson = await readJson('./package.json');
   } catch (err) {

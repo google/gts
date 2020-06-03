@@ -23,14 +23,15 @@ import {init} from './init';
 import {clean} from './clean';
 import {isYarnUsed} from './util';
 import * as execa from 'execa';
+import {InspectOptions} from 'util';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const packageJson = require('../../package.json');
 
 export interface Logger {
-  log: (...args: Array<{}>) => void;
-  error: (...args: Array<{}>) => void;
-  dir: (obj: {}, options?: {}) => void;
+  log: (...args: Array<unknown>) => void;
+  error: (...args: Array<unknown>) => void;
+  dir: (obj: unknown, options?: InspectOptions) => void;
 }
 
 export interface Options {
@@ -89,7 +90,7 @@ const cli = meow({
  * Exported purely for stubbing purposes.
  * @private
  */
-export function getNodeVersion() {
+export function getNodeVersion(): string {
   return process.version;
 }
 
