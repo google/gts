@@ -245,7 +245,8 @@ async function generateTsConfig(options: Options): Promise<void> {
 async function generatePrettierConfig(options: Options): Promise<void> {
   const style = `module.exports = {
   ...require('gts/.prettierrc.json')
-}`;
+}
+`;
   return generateConfigFile(options, './.prettierrc.js', style);
 }
 

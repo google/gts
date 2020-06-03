@@ -105,7 +105,7 @@ describe('🚰 kitchen sink', () => {
     }
   });
 
-  it('should terminate generated json files with newline', () => {
+  it('should terminate generated files with newline', () => {
     const GTS = path.resolve(stagingPath, gtsPath);
     spawn.sync(GTS, ['init', '-y'], execOpts);
     assert.ok(
@@ -126,6 +126,11 @@ describe('🚰 kitchen sink', () => {
     assert.ok(
       fs
         .readFileSync(path.join(kitchenPath, '.eslintignore'), 'utf8')
+        .endsWith('\n')
+    );
+    assert.ok(
+      fs
+        .readFileSync(path.join(kitchenPath, '.prettierrc.js'), 'utf8')
         .endsWith('\n')
     );
   });
