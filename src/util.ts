@@ -91,7 +91,8 @@ async function getBase(
 
     return contents;
   } catch (err) {
-    throw new Error(`${filePath} Not Found`);
+    err.message = `Error: ${filePath}\n${err.message}`;
+    throw err;
   }
 }
 
