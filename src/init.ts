@@ -181,6 +181,8 @@ export const ESLINT_CONFIG = {
   extends: './node_modules/gts/',
 };
 
+export const ESLINT_IGNORE = 'build/\n';
+
 async function generateConfigFile(
   options: Options,
   filename: string,
@@ -227,6 +229,10 @@ async function generateESLintConfig(options: Options): Promise<void> {
   );
 }
 
+async function generateESLintIgnore(options: Options): Promise<void> {
+  return generateConfigFile(options, './.eslintignore', ESLINT_IGNORE);
+}
+
 async function generateTsConfig(options: Options): Promise<void> {
   const config = formatJson({
     extends: './node_modules/gts/tsconfig-google.json',
@@ -239,7 +245,8 @@ async function generateTsConfig(options: Options): Promise<void> {
 async function generatePrettierConfig(options: Options): Promise<void> {
   const style = `module.exports = {
   ...require('gts/.prettierrc.json')
-}`;
+}
+`;
   return generateConfigFile(options, './.prettierrc.js', style);
 }
 
@@ -308,6 +315,7 @@ export async function init(options: Options): Promise<boolean> {
   }
   await generateTsConfig(options);
   await generateESLintConfig(options);
+  await generateESLintIgnore(options);
   await generatePrettierConfig(options);
   await installDefaultTemplate(options);
 
