@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.0.3](https://www.github.com/google/gts/compare/v2.0.2...v2.0.3) (2020-06-09)
+
+
+### Bug Fixes
+
+* **deps:** update typescript-eslint monorepo to v2.34.0 ([#509](https://www.github.com/google/gts/issues/509)) ([998a4ac](https://www.github.com/google/gts/commit/998a4ac9b75c97f04d8e5db37563f32d31652f23))
+
 ### [2.0.2](https://www.github.com/google/gts/compare/v2.0.1...v2.0.2) (2020-05-11)
 
 
