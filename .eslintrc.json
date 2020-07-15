@@ -49,6 +49,7 @@
         "node/no-missing-import": "off",
         "node/no-empty-function": "off",
         "node/no-unsupported-features/es-syntax": "off",
+        "@typescript-eslint/no-unused-vars": ["warn", {"argsIgnorePattern": "^_"}],
         "node/no-missing-require": "off",
         "node/shebang": "off",
         "no-dupe-class-members": "off",
