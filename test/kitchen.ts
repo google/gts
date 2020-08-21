@@ -13,7 +13,10 @@ const pkg = require('../../package.json');
 const keep = !!process.env.GTS_KEEP_TEMPDIRS;
 const stagingDir = tmp.dirSync({keep, unsafeCleanup: true});
 const stagingPath = stagingDir.name;
-const execOpts = {
+const execOpts: Pick<
+  cp.SpawnSyncOptionsWithStringEncoding,
+  'cwd' | 'encoding'
+> = {
   cwd: `${stagingPath}${path.sep}kitchen`,
   encoding: 'utf8',
 };
