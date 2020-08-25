@@ -11,6 +11,7 @@
     "CHANGELOG.md",
     "build/src",
     "build/template",
+    "build/.eslintrc.json",
     ".prettierrc.json",
     "tsconfig-google.json",
     "tsconfig.json",
