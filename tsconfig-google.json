@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
     "declaration": true,
