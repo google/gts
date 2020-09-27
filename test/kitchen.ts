@@ -2,7 +2,7 @@ import chalk = require('chalk');
 import * as cp from 'child_process';
 import * as fs from 'fs-extra';
 import * as tmp from 'tmp';
-import {assert} from 'chai';
+import * as assert from 'assert';
 import * as path from 'path';
 import {describe, it, before, after} from 'mocha';
 
@@ -145,7 +145,7 @@ describe('🚰 kitchen sink', () => {
       Object.assign({}, {reject: false}, execOpts)
     );
     assert.strictEqual(res.exitCode, 1);
-    assert.include(res.stdout, 'assigned a value but');
+    assert.ok(res.stdout.includes('assigned a value but'));
   });
 
   it('should fix', () => {

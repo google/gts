@@ -61,7 +61,6 @@
   },
   "devDependencies": {
     "@npm/types": "^1.0.1",
-    "@types/chai": "^4.2.12",
     "@types/cross-spawn": "^6.0.2",
     "@types/eslint": "^7.2.3",
     "@types/fs-extra": "^9.0.1",
@@ -76,7 +75,6 @@
     "@types/update-notifier": "^4.1.1",
     "@types/write-file-atomic": "^3.0.1",
     "c8": "^7.3.1",
-    "chai": "^4.2.0",
     "codecov": "^3.7.2",
     "cross-spawn": "^7.0.3",
     "fs-extra": "^9.0.1",
@@ -85,9 +83,9 @@
     "mocha": "^8.1.3",
     "sinon": "^9.0.3",
     "tmp": "0.2.1",
-    "typescript": "^4"
+    "typescript": "^4.0.3"
   },
   "peerDependencies": {
-    "typescript": ">=3 <=4"
+    "typescript": ">=4"
   }
 }
