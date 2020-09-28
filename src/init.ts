@@ -82,13 +82,13 @@ export async function addScripts(
   let edits = false;
   const pkgManager = getPkgManagerCommand(options.yarn);
   const scripts: Bag<string> = {
-    check: 'gts check',
+    lint: 'gts lint',
     clean: 'gts clean',
     compile: 'tsc',
     fix: 'gts fix',
     prepare: `${pkgManager} run compile`,
     pretest: `${pkgManager} run compile`,
-    posttest: `${pkgManager} run check`,
+    posttest: `${pkgManager} run lint`,
   };
 
   if (!packageJson.scripts) {
@@ -319,7 +319,7 @@ export async function init(options: Options): Promise<boolean> {
   await generatePrettierConfig(options);
   await installDefaultTemplate(options);
 
-  // Run `npm install` after initial setup so `npm run check` works right away.
+  // Run `npm install` after initial setup so `npm run lint` works right away.
   if (!options.dryRun) {
     // --ignore-scripts so that compilation doesn't happen because there's no
     // source files yet.
