@@ -101,7 +101,7 @@ describe('🚰 kitchen sink', () => {
     );
 
     // server.ts has a lint error. Should error.
-    assert.throws(() => cp.execSync(`${GTS} check src/server.ts`, opts));
+    assert.throws(() => cp.execSync(`${GTS} lint src/server.ts`, opts));
 
     if (!keep) {
       tmpDir.removeCallback();
@@ -138,10 +138,10 @@ describe('🚰 kitchen sink', () => {
     );
   });
 
-  it('should check before fix', async () => {
+  it('should lint before fix', async () => {
     const res = await execa(
       'npm',
-      ['run', 'check'],
+      ['run', 'lint'],
       Object.assign({}, {reject: false}, execOpts)
     );
     assert.strictEqual(res.exitCode, 1);
@@ -160,8 +160,8 @@ describe('🚰 kitchen sink', () => {
     assert.strictEqual(preFix[0].trim() + ';', postFix[0]); // fix should have added a semi-colon
   });
 
-  it('should check after fix', () => {
-    cp.execSync('npm run check', execOpts);
+  it('should lint after fix', () => {
+    cp.execSync('npm run lint', execOpts);
   });
 
   it('should build', () => {

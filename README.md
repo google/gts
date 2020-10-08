@@ -30,7 +30,7 @@ When you run the `npx gts init` command, it's going to do a few things for you:
 - Adds an opinionated `tsconfig.json` file to your project that uses the Google TypeScript Style.
 - Adds the necessary devDependencies to your `package.json`.
 - Adds scripts to your `package.json`:
-  - `check`: Lints and checks for formatting problems.
+  - `lint`: Lints and checks for formatting problems.
   - `fix`: Automatically fixes formatting and linting problems (if possible).
   - `clean`: Removes output files.
   - `compile`: Compiles the source code using TypeScript compiler.
@@ -41,9 +41,9 @@ When you run the `npx gts init` command, it's going to do a few things for you:
 The commands above will all run in the scope of the current folder.  Some commands can be run on individual files:
 
 ```sh
-gts check index.ts
-gts check one.ts two.ts three.ts
-gts check *.ts
+gts lint index.ts
+gts lint one.ts two.ts three.ts
+gts lint *.ts
 ```
 
 ### Working with eslint
