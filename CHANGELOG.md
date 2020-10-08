@@ -1,5 +1,31 @@
 # Changelog
 
+## [3.0.0](https://www.github.com/google/gts/compare/v2.0.2...v3.0.0) (2020-10-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* change default `check` to `lint` (#570)
+* **deps:** require TypeScript 4.x (#565)
+
+### Features
+
+* Add TypeScript v4 support ([#551](https://www.github.com/google/gts/issues/551)) ([0883956](https://www.github.com/google/gts/commit/08839565a1d2b4b39d532c9b0b596f01b18856fe))
+* change default `check` to `lint` ([#570](https://www.github.com/google/gts/issues/570)) ([c527b66](https://www.github.com/google/gts/commit/c527b66be1ef6a78ea14b3d29225a8d7fb7097bd))
+* generate .eslintignore when running init ([#521](https://www.github.com/google/gts/issues/521)) ([8bce036](https://www.github.com/google/gts/commit/8bce0368767f0c2ad7d0700deb839962bc928d16))
+
+
+### Bug Fixes
+
+* add build/.eslintrc.json to files field ([#553](https://www.github.com/google/gts/issues/553)) ([3b516ad](https://www.github.com/google/gts/commit/3b516ad5e9f0d58201dde469461db7c6ed1c1b78))
+* **deps:** require TypeScript 4.x ([#565](https://www.github.com/google/gts/issues/565)) ([cbc5267](https://www.github.com/google/gts/commit/cbc5267579ef24e8c8ceaa2ef794df3ef54ea56a))
+* **deps:** update dependency update-notifier to v5 ([#574](https://www.github.com/google/gts/issues/574)) ([9a882bf](https://www.github.com/google/gts/commit/9a882bf4ac30ad06e7b91a65ad5721d8e8b41c4b))
+* **deps:** update typescript-eslint monorepo to v2.34.0 ([#509](https://www.github.com/google/gts/issues/509)) ([998a4ac](https://www.github.com/google/gts/commit/998a4ac9b75c97f04d8e5db37563f32d31652f23))
+* **deps:** update typescript-eslint monorepo to v3 (major) ([#528](https://www.github.com/google/gts/issues/528)) ([e22e173](https://www.github.com/google/gts/commit/e22e17338db2ddb7eb829c821037c2f4e77ff869))
+* **deps:** update typescript-eslint monorepo to v4 ([#556](https://www.github.com/google/gts/issues/556)) ([54148df](https://www.github.com/google/gts/commit/54148dfbd8b5f8b36a0f44f901c5db933393a661))
+* better error message for broken tsconfig.json ([#501](https://www.github.com/google/gts/issues/501)) ([0c17a76](https://www.github.com/google/gts/commit/0c17a76c6650eee1d8abaff11a897a432eeaa65f))
+* prohibit calls for it.only and describe.only ([#499](https://www.github.com/google/gts/issues/499)) ([071c33c](https://www.github.com/google/gts/commit/071c33ceef0e3765166aaebf6ed4698167ac0f98))
+
 ### [2.0.2](https://www.github.com/google/gts/compare/v2.0.1...v2.0.2) (2020-05-11)
 
 
