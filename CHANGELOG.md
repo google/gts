@@ -1,5 +1,12 @@
 # Changelog
 
+### [3.0.1](https://www.github.com/google/gts/compare/v3.0.0...v3.0.1) (2020-10-12)
+
+
+### Bug Fixes
+
+* **rule:** turn off @typescript-eslint/no-var-requires ([#578](https://www.github.com/google/gts/issues/578)) ([3b37229](https://www.github.com/google/gts/commit/3b37229c45969a3c53af123c69bb749578ee6b0b))
+
 ## [3.0.0](https://www.github.com/google/gts/compare/v2.0.2...v3.0.0) (2020-10-08)
 
 
