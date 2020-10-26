@@ -1,5 +1,12 @@
 # Changelog
 
+### [3.0.2](https://www.github.com/google/gts/compare/v3.0.1...v3.0.2) (2020-10-26)
+
+
+### Bug Fixes
+
+* **deps:** loosen ts peer dependency ([#589](https://www.github.com/google/gts/issues/589)) ([8f1d381](https://www.github.com/google/gts/commit/8f1d381d7b166a510c42786c4a337e81b7222c84))
+
 ### [3.0.1](https://www.github.com/google/gts/compare/v3.0.0...v3.0.1) (2020-10-12)
 
 
