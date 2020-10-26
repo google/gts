@@ -44,15 +44,9 @@ const MINIMAL_PACKAGE_JSON = {name: 'name', version: 'v1.1.1'};
 function hasExpectedScripts(packageJson: PackageJson): boolean {
   return (
     !!packageJson.scripts &&
-    [
-      'check',
-      'clean',
-      'compile',
-      'fix',
-      'prepare',
-      'pretest',
-      'posttest',
-    ].every(s => !!packageJson.scripts![s])
+    ['lint', 'clean', 'compile', 'fix', 'prepare', 'pretest', 'posttest'].every(
+      s => !!packageJson.scripts![s]
+    )
   );
 }
 
@@ -84,13 +78,13 @@ describe('init', () => {
 
   it('addScripts should not edit existing scripts on no', async () => {
     const SCRIPTS = {
-      check: 'fake check',
+      lint: 'fake lint',
       clean: 'fake clean',
       compile: 'fake tsc',
       fix: 'fake fix',
       prepare: 'fake run compile',
       pretest: 'fake run compile',
-      posttest: 'fake run check',
+      posttest: 'fake run lint',
     };
     const pkg: PackageJson = {
       ...MINIMAL_PACKAGE_JSON,
@@ -103,13 +97,13 @@ describe('init', () => {
 
   it('addScripts should edit existing scripts on yes', async () => {
     const SCRIPTS = {
-      check: 'fake check',
+      lint: 'fake lint',
       clean: 'fake clean',
       compile: 'fake tsc',
       fix: 'fake fix',
       prepare: 'fake run compile',
       pretest: 'fake run compile',
-      posttest: 'fake run check',
+      posttest: 'fake run lint',
     };
     const pkg: PackageJson = {
       ...MINIMAL_PACKAGE_JSON,
