@@ -87,6 +87,6 @@
     "typescript": "^4.0.3"
   },
   "peerDependencies": {
-    "typescript": ">=4"
+    "typescript": ">=3"
   }
 }
