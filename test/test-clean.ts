@@ -63,7 +63,7 @@ describe('clean', () => {
   it('should gracefully error if tsconfig has invalid JSON', () => {
     const invalidJson = "silly bear, this isn't JSON!";
     return withFixtures({'tsconfig.json': invalidJson}, async () => {
-      assert.rejects(clean(OPTIONS), /Unable to parse/);
+      await assert.rejects(clean(OPTIONS), /Unable to parse/);
     });
   });
 
