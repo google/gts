@@ -20,6 +20,7 @@ import * as rimraf from 'rimraf';
 import {promisify} from 'util';
 import * as ncp from 'ncp';
 import * as writeFileAtomic from 'write-file-atomic';
+import * as JSON5 from 'json5';
 
 export const readFilep = promisify(fs.readFile);
 export const rimrafp = promisify(rimraf);
@@ -38,7 +39,7 @@ export interface DefaultPackage extends Bag<string> {
 
 export async function readJsonp(jsonPath: string) {
   const contents = await readFilep(jsonPath, {encoding: 'utf8'});
-  return JSON.parse(contents);
+  return JSON5.parse(contents);
 }
 
 export interface ReadFileP {
@@ -76,7 +77,14 @@ async function getBase(
   readFiles.add(filePath);
   try {
     const json = await customReadFilep(filePath, 'utf8');
-    let contents = JSON.parse(json);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let contents: any;
+    try {
+      contents = JSON5.parse(json);
+    } catch (e) {
+      e.message = `Unable to parse ${filePath}!\n${e.message}`;
+      throw e;
+    }
 
     if (contents.extends) {
       const nextFile = await getBase(
@@ -85,7 +93,6 @@ async function getBase(
         readFiles,
         path.dirname(filePath)
       );
-      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       contents = combineTSConfig(nextFile, contents);
     }
 
