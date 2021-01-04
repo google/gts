@@ -1,5 +1,12 @@
 # Changelog
 
+### [3.0.4](https://www.github.com/google/gts/compare/v3.0.3...v3.0.4) (2021-01-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency eslint-config-prettier to v7 ([#601](https://www.github.com/google/gts/issues/601)) ([6e26681](https://www.github.com/google/gts/commit/6e266812da4b90b18e2abead9b2b5a1ca0c6654b))
+
 ### [3.0.3](https://www.github.com/google/gts/compare/v3.0.2...v3.0.3) (2020-12-03)
 
 
