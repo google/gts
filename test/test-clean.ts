@@ -49,6 +49,24 @@ describe('clean', () => {
     });
   });
 
+  it('should gracefully handle JSON with comments', () => {
+    const invalidJson = `
+    {
+      // hah, comments in JSON, what a world
+      compilerOptions: {outDir: '.'}
+    }`;
+    return withFixtures({'tsconfig.json': invalidJson}, async () => {
+      await clean(OPTIONS);
+    });
+  });
+
+  it('should gracefully error if tsconfig has invalid JSON', () => {
+    const invalidJson = "silly bear, this isn't JSON!";
+    return withFixtures({'tsconfig.json': invalidJson}, async () => {
+      await assert.rejects(clean(OPTIONS), /Unable to parse/);
+    });
+  });
+
   it('should avoid deleting .', () => {
     return withFixtures(
       {'tsconfig.json': JSON.stringify({compilerOptions: {outDir: '.'}})},
