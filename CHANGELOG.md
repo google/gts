@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.1.0](https://www.github.com/google/gts/compare/v3.0.3...v3.1.0) (2021-01-11)
+
+
+### Features
+
+* support comments in JSON ([#571](https://www.github.com/google/gts/issues/571)) ([cb6d2ca](https://www.github.com/google/gts/commit/cb6d2cacb5de7bcc9c8e82dd47e14fc5bf9596a3))
+
+
+### Bug Fixes
+
+* **deps:** update dependency eslint-config-prettier to v7 ([#601](https://www.github.com/google/gts/issues/601)) ([6e26681](https://www.github.com/google/gts/commit/6e266812da4b90b18e2abead9b2b5a1ca0c6654b))
+* **deps:** upgrade to latest version of meow ([#616](https://www.github.com/google/gts/issues/616)) ([634bad9](https://www.github.com/google/gts/commit/634bad9bbbdb4d397bba101dc38ab14881172a30))
+
 ### [3.0.3](https://www.github.com/google/gts/compare/v3.0.2...v3.0.3) (2020-12-03)
 
 
