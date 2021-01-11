@@ -80,7 +80,7 @@ const cli = meow({
     help: {type: 'boolean'},
     yes: {type: 'boolean', alias: 'y'},
     no: {type: 'boolean', alias: 'n'},
-    'dry-run': {type: 'boolean'},
+    dryRun: {type: 'boolean'},
     yarn: {type: 'boolean'},
   },
 });
