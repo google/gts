@@ -116,7 +116,7 @@ build/
 ```
 
 #### Rule changes
-The underlying linter was changed, so naturally there are going to be a variety of rule changes along the way.  To see the full list, check out [.eslintrc.json](https://github.com/google/gts/blob/master/.eslintrc.json).
+The underlying linter was changed, so naturally there are going to be a variety of rule changes along the way.  To see the full list, check out [.eslintrc.json](https://github.com/google/gts/blob/main/.eslintrc.json).
 
 #### Require Node.js 10.x and up
 Node.js 8.x is now end of life - this module now requires Ndoe.js 10.x and up.
