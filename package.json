@@ -20,7 +20,6 @@
   "scripts": {
     "build": "npm run compile",
     "clean": "rimraf ./build/",
-    "codecov": "c8 report --reporter=json && codecov -f coverage/*.json",
     "compile": "tsc",
     "postcompile": "ncp template build/template",
     "lint": "eslint '**/*.ts'",
@@ -78,7 +77,6 @@
     "@types/update-notifier": "^5.0.0",
     "@types/write-file-atomic": "^3.0.1",
     "c8": "^7.3.1",
-    "codecov": "^3.7.2",
     "cross-spawn": "^7.0.3",
     "fs-extra": "^9.0.1",
     "inline-fixtures": "^1.1.0",
