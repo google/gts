@@ -4,17 +4,23 @@ const longString = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Int
 
 const trailing = 'Semicolon'
 
-			const why = 'am I tabbed?';
+			const why={am:'I tabbed?'};
 
 const iWish = "I didn't have a trailing space..."; 
 
+const sicilian = true;;
+
+const vizzini = (!!sicilian) ? !!!sicilian : sicilian;
+
+const re = /foo   bar/;
+
 export function doSomeStuff(withThis: string, andThat: string, andThose: string[]) {
     //function on one line
-    if(!andThose.length) {return false;}
+    if(!Boolean(andThose.length)) {return false;}
     console.log(withThis);
     console.log(andThat);
     console.dir(andThose);
-    console.log(longString, trailing, why, iWish);
+    console.log(longString, trailing, why, iWish, vizzini, re);
     return;
 }
 // TODO: more examples
