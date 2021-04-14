@@ -72,7 +72,7 @@
     "@types/node": "^14.11.2",
     "@types/prettier": "^2.1.1",
     "@types/rimraf": "^3.0.0",
-    "@types/sinon": "^9.0.6",
+    "@types/sinon": "^10.0.0",
     "@types/tmp": "^0.2.0",
     "@types/update-notifier": "^5.0.0",
     "@types/write-file-atomic": "^3.0.1",
