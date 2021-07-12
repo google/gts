@@ -83,7 +83,7 @@ const cli = meow({
     yes: {type: 'boolean', alias: 'y'},
     no: {type: 'boolean', alias: 'n'},
     dryRun: {type: 'boolean'},
-    binDir: {type: 'string'},
+    binPrefix: {type: 'string'},
     yarn: {type: 'boolean'},
   },
 });
