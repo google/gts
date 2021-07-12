@@ -121,6 +121,7 @@ export async function run(verb: string, files: string[]): Promise<boolean> {
     binPrefix: cli.flags.binPrefix || '.',
     // Paths are relative to the transpiled output files.
     gtsRootDir: path.resolve(__dirname, '../..'),
+    targetRootDir: process.cwd(),
     yes: cli.flags.yes || cli.flags.y || false,
     no: cli.flags.no || cli.flags.n || false,
     logger,
