@@ -50,6 +50,7 @@ jobs:
       - run: npm ci
       - run: echo "GITHUB_REPOSITORY - $GITHUB_REPOSITORY"
       - run: echo "GITHUB_ACTOR - $GITHUB_ACTOR"
+      - run: echo "GITHUB_REF - $GITHUB_REF"
       - run: npm run lint
   license_check:
     runs-on: ubuntu-latest
