@@ -2,10 +2,10 @@
 framework: mocha                  # Mention the testing framework mocha or jest
 postMerge:
     pattern:
-    - "./test/*.ts"            # Glob pattern to path where tests that should run post-merge are written
+    - "./build/test/test-*.js"            # Glob pattern to path where tests that should run post-merge are written
 preMerge:
     pattern:
-    - "./test/*.ts"       # Glob pattern to path where tests that should run pre-merge are written
+    - "./build/test/test-*.js"              # Glob pattern to path where tests that should run pre-merge are written
 preRun:
     - npm install                   # Mention pre-run steps here
 postRun:
