@@ -1,13 +1,19 @@
 ---
-framework: mocha                  # Mention the testing framework mocha or jest
-postMerge:
-    pattern:
-    - "./build/test/test-*.js"            # Glob pattern to path where tests that should run post-merge are written
+framework: mocha
+licenseTier: xsmall
+postMerge: 
+  pattern: 
+    - "./build/test/test-*.js"
+  strategy: 
+    threshold: <5|100s|30m|6h>
+    type: <commit|time>
 preMerge:
-    pattern:
-    - "./build/test/test-*.js"              # Glob pattern to path where tests that should run pre-merge are written
+  pattern:
+    - "./build/test/test-*.js"
 preRun:
-    - npm install                   # Mention pre-run steps here
+     command:
+        - npm install
 postRun:
-    - node --version                # Mention post-run steps here
-version: 2.0
+     command:
+        - node --version
+version: 2.1
