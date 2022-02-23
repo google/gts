@@ -1,19 +1,15 @@
 ---
 framework: mocha
-licenseTier: xsmall
-postMerge: 
-  pattern: 
-    - "./build/test/test-*.js"
-  strategy: 
-    threshold: <5|100s|30m|6h>
-    type: <commit|time>
-preMerge:
-  pattern:
-    - "./build/test/test-*.js"
 preRun:
      command:
         - npm install
+preMerge:
+  pattern:
+    - "./build/test/test-*.js"
+postMerge: 
+  pattern: 
+    - "./build/test/test-*.js"
 postRun:
      command:
         - node --version
-version: 2.1
+version: 1.0
