@@ -192,10 +192,13 @@ async function generateConfigFile(
   try {
     existing = await read(filename, 'utf8');
   } catch (err) {
+    // @ts-expect-error Error.code not in current definitions
     if (err.code === 'ENOENT') {
       /* not found, create it. */
     } else {
-      throw new Error(`Unknown error reading ${filename}: ${err.message}`);
+      throw new Error(
+        `Unknown error reading ${filename}: ${(err as Error).message}`
+      );
     }
   }
 
@@ -260,6 +263,7 @@ export async function installDefaultTemplate(
   try {
     fs.mkdirSync(targetDirName);
   } catch (error) {
+    // @ts-expect-error Error.code not in current definitions
     if (error.code !== 'EEXIST') {
       throw error;
     }
@@ -287,8 +291,11 @@ export async function init(options: Options): Promise<boolean> {
   try {
     packageJson = await readJson('./package.json');
   } catch (err) {
+    // @ts-expect-error Error.code not in current definitions
     if (err.code !== 'ENOENT') {
-      throw new Error(`Unable to open package.json file: ${err.message}`);
+      throw new Error(
+        `Unable to open package.json file: ${(err as Error).message}`
+      );
     }
     const generate = await query(
       `${chalk.bold('package.json')} does not exist.`,
