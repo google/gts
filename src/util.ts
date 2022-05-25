@@ -82,7 +82,9 @@ async function getBase(
     try {
       contents = JSON5.parse(json);
     } catch (e) {
-      (e as Error).message = `Unable to parse ${filePath}!\n${(e as Error).message}`;
+      (e as Error).message = `Unable to parse ${filePath}!\n${
+        (e as Error).message
+      }`;
       throw e;
     }
 
