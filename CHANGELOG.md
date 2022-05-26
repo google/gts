@@ -1,5 +1,16 @@
 # Changelog
 
+### [3.1.1](https://github.com/google/gts/compare/v3.1.0...v3.1.1) (2022-05-26)
+
+
+### Bug Fixes
+
+* **deps:** update dependency eslint-config-prettier to v8 ([#624](https://github.com/google/gts/issues/624)) ([23a4abb](https://github.com/google/gts/commit/23a4abb50a539a93a7d1043669b2e42a887415fa))
+* **deps:** update dependency eslint-plugin-prettier to v4 ([#657](https://github.com/google/gts/issues/657)) ([5408bfe](https://github.com/google/gts/commit/5408bfeda4eb9cc22fb948442cda4fb6da631ed7))
+* **deps:** update dependency prettier to ~2.5.0 ([#660](https://github.com/google/gts/issues/660)) ([8789fd4](https://github.com/google/gts/commit/8789fd42388aead5cb572a543ae218563b21ac94))
+* **deps:** update dependency prettier to ~2.6.0 ([#670](https://github.com/google/gts/issues/670)) ([2feba2c](https://github.com/google/gts/commit/2feba2cdf8884420349256420c8b5ccc9cb858c8))
+* pin prettier to 2.3.x ([#641](https://github.com/google/gts/issues/641)) ([323fb4a](https://github.com/google/gts/commit/323fb4acacc9bfc1fcba06b27135a77acc54b15a))
+
 ## [3.1.0](https://www.github.com/google/gts/compare/v3.0.3...v3.1.0) (2021-01-11)
 
 
