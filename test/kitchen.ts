@@ -48,7 +48,6 @@ describe('🚰 kitchen sink', () => {
     const args = [
       '-p',
       path.resolve(stagingPath, 'gts.tgz'),
-      '--ignore-existing',
       'gts',
       'init',
       // It's important to use `-n` here because we don't want to overwrite
