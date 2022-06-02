@@ -191,7 +191,8 @@ async function generateConfigFile(
   let existing;
   try {
     existing = await read(filename, 'utf8');
-  } catch (err) {
+  } catch (e) {
+    const err = e as Error & {code?: string};
     if (err.code === 'ENOENT') {
       /* not found, create it. */
     } else {
@@ -259,9 +260,10 @@ export async function installDefaultTemplate(
 
   try {
     fs.mkdirSync(targetDirName);
-  } catch (error) {
-    if (error.code !== 'EEXIST') {
-      throw error;
+  } catch (e) {
+    const err = e as Error & {code?: string};
+    if (err.code !== 'EEXIST') {
+      throw err;
     }
     // Else, continue and populate files into the existing directory.
   }
@@ -286,7 +288,8 @@ export async function init(options: Options): Promise<boolean> {
   let packageJson;
   try {
     packageJson = await readJson('./package.json');
-  } catch (err) {
+  } catch (e) {
+    const err = e as Error & {code?: string};
     if (err.code !== 'ENOENT') {
       throw new Error(`Unable to open package.json file: ${err.message}`);
     }
