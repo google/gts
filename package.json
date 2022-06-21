@@ -65,7 +65,7 @@
     "@types/cross-spawn": "^6.0.2",
     "@types/eslint": "^8.0.0",
     "@types/fs-extra": "^9.0.1",
-    "@types/inquirer": "^7.3.1",
+    "@types/inquirer": "^8.0.0",
     "@types/json5": "0.0.30",
     "@types/mocha": "^9.0.0",
     "@types/ncp": "^2.0.4",
