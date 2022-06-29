@@ -13,12 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as cp from 'child_process';
-import * as fs from 'fs';
-import * as inquirer from 'inquirer';
-import * as path from 'path';
-import {ncp} from 'ncp';
-import * as util from 'util';
+import cp from 'child_process';
+import fs from 'fs';
+import inquirer from 'inquirer';
+import path from 'path';
+import ncp from 'ncp';
+import util from 'util';
+import {PackageJson} from '@npm/types';
+import chalk from 'chalk';
+import url from 'url';
 
 import {
   getPkgManagerCommand,
@@ -27,14 +30,14 @@ import {
   writeFileAtomicp as write,
   Bag,
   DefaultPackage,
-} from './util';
+} from './util.js';
+import {Options} from './cli.js';
 
-import {Options} from './cli';
-import {PackageJson} from '@npm/types';
-import chalk = require('chalk');
+const pkg = JSON.parse(
+  fs.readFileSync(new URL('../../package.json', import.meta.url), 'utf-8')
+);
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const pkg = require('../../package.json');
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 const ncpp = util.promisify(ncp);
 

@@ -16,16 +16,22 @@
  * limitations under the License.
  */
 
-import * as path from 'path';
-import * as meow from 'meow';
-import * as updateNotifier from 'update-notifier';
-import {init} from './init';
-import {clean} from './clean';
-import {isYarnUsed} from './util';
-import * as execa from 'execa';
+import path from 'path';
+import meow from 'meow';
+import updateNotifier from 'update-notifier';
+import execa from 'execa';
+import url from 'url';
+import fs from 'fs';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const packageJson = require('../../package.json');
+import {init} from './init.js';
+import {clean} from './clean.js';
+import {isYarnUsed} from './util.js';
+
+const packageJson = JSON.parse(
+  fs.readFileSync(new URL('../../package.json', import.meta.url), 'utf-8')
+);
+
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 export interface Logger {
   log: (...args: Array<{}>) => void;

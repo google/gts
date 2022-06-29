@@ -22,7 +22,7 @@ import {
   getTSConfig,
   isYarnUsed,
   getPkgManagerCommand,
-} from '../src/util';
+} from '../src/util.js';
 
 /**
  * Creates a fake promisified readFile function from a map

@@ -14,19 +14,22 @@
  * limitations under the License.
  */
 
-import * as sinon from 'sinon';
-import * as cp from 'child_process';
-import * as assert from 'assert';
-import * as fs from 'fs';
-import * as path from 'path';
+import sinon from 'sinon';
+import cp from 'child_process';
+import assert from 'assert';
+import fs from 'fs';
+import path from 'path';
 import {accessSync} from 'fs';
+import url from 'url';
 import {PackageJson} from '@npm/types';
 import {withFixtures, Fixtures} from 'inline-fixtures';
 import {describe, it, beforeEach, afterEach} from 'mocha';
 
-import {nop, readJsonp as readJson, DefaultPackage} from '../src/util';
-import {Options} from '../src/cli';
-import * as init from '../src/init';
+import {nop, readJsonp as readJson, DefaultPackage} from '../src/util.js';
+import {Options} from '../src/cli.js';
+import * as init from '../src/init.js';
+
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 const OPTIONS: Options = {
   gtsRootDir: path.resolve(__dirname, '../..'),

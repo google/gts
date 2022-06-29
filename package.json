@@ -3,10 +3,11 @@
   "version": "3.1.0",
   "description": "Google TypeScript Style",
   "repository": "google/gts",
-  "main": "build/src/index.js",
+  "exports": "./build/src/index.js",
   "bin": {
-    "gts": "build/src/cli.js"
+    "gts": "./build/src/cli.js"
   },
+  "type": "module",
   "files": [
     "CHANGELOG.md",
     "build/src",

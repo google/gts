@@ -17,12 +17,14 @@
 import * as assert from 'assert';
 import * as fs from 'fs';
 import * as path from 'path';
-
-import {clean} from '../src/clean';
-import {nop} from '../src/util';
-
+import url from 'url';
 import {withFixtures} from 'inline-fixtures';
 import {describe, it} from 'mocha';
+
+import {clean} from '../src/clean.js';
+import {nop} from '../src/util.js';
+
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 describe('clean', () => {
   const OPTIONS = {

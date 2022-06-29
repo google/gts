@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import chalk = require('chalk');
-import * as ts from 'typescript';
+import chalk from 'chalk';
+import ts from 'typescript';
 
-import {Options} from './cli';
-import {getTSConfig, rimrafp} from './util';
+import {Options} from './cli.js';
+import {getTSConfig, rimrafp} from './util.js';
 
 interface TSConfig {
   compilerOptions: ts.CompilerOptions;

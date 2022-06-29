@@ -1,15 +1,21 @@
-import chalk = require('chalk');
-import * as cp from 'child_process';
-import * as fs from 'fs-extra';
-import * as tmp from 'tmp';
-import * as assert from 'assert';
-import * as path from 'path';
+import chalk from 'chalk';
+import cp from 'child_process';
+import fse from 'fs-extra';
+import fs from 'fs';
+import tmp from 'tmp';
+import assert from 'assert';
+import url from 'url';
+import path from 'path';
 import {describe, it, before, after} from 'mocha';
 
-import spawn = require('cross-spawn');
-import execa = require('execa');
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const pkg = require('../../package.json');
+import spawn from 'cross-spawn';
+import execa from 'execa';
+
+const pkg = JSON.parse(
+  fs.readFileSync(new URL('../../package.json', import.meta.url), 'utf-8')
+);
+const __filename = url.fileURLToPath(import.meta.url);
+
 const keep = !!process.env.GTS_KEEP_TEMPDIRS;
 const stagingDir = tmp.dirSync({keep, unsafeCleanup: true});
 const stagingPath = stagingDir.name;
@@ -31,8 +37,8 @@ describe('🚰 kitchen sink', () => {
     fs.renameSync(tarball, 'gts.tgz');
     const targetPath = path.resolve(stagingPath, 'gts.tgz');
     console.log('moving packed tar to ', targetPath);
-    fs.moveSync('gts.tgz', targetPath);
-    fs.copySync(fixturesPath, path.join(stagingPath, path.sep));
+    fse.moveSync('gts.tgz', targetPath);
+    fse.copySync(fixturesPath, path.join(stagingPath, path.sep));
   });
   // CLEAN UP - remove the staging directory when done.
   after('cleanup staging', () => {
@@ -76,9 +82,9 @@ describe('🚰 kitchen sink', () => {
     const opts = {cwd: path.join(tmpDir.name, 'kitchen')};
 
     // Copy test files.
-    fs.copySync(fixturesPath, tmpDir.name);
+    fse.copySync(fixturesPath, tmpDir.name);
     // Test package.json expects a gts tarball from ../gts.tgz.
-    fs.copySync(
+    fse.copySync(
       path.join(stagingPath, 'gts.tgz'),
       path.join(tmpDir.name, 'gts.tgz')
     );
