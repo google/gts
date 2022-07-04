@@ -191,7 +191,8 @@ async function generateConfigFile(
   let existing;
   try {
     existing = await read(filename, 'utf8');
-  } catch (err) {
+  } catch (e) {
+    const err = e as Error & {code?: string};
     if (err.code === 'ENOENT') {
       /* not found, create it. */
     } else {
@@ -250,6 +251,19 @@ async function generatePrettierConfig(options: Options): Promise<void> {
   return generateConfigFile(options, './.prettierrc.js', style);
 }
 
+async function generateEditorConfig(options: Options): Promise<void> {
+  const config = `root = true
+
+[*]
+indent_style = space
+indent_size = 2
+end_of_line = lf
+charset = utf-8
+insert_final_newline = true
+`;
+  return generateConfigFile(options, './.editorconfig', config);
+}
+
 export async function installDefaultTemplate(
   options: Options
 ): Promise<boolean> {
@@ -259,9 +273,10 @@ export async function installDefaultTemplate(
 
   try {
     fs.mkdirSync(targetDirName);
-  } catch (error) {
-    if (error.code !== 'EEXIST') {
-      throw error;
+  } catch (e) {
+    const err = e as Error & {code?: string};
+    if (err.code !== 'EEXIST') {
+      throw err;
     }
     // Else, continue and populate files into the existing directory.
   }
@@ -286,7 +301,8 @@ export async function init(options: Options): Promise<boolean> {
   let packageJson;
   try {
     packageJson = await readJson('./package.json');
-  } catch (err) {
+  } catch (e) {
+    const err = e as Error & {code?: string};
     if (err.code !== 'ENOENT') {
       throw new Error(`Unable to open package.json file: ${err.message}`);
     }
@@ -317,6 +333,7 @@ export async function init(options: Options): Promise<boolean> {
   await generateESLintConfig(options);
   await generateESLintIgnore(options);
   await generatePrettierConfig(options);
+  await generateEditorConfig(options);
   await installDefaultTemplate(options);
 
   // Run `npm install` after initial setup so `npm run lint` works right away.
