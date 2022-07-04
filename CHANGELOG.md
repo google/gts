@@ -1,5 +1,35 @@
 # Changelog
 
+## [4.0.0](https://github.com/google/gts/compare/v3.1.0...v4.0.0) (2022-07-04)
+
+
+### ⚠ BREAKING CHANGES
+
+* drop support for node.js 10.x (#686)
+
+### Features
+
+* generate .editorconfig ([#500](https://github.com/google/gts/issues/500)) ([81397e0](https://github.com/google/gts/commit/81397e0fd9a7f141c00b52f47c3c5d9a921292ad))
+
+
+### Bug Fixes
+
+* **deps:** update dependency eslint-config-prettier to v8 ([#624](https://github.com/google/gts/issues/624)) ([23a4abb](https://github.com/google/gts/commit/23a4abb50a539a93a7d1043669b2e42a887415fa))
+* **deps:** update dependency eslint-plugin-prettier to v4 ([#657](https://github.com/google/gts/issues/657)) ([5408bfe](https://github.com/google/gts/commit/5408bfeda4eb9cc22fb948442cda4fb6da631ed7))
+* **deps:** update dependency prettier to ~2.5.0 ([#660](https://github.com/google/gts/issues/660)) ([8789fd4](https://github.com/google/gts/commit/8789fd42388aead5cb572a543ae218563b21ac94))
+* **deps:** update dependency prettier to ~2.6.0 ([#670](https://github.com/google/gts/issues/670)) ([2feba2c](https://github.com/google/gts/commit/2feba2cdf8884420349256420c8b5ccc9cb858c8))
+* **deps:** update dependency prettier to ~2.7.0 ([#696](https://github.com/google/gts/issues/696)) ([3c677fd](https://github.com/google/gts/commit/3c677fdbad4772aea0be25c1cdd8149a88b0d735))
+* **deps:** update dependency write-file-atomic to v4 ([#687](https://github.com/google/gts/issues/687)) ([f16a3e1](https://github.com/google/gts/commit/f16a3e1a1101bc5dab90ac3ab1437dd7758adf4e))
+* **deps:** update typescript-eslint monorepo to v5 ([#688](https://github.com/google/gts/issues/688)) ([ed2fd0c](https://github.com/google/gts/commit/ed2fd0ce1be4826239b97bc1c8fdae5c61c50e62))
+* **deps:** upgrade to eslint 8.x ([#693](https://github.com/google/gts/issues/693)) ([7ae5c8b](https://github.com/google/gts/commit/7ae5c8b827abb41844ba6f533821bf3d0a7f302b))
+* drop update notifier ([#706](https://github.com/google/gts/issues/706)) ([cab7704](https://github.com/google/gts/commit/cab7704389c2ba7e8e426da08397af47991d8596))
+* pin prettier to 2.3.x ([#641](https://github.com/google/gts/issues/641)) ([323fb4a](https://github.com/google/gts/commit/323fb4acacc9bfc1fcba06b27135a77acc54b15a))
+
+
+### Build System
+
+* drop support for node.js 10.x ([#686](https://github.com/google/gts/issues/686)) ([12cd913](https://github.com/google/gts/commit/12cd913b6e9eb97e52b1cf3a275aadfa4517fdcb))
+
 ## [3.1.0](https://www.github.com/google/gts/compare/v3.0.3...v3.1.0) (2021-01-11)
 
 
