@@ -18,14 +18,10 @@
 
 import * as path from 'path';
 import * as meow from 'meow';
-import * as updateNotifier from 'update-notifier';
 import {init} from './init';
 import {clean} from './clean';
 import {isYarnUsed} from './util';
 import * as execa from 'execa';
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const packageJson = require('../../package.json');
 
 export interface Logger {
   log: (...args: Array<{}>) => void;
@@ -80,7 +76,7 @@ const cli = meow({
     help: {type: 'boolean'},
     yes: {type: 'boolean', alias: 'y'},
     no: {type: 'boolean', alias: 'n'},
-    'dry-run': {type: 'boolean'},
+    dryRun: {type: 'boolean'},
     yarn: {type: 'boolean'},
   },
 });
@@ -176,8 +172,6 @@ export async function run(verb: string, files: string[]): Promise<boolean> {
       return false;
   }
 }
-
-updateNotifier({pkg: packageJson}).notify();
 
 if (cli.input.length < 1) {
   usage();

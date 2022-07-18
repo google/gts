@@ -20,6 +20,7 @@ import * as rimraf from 'rimraf';
 import {promisify} from 'util';
 import * as ncp from 'ncp';
 import * as writeFileAtomic from 'write-file-atomic';
+import * as JSON5 from 'json5';
 
 export const readFilep = promisify(fs.readFile);
 export const rimrafp = promisify(rimraf);
@@ -38,7 +39,7 @@ export interface DefaultPackage extends Bag<string> {
 
 export async function readJsonp(jsonPath: string) {
   const contents = await readFilep(jsonPath, {encoding: 'utf8'});
-  return JSON.parse(contents);
+  return JSON5.parse(contents);
 }
 
 export interface ReadFileP {
@@ -76,7 +77,15 @@ async function getBase(
   readFiles.add(filePath);
   try {
     const json = await customReadFilep(filePath, 'utf8');
-    let contents = JSON.parse(json);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let contents: any;
+    try {
+      contents = JSON5.parse(json);
+    } catch (e) {
+      const err = e as Error;
+      err.message = `Unable to parse ${filePath}!\n${err.message}`;
+      throw err;
+    }
 
     if (contents.extends) {
       const nextFile = await getBase(
@@ -85,12 +94,12 @@ async function getBase(
         readFiles,
         path.dirname(filePath)
       );
-      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       contents = combineTSConfig(nextFile, contents);
     }
 
     return contents;
-  } catch (err) {
+  } catch (e) {
+    const err = e as Error;
     err.message = `Error: ${filePath}\n${err.message}`;
     throw err;
   }
@@ -106,9 +115,9 @@ function combineTSConfig(base: ConfigFile, inherited: ConfigFile): ConfigFile {
 
   Object.assign(result, base, inherited);
   Object.assign(
-    result.compilerOptions,
-    base.compilerOptions,
-    inherited.compilerOptions
+    result.compilerOptions!,
+    base.compilerOptions!,
+    inherited.compilerOptions!
   );
   delete result.extends;
   return result;
@@ -154,7 +163,7 @@ export async function getTSConfig(
   rootDir: string,
   customReadFilep?: ReadFileP
 ): Promise<ConfigFile> {
-  customReadFilep = customReadFilep || readFilep;
+  customReadFilep = (customReadFilep || readFilep) as ReadFileP;
   const readArr = new Set<string>();
   return getBase('tsconfig.json', customReadFilep, readArr, rootDir);
 }

@@ -1,6 +1,6 @@
 {
   "name": "gts",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "description": "Google TypeScript Style",
   "repository": "google/gts",
   "main": "build/src/index.js",
@@ -20,7 +20,6 @@
   "scripts": {
     "build": "npm run compile",
     "clean": "rimraf ./build/",
-    "codecov": "c8 report --reporter=json && codecov -f coverage/*.json",
     "compile": "tsc",
     "postcompile": "ncp template build/template",
     "lint": "eslint '**/*.ts'",
@@ -33,7 +32,7 @@
     "fix": "eslint --fix '**/*.ts'"
   },
   "engines": {
-    "node": ">=10"
+    "node": ">=12"
   },
   "keywords": [
     "typescript",
@@ -44,49 +43,48 @@
   "author": "Google Inc.",
   "license": "Apache-2.0",
   "dependencies": {
-    "@typescript-eslint/eslint-plugin": "^4.2.0",
-    "@typescript-eslint/parser": "^4.2.0",
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@typescript-eslint/parser": "^5.0.0",
     "chalk": "^4.1.0",
-    "eslint": "^7.10.0",
-    "eslint-config-prettier": "^6.12.0",
+    "eslint": "^8.0.0",
+    "eslint-config-prettier": "^8.0.0",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^3.1.4",
-    "execa": "^4.0.3",
+    "eslint-plugin-prettier": "^4.0.0",
+    "execa": "^5.0.0",
     "inquirer": "^7.3.3",
-    "meow": "^7.1.1",
+    "meow": "^9.0.0",
+    "json5": "^2.1.3",
     "ncp": "^2.0.0",
-    "prettier": "^2.1.2",
+    "prettier": "~2.7.0",
     "rimraf": "^3.0.2",
-    "update-notifier": "^5.0.0",
-    "write-file-atomic": "^3.0.3"
+    "write-file-atomic": "^4.0.0"
   },
   "devDependencies": {
     "@npm/types": "^1.0.1",
     "@types/cross-spawn": "^6.0.2",
-    "@types/eslint": "^7.2.3",
+    "@types/eslint": "^8.0.0",
     "@types/fs-extra": "^9.0.1",
-    "@types/inquirer": "^7.3.1",
-    "@types/mocha": "^8.0.3",
+    "@types/inquirer": "^8.0.0",
+    "@types/json5": "0.0.30",
+    "@types/mocha": "^9.0.0",
     "@types/ncp": "^2.0.4",
-    "@types/node": "^14.11.2",
+    "@types/node": "^16.0.0",
     "@types/prettier": "^2.1.1",
     "@types/rimraf": "^3.0.0",
-    "@types/sinon": "^9.0.6",
+    "@types/sinon": "^10.0.0",
     "@types/tmp": "^0.2.0",
-    "@types/update-notifier": "^5.0.0",
-    "@types/write-file-atomic": "^3.0.1",
+    "@types/write-file-atomic": "^4.0.0",
     "c8": "^7.3.1",
-    "codecov": "^3.7.2",
     "cross-spawn": "^7.0.3",
     "fs-extra": "^9.0.1",
     "inline-fixtures": "^1.1.0",
-    "js-green-licenses": "^2.0.1",
-    "mocha": "^8.1.3",
-    "sinon": "^9.0.3",
+    "js-green-licenses": "^3.0.1",
+    "mocha": "^10.0.0",
+    "sinon": "^14.0.0",
     "tmp": "0.2.1",
-    "typescript": "^4.0.3"
+    "typescript": "~4.7.0"
   },
   "peerDependencies": {
-    "typescript": ">=4"
+    "typescript": ">=3"
   }
 }

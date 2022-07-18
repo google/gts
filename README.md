@@ -88,7 +88,7 @@ Made with ❤️ by the Google Node.js team.
 [github-image]: https://github.com/google/gts/workflows/ci/badge.svg
 [github-url]: https://github.com/google/gts/actions
 [prettier-url]: https://prettier.io/
-[codecov-image]: https://codecov.io/gh/google/gts/branch/master/graph/badge.svg
+[codecov-image]: https://codecov.io/gh/google/gts/branch/main/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/google/gts
 [david-image]: https://david-dm.org/google/gts.svg
 [david-url]: https://david-dm.org/google/gts
