@@ -3,7 +3,6 @@
 
 [![NPM Version][npm-image]][npm-url]
 [![GitHub Actions][github-image]][github-url]
-[![Dependency Status][david-image]][david-url]
 [![Known Vulnerabilities][snyk-image]][snyk-url]
 [![codecov][codecov-image]][codecov-url]
 [![TypeScript Style Guide][gts-image]][gts-url]
@@ -90,8 +89,6 @@ Made with ❤️ by the Google Node.js team.
 [prettier-url]: https://prettier.io/
 [codecov-image]: https://codecov.io/gh/google/gts/branch/main/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/google/gts
-[david-image]: https://david-dm.org/google/gts.svg
-[david-url]: https://david-dm.org/google/gts
 [gts-image]: https://img.shields.io/badge/code%20style-google-blueviolet.svg
 [gts-url]: https://github.com/google/gts
 [npm-image]: https://img.shields.io/npm/v/gts.svg
