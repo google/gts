@@ -29,7 +29,8 @@
     "pretest": "npm run compile",
     "presystem-test": "npm run compile",
     "license-check": "jsgl --local .",
-    "fix": "eslint --fix '**/*.ts'"
+    "fix": "eslint --fix '**/*.ts'",
+    "coverage": "c8 report --reporter=json"
   },
   "engines": {
     "node": ">=12"

@@ -18,8 +18,8 @@ jobs:
       - run: node --version
       - run: npm ci
       - run: npm test
-      - name: coverage
-        uses: codecov/codecov-action@v3
+      - run: npm run coverage
+      - uses: codecov/codecov-action@v3
         with:
           name: actions ${{ matrix.node }}
   windows:
