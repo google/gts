@@ -57,7 +57,7 @@
     "ncp": "^2.0.0",
     "prettier": "~2.7.0",
     "rimraf": "^3.0.2",
-    "write-file-atomic": "^4.0.0"
+    "write-file-atomic": "^5.0.0"
   },
   "devDependencies": {
     "@npm/types": "^1.0.1",
