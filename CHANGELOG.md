@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.0.1](https://github.com/google/gts/compare/v4.0.0...v4.0.1) (2023-01-09)
+
+
+### Bug Fixes
+
+* **deps:** bump json5 from 2.2.1 to 2.2.2 addressing CVE-2022-46175 ([2a1fd61](https://github.com/google/gts/commit/2a1fd614620f0dc26cc6f12c3b05a3088409b923))
+
 ## [4.0.0](https://github.com/google/gts/compare/v3.1.0...v4.0.0) (2022-07-04)
 
 
