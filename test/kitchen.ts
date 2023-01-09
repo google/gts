@@ -62,9 +62,11 @@ describe('🚰 kitchen sink', () => {
     fs.accessSync(path.join(kitchenPath, '.eslintignore'));
     fs.accessSync(path.join(kitchenPath, '.prettierrc.js'));
     fs.accessSync(path.join(kitchenPath, '.editorconfig'));
+    console.log('ensured config files existed');
 
     // Compilation shouldn't have happened. Hence no `build` directory.
     const dirContents = fs.readdirSync(kitchenPath);
+    console.log(`read dirContents length = ${dirContents.length}`);
     assert.strictEqual(dirContents.indexOf('build'), -1);
   });
 

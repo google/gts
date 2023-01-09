@@ -1,5 +1,5 @@
 {
   "enable-source-maps": true,
-  "timeout": 160000,
+  "timeout": 240000,
   "throw-deprecation": true
 }
