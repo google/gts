@@ -50,7 +50,7 @@
     "eslint-config-prettier": "^8.0.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.0.0",
-    "execa": "^5.0.0",
+    "execa": "^7.0.0",
     "inquirer": "^7.3.3",
     "meow": "^9.0.0",
     "json5": "^2.1.3",
