@@ -48,7 +48,7 @@
     "chalk": "^4.1.0",
     "eslint": "^8.0.0",
     "eslint-config-prettier": "^8.0.0",
-    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-n": "^15.7.0",
     "eslint-plugin-prettier": "^4.0.0",
     "execa": "^5.0.0",
     "inquirer": "^7.3.3",
