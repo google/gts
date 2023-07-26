@@ -1,5 +1,22 @@
 # Changelog
 
+## [5.0.0](https://github.com/google/gts/compare/v4.0.1...v5.0.0) (2023-07-26)
+
+
+### ⚠ BREAKING CHANGES
+
+* Upgrade to node 14 as the minimum version ([#771](https://github.com/google/gts/issues/771))
+
+### Bug Fixes
+
+* **deps:** update dependency prettier to ~2.8.0 ([#743](https://github.com/google/gts/issues/743)) ([7582516](https://github.com/google/gts/commit/75825165ea32bb9bcd5013223d5e5dff2efa731c))
+* update eslint-prettier ([43d4a06](https://github.com/google/gts/commit/43d4a06a27565b7d3839432c6f8267d254f6a002))
+
+
+### Miscellaneous Chores
+
+* Upgrade to node 14 as the minimum version ([#771](https://github.com/google/gts/issues/771)) ([6301178](https://github.com/google/gts/commit/6301178c859361ddf8dfd678f94fc80ad5b7e38f))
+
 ## [4.0.1](https://github.com/google/gts/compare/v4.0.0...v4.0.1) (2023-01-09)
 
 
