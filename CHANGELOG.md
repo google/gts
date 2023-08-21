@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.0.1](https://github.com/google/gts/compare/v5.0.0...v5.0.1) (2023-08-21)
+
+
+### Bug Fixes
+
+* line up linting with owlbot post-processing linting ([#778](https://github.com/google/gts/issues/778)) ([a731fe9](https://github.com/google/gts/commit/a731fe9aef6d0003fe229627522ab8250a9222d9))
+
 ## [5.0.0](https://github.com/google/gts/compare/v4.0.1...v5.0.0) (2023-07-26)
 
 
