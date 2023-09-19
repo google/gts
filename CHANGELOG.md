@@ -1,5 +1,36 @@
 # Changelog
 
+## [5.0.1](https://github.com/google/gts/compare/v5.0.0...v5.0.1) (2023-08-21)
+
+
+### Bug Fixes
+
+* line up linting with owlbot post-processing linting ([#778](https://github.com/google/gts/issues/778)) ([a731fe9](https://github.com/google/gts/commit/a731fe9aef6d0003fe229627522ab8250a9222d9))
+
+## [5.0.0](https://github.com/google/gts/compare/v4.0.1...v5.0.0) (2023-07-26)
+
+
+### ⚠ BREAKING CHANGES
+
+* Upgrade to node 14 as the minimum version ([#771](https://github.com/google/gts/issues/771))
+
+### Bug Fixes
+
+* **deps:** update dependency prettier to ~2.8.0 ([#743](https://github.com/google/gts/issues/743)) ([7582516](https://github.com/google/gts/commit/75825165ea32bb9bcd5013223d5e5dff2efa731c))
+* update eslint-prettier ([43d4a06](https://github.com/google/gts/commit/43d4a06a27565b7d3839432c6f8267d254f6a002))
+
+
+### Miscellaneous Chores
+
+* Upgrade to node 14 as the minimum version ([#771](https://github.com/google/gts/issues/771)) ([6301178](https://github.com/google/gts/commit/6301178c859361ddf8dfd678f94fc80ad5b7e38f))
+
+## [4.0.1](https://github.com/google/gts/compare/v4.0.0...v4.0.1) (2023-01-09)
+
+
+### Bug Fixes
+
+* **deps:** bump json5 from 2.2.1 to 2.2.2 addressing CVE-2022-46175 ([2a1fd61](https://github.com/google/gts/commit/2a1fd614620f0dc26cc6f12c3b05a3088409b923))
+
 ## [4.0.0](https://github.com/google/gts/compare/v3.1.0...v4.0.0) (2022-07-04)
 
 

@@ -38,6 +38,7 @@
         "plugin:@typescript-eslint/recommended"
       ],
       "rules": {
+        "@typescript-eslint/no-floating-promises": "warn",
         "@typescript-eslint/no-non-null-assertion": "off",
         "@typescript-eslint/no-use-before-define": "off",
         "@typescript-eslint/no-warning-comments": "off",
@@ -57,6 +58,7 @@
       },
       "parserOptions": {
         "ecmaVersion": 2018,
+        "project": "./tsconfig.json",
         "sourceType": "module"
       }
     }
