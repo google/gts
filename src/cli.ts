@@ -31,6 +31,7 @@ export interface Logger {
 
 export interface Options {
   dryRun: boolean;
+  binPrefix: string;
   gtsRootDir: string;
   targetRootDir: string;
   yes: boolean;
@@ -65,6 +66,7 @@ const cli = meow({
     -n, --no      Assume a no answer for every prompt.
     --dry-run     Don't make any actual changes.
     --yarn        Use yarn instead of npm.
+    --bin-prefix  Directory containing node_modules. Used for running eslint.
 
 	Examples
     $ gts init -y
@@ -77,6 +79,7 @@ const cli = meow({
     yes: {type: 'boolean', alias: 'y'},
     no: {type: 'boolean', alias: 'n'},
     dryRun: {type: 'boolean'},
+    binPrefix: {type: 'string'},
     yarn: {type: 'boolean'},
   },
 });
@@ -111,6 +114,7 @@ export async function run(verb: string, files: string[]): Promise<boolean> {
 
   const options = {
     dryRun: cli.flags.dryRun || false,
+    binPrefix: cli.flags.binPrefix || '.',
     // Paths are relative to the transpiled output files.
     gtsRootDir: path.resolve(__dirname, '../..'),
     targetRootDir: process.cwd(),
@@ -141,7 +145,7 @@ export async function run(verb: string, files: string[]): Promise<boolean> {
     case 'lint':
     case 'check': {
       try {
-        await execa('node', ['./node_modules/eslint/bin/eslint', ...flags], {
+        await execa('node', [options.binPrefix + '/node_modules/eslint/bin/eslint', ...flags], {
           stdio: 'inherit',
         });
         return true;
@@ -154,7 +158,7 @@ export async function run(verb: string, files: string[]): Promise<boolean> {
       try {
         await execa(
           'node',
-          ['./node_modules/eslint/bin/eslint', fixFlag, ...flags],
+          [options.binPrefix + '/node_modules/eslint/bin/eslint', fixFlag, ...flags],
           {
             stdio: 'inherit',
           }
