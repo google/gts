@@ -141,9 +141,7 @@ export async function run(verb: string, files: string[]): Promise<boolean> {
     case 'lint':
     case 'check': {
       try {
-        await execa('node', ['./node_modules/eslint/bin/eslint', ...flags], {
-          stdio: 'inherit',
-        });
+        await execa('eslint', flags, {stdio: 'inherit'});
         return true;
       } catch (e) {
         return false;
@@ -152,13 +150,7 @@ export async function run(verb: string, files: string[]): Promise<boolean> {
     case 'fix': {
       const fixFlag = options.dryRun ? '--fix-dry-run' : '--fix';
       try {
-        await execa(
-          'node',
-          ['./node_modules/eslint/bin/eslint', fixFlag, ...flags],
-          {
-            stdio: 'inherit',
-          }
-        );
+        await execa('eslint', [fixFlag, ...flags], {stdio: 'inherit'});
         return true;
       } catch (e) {
         console.error(e);
