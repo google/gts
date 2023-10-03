@@ -1,6 +1,6 @@
 {
   "name": "gts",
-  "version": "5.0.1",
+  "version": "5.1.0",
   "description": "Google TypeScript Style",
   "repository": "google/gts",
   "main": "build/src/index.js",
@@ -68,7 +68,7 @@
     "@types/json5": "0.0.30",
     "@types/mocha": "^10.0.0",
     "@types/ncp": "^2.0.4",
-    "@types/node": "20.7.0",
+    "@types/node": "20.7.1",
     "@types/prettier": "^2.1.1",
     "@types/rimraf": "^3.0.0",
     "@types/sinon": "^10.0.0",

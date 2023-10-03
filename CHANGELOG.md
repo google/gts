@@ -1,5 +1,22 @@
 # Changelog
 
+## [5.1.0](https://github.com/google/gts/compare/v5.0.1...v5.1.0) (2023-09-29)
+
+
+### Features
+
+* no-floating-promises ([#756](https://github.com/google/gts/issues/756)) ([c93e733](https://github.com/google/gts/commit/c93e73316164137e29daa7bea8a48083f7d7c1da))
+
+
+### Bug Fixes
+
+* **deps:** update dependency eslint to v8.49.0 ([#784](https://github.com/google/gts/issues/784)) ([5e2a05c](https://github.com/google/gts/commit/5e2a05c12886dc63a60219e0c0830846de7c24b9))
+* **deps:** update dependency eslint to v8.50.0 ([#802](https://github.com/google/gts/issues/802)) ([794abf3](https://github.com/google/gts/commit/794abf30e4ee1d4655436ad9efa11ee031027993))
+* **deps:** update dependency eslint-config-prettier to v8.10.0 ([#785](https://github.com/google/gts/issues/785)) ([5391d89](https://github.com/google/gts/commit/5391d89de2b8af68b63954b01b90f88015258406))
+* **deps:** update dependency eslint-config-prettier to v9 ([#777](https://github.com/google/gts/issues/777)) ([470977a](https://github.com/google/gts/commit/470977a2bc7b29db0e4abb36c362920ec16381c5))
+* **deps:** update dependency prettier to v3.0.3 ([#782](https://github.com/google/gts/issues/782)) ([5a04e76](https://github.com/google/gts/commit/5a04e76c74cb4984cbf9c7f7fbee4e800b33ca52))
+* run eslint from PATH ([#654](https://github.com/google/gts/issues/654)) ([5dc2a76](https://github.com/google/gts/commit/5dc2a76aae06e5e46b6b623447837c77b58cd757))
+
 ## [5.0.1](https://github.com/google/gts/compare/v5.0.0...v5.0.1) (2023-08-21)
 
 
