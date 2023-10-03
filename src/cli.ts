@@ -169,7 +169,6 @@ if (cli.input.length < 1) {
   usage();
 }
 
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
 run(cli.input[0], cli.input.slice(1)).then(success => {
   if (!success) {
     // eslint-disable-next-line no-process-exit
