@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.2.0](https://github.com/google/gts/compare/v5.1.1...v5.2.0) (2023-10-04)
+
+
+### Features
+
+* warn for ts-ignore comments for ESM ([#810](https://github.com/google/gts/issues/810)) ([350fbf0](https://github.com/google/gts/commit/350fbf0486c7470123eef19a8ab1816d1d05a6ee))
+
 ## [5.1.1](https://github.com/google/gts/compare/v5.1.0...v5.1.1) (2023-10-04)
 
 
