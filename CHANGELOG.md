@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.1.1](https://github.com/google/gts/compare/v5.1.0...v5.1.1) (2023-10-04)
+
+
+### Bug Fixes
+
+* revert feat: no-floating-promises ([44de7f7](https://github.com/google/gts/commit/44de7f705cea94d4781e4eb4b2d71a4ee4f0e89d))
+
 ## [5.1.0](https://github.com/google/gts/compare/v5.0.1...v5.1.0) (2023-09-29)
 
 
