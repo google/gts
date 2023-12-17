@@ -322,18 +322,22 @@ export async function init(options: Options): Promise<boolean> {
     generatedPackageJson = true;
   }
 
-  const addedDeps = await addDependencies(packageJson, options);
-  const addedScripts = await addScripts(packageJson, options);
+  const [addedDeps, addedScripts] = await Promise.all([
+    addDependencies(packageJson, options),
+    addScripts(packageJson, options),
+  ])
   if (generatedPackageJson || addedDeps || addedScripts) {
     await writePackageJson(packageJson, options);
   } else {
     options.logger.log('No edits needed in package.json.');
   }
-  await generateTsConfig(options);
-  await generateESLintConfig(options);
-  await generateESLintIgnore(options);
-  await generatePrettierConfig(options);
-  await generateEditorConfig(options);
+  await Promise.all([
+    generateTsConfig(options),
+    generateESLintConfig(options),
+    generateESLintIgnore(options),
+    generatePrettierConfig(options),
+    generateEditorConfig(options),
+  ]);
   await installDefaultTemplate(options);
 
   // Run `npm install` after initial setup so `npm run lint` works right away.
