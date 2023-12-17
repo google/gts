@@ -325,7 +325,7 @@ export async function init(options: Options): Promise<boolean> {
   const [addedDeps, addedScripts] = await Promise.all([
     addDependencies(packageJson, options),
     addScripts(packageJson, options),
-  ])
+  ]);
   if (generatedPackageJson || addedDeps || addedScripts) {
     await writePackageJson(packageJson, options);
   } else {
