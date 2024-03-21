@@ -1,0 +1,9 @@
+- id: gts
+  name: gts
+  description: 'gts: TypeScript style guide, formatter, and linter.'
+  entry: gts lint
+  language: node
+  language_version: system
+  minimum_pre_commit_version: 2.9.2
+  require_serial: true
+  types_or: [javascript, jsx, ts, tsx]

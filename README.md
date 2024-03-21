@@ -77,6 +77,18 @@ Show your love for `gts` and include a badge!
 ## Supported Node.js Versions
 Our client libraries follow the [Node.js release schedule](https://nodejs.org/en/about/releases/). Libraries are compatible with all current _active_ and _maintenance_ versions of Node.js.
 
+## Can I use *gts* with the [pre-commit](https://pre-commit.com/) framework?
+
+Yes! You can put the following in your `.pre-commit-config.yaml` file:
+
+```yaml
+repos:
+  - repo: https://github.com/google/gts
+    rev: '' # Use the sha / tag you want to point at
+    hooks:
+      - id: gts
+```
+
 ## License
 [Apache-2.0](LICENSE)
 
