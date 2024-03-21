@@ -82,7 +82,7 @@ describe('🚰 kitchen sink', () => {
     // Test package.json expects a gts tarball from ../gts.tgz.
     fs.copySync(
       path.join(stagingPath, 'gts.tgz'),
-      path.join(tmpDir.name, 'gts.tgz')
+      path.join(tmpDir.name, 'gts.tgz'),
     );
     // It's important to use `-n` here because we don't want to overwrite
     // the version of gts installed, as it will trigger the npm install.
@@ -91,12 +91,12 @@ describe('🚰 kitchen sink', () => {
     // The `extends` field must use the local gts path.
     const tsconfigJson = fs.readFileSync(
       path.join(tmpDir.name, 'kitchen', 'tsconfig.json'),
-      'utf8'
+      'utf8',
     );
     const tsconfig = JSON.parse(tsconfigJson);
     assert.deepStrictEqual(
       tsconfig.extends,
-      './node_modules/gts/tsconfig-google.json'
+      './node_modules/gts/tsconfig-google.json',
     );
 
     // server.ts has a lint error. Should error.
@@ -113,27 +113,27 @@ describe('🚰 kitchen sink', () => {
     assert.ok(
       fs
         .readFileSync(path.join(kitchenPath, 'package.json'), 'utf8')
-        .endsWith('\n')
+        .endsWith('\n'),
     );
     assert.ok(
       fs
         .readFileSync(path.join(kitchenPath, 'tsconfig.json'), 'utf8')
-        .endsWith('\n')
+        .endsWith('\n'),
     );
     assert.ok(
       fs
         .readFileSync(path.join(kitchenPath, '.eslintrc.json'), 'utf8')
-        .endsWith('\n')
+        .endsWith('\n'),
     );
     assert.ok(
       fs
         .readFileSync(path.join(kitchenPath, '.eslintignore'), 'utf8')
-        .endsWith('\n')
+        .endsWith('\n'),
     );
     assert.ok(
       fs
         .readFileSync(path.join(kitchenPath, '.prettierrc.js'), 'utf8')
-        .endsWith('\n')
+        .endsWith('\n'),
     );
   });
 
@@ -141,7 +141,7 @@ describe('🚰 kitchen sink', () => {
     const res = await execa(
       'npm',
       ['run', 'lint'],
-      Object.assign({}, {reject: false}, execOpts)
+      Object.assign({}, {reject: false}, execOpts),
     );
     assert.strictEqual(res.exitCode, 1);
     assert.ok(res.stdout.includes('assigned a value but'));
