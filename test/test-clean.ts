@@ -38,7 +38,7 @@ describe('clean', () => {
     return assert.rejects(() =>
       withFixtures({}, async () => {
         await clean(OPTIONS);
-      })
+      }),
     );
   });
 
@@ -73,7 +73,7 @@ describe('clean', () => {
       async () => {
         const deleted = await clean(OPTIONS);
         assert.strictEqual(deleted, false);
-      }
+      },
     );
   });
 
@@ -88,8 +88,8 @@ describe('clean', () => {
         async () => {
           const deleted = await clean(OPTIONS);
           assert.strictEqual(deleted, false);
-        }
-      )
+        },
+      ),
     );
   });
 
@@ -110,7 +110,7 @@ describe('clean', () => {
         assert.throws(() => {
           fs.accessSync(outputPath);
         });
-      }
+      },
     );
   });
 });

@@ -42,7 +42,7 @@ function createFakeReadFilep(myMap: Map<string, ConfigFile>) {
 }
 
 function makeFakeFsExistsSync(
-  expected: PathLike[]
+  expected: PathLike[],
 ): (path: PathLike) => boolean {
   return (path: PathLike) => expected.some(item => item === path);
 }
@@ -58,7 +58,7 @@ describe('util', () => {
 
     function fakeReadFilep(
       configPath: string,
-      encoding: string
+      encoding: string,
     ): Promise<string> {
       assert.strictEqual(configPath, PATH_TO_TSCONFIG);
       assert.strictEqual(encoding, 'utf8');
@@ -82,7 +82,7 @@ describe('util', () => {
     return assert.rejects(
       () => getTSConfig(FAKE_DIRECTORY, createFakeReadFilep(myMap)),
       Error,
-      'Circular Reference Detected'
+      'Circular Reference Detected',
     );
   });
 
@@ -108,7 +108,7 @@ describe('util', () => {
 
     const contents = await getTSConfig(
       FAKE_DIRECTORY,
-      createFakeReadFilep(myMap)
+      createFakeReadFilep(myMap),
     );
     assert.deepStrictEqual(contents, combinedConfig);
   });
@@ -125,7 +125,7 @@ describe('util', () => {
 
     const contents = await getTSConfig(
       FAKE_DIRECTORY,
-      createFakeReadFilep(myMap)
+      createFakeReadFilep(myMap),
     );
     assert.deepStrictEqual(contents, combinedConfig);
   });
@@ -145,12 +145,12 @@ describe('util', () => {
     myMap.set(path.resolve(FAKE_DIRECTORY, './foo/FAKE_CONFIG2'), FAKE_CONFIG2);
     myMap.set(
       path.resolve(FAKE_DIRECTORY, './foo/bar/FAKE_CONFIG3'),
-      FAKE_CONFIG3
+      FAKE_CONFIG3,
     );
 
     const contents = await getTSConfig(
       FAKE_DIRECTORY,
-      createFakeReadFilep(myMap)
+      createFakeReadFilep(myMap),
     );
     assert.deepStrictEqual(contents, combinedConfig);
   });
@@ -162,7 +162,7 @@ describe('util', () => {
     return assert.rejects(
       () => getTSConfig(FAKE_DIRECTORY, createFakeReadFilep(myMap)),
       Error,
-      `${FAKE_DIRECTORY}/tsconfig.json Not Found`
+      `${FAKE_DIRECTORY}/tsconfig.json Not Found`,
     );
   });
 

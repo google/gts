@@ -33,7 +33,7 @@ export async function clean(options: Options): Promise<boolean> {
     if (outDir === '.') {
       options.logger.error(
         `${chalk.red('ERROR:')} ${chalk.gray('compilerOptions.outDir')} ` +
-          'cannot use the value ".".  That would delete all of our sources.'
+          'cannot use the value ".".  That would delete all of our sources.',
       );
       return false;
     }
@@ -45,7 +45,7 @@ export async function clean(options: Options): Promise<boolean> {
     options.logger.error(
       `${chalk.red('ERROR:')} The ${chalk.gray('clean')} command` +
         ` requires ${chalk.gray('compilerOptions.outDir')} to be defined in ` +
-        'tsconfig.json.'
+        'tsconfig.json.',
     );
     return false;
   }

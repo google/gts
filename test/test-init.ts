@@ -45,7 +45,7 @@ function hasExpectedScripts(packageJson: PackageJson): boolean {
   return (
     !!packageJson.scripts &&
     ['lint', 'clean', 'compile', 'fix', 'prepare', 'pretest', 'posttest'].every(
-      s => !!packageJson.scripts![s]
+      s => !!packageJson.scripts![s],
     )
   );
 }
@@ -161,14 +161,14 @@ describe('init', () => {
         assert.notStrictEqual(
           contents,
           originalContents,
-          'the file should have been modified'
+          'the file should have been modified',
         );
         assert.strictEqual(
           contents.some,
           originalContents.some,
-          'unrelated property should have preserved'
+          'unrelated property should have preserved',
         );
-      }
+      },
     );
   });
 
@@ -195,7 +195,7 @@ describe('init', () => {
         const contents = await readJson('./package.json');
         const cmd = process.platform === 'win32' ? 'yarn.cmd' : 'yarn';
         assert.strictEqual(contents.scripts.prepare, cmd + ' run compile');
-      }
+      },
     );
   });
 

@@ -63,7 +63,7 @@ async function getBase(
   filePath: string,
   customReadFilep: ReadFileP,
   readFiles: Set<string>,
-  currentDir: string
+  currentDir: string,
 ): Promise<ConfigFile> {
   customReadFilep = customReadFilep || readFilep;
 
@@ -92,7 +92,7 @@ async function getBase(
         contents.extends,
         customReadFilep,
         readFiles,
-        path.dirname(filePath)
+        path.dirname(filePath),
       );
       contents = combineTSConfig(nextFile, contents);
     }
@@ -117,7 +117,7 @@ function combineTSConfig(base: ConfigFile, inherited: ConfigFile): ConfigFile {
   Object.assign(
     result.compilerOptions!,
     base.compilerOptions!,
-    inherited.compilerOptions!
+    inherited.compilerOptions!,
   );
   delete result.extends;
   return result;
@@ -161,7 +161,7 @@ export function getPkgManagerCommand(isYarnUsed?: boolean): string {
  */
 export async function getTSConfig(
   rootDir: string,
-  customReadFilep?: ReadFileP
+  customReadFilep?: ReadFileP,
 ): Promise<ConfigFile> {
   customReadFilep = (customReadFilep || readFilep) as ReadFileP;
   const readArr = new Set<string>();

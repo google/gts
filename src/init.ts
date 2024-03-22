@@ -54,7 +54,7 @@ async function query(
   message: string,
   question: string,
   defaultVal: boolean,
-  options: Options
+  options: Options,
 ): Promise<boolean> {
   if (options.yes) {
     return true;
@@ -77,7 +77,7 @@ async function query(
 
 export async function addScripts(
   packageJson: PackageJson,
-  options: Options
+  options: Options,
 ): Promise<boolean> {
   let edits = false;
   const pkgManager = getPkgManagerCommand(options.yarn);
@@ -120,7 +120,7 @@ export async function addScripts(
 
 export async function addDependencies(
   packageJson: PackageJson,
-  options: Options
+  options: Options,
 ): Promise<boolean> {
   let edits = false;
   const deps: DefaultPackage = {
@@ -164,7 +164,7 @@ function formatJson(object: {}) {
 
 async function writePackageJson(
   packageJson: PackageJson,
-  options: Options
+  options: Options,
 ): Promise<void> {
   options.logger.log('Writing package.json...');
   if (!options.dryRun) {
@@ -186,7 +186,7 @@ export const ESLINT_IGNORE = 'build/\n';
 async function generateConfigFile(
   options: Options,
   filename: string,
-  contents: string
+  contents: string,
 ) {
   let existing;
   try {
@@ -209,7 +209,7 @@ async function generateConfigFile(
       `${chalk.bold(filename)} already exists`,
       'Overwrite',
       false,
-      options
+      options,
     );
   }
 
@@ -226,7 +226,7 @@ async function generateESLintConfig(options: Options): Promise<void> {
   return generateConfigFile(
     options,
     './.eslintrc.json',
-    formatJson(ESLINT_CONFIG)
+    formatJson(ESLINT_CONFIG),
   );
 }
 
@@ -265,7 +265,7 @@ insert_final_newline = true
 }
 
 export async function installDefaultTemplate(
-  options: Options
+  options: Options,
 ): Promise<boolean> {
   const cwd = process.cwd();
   const sourceDirName = path.join(__dirname, '../template');
@@ -287,7 +287,7 @@ export async function installDefaultTemplate(
   if (tsFiles.length !== 0) {
     options.logger.log(
       'Target src directory already has ts files. ' +
-        'Template files not installed.'
+        'Template files not installed.',
     );
     return false;
   }
@@ -310,7 +310,7 @@ export async function init(options: Options): Promise<boolean> {
       `${chalk.bold('package.json')} does not exist.`,
       'Generate',
       true,
-      options
+      options,
     );
 
     if (!generate) {
@@ -344,7 +344,7 @@ export async function init(options: Options): Promise<boolean> {
     cp.spawnSync(
       getPkgManagerCommand(options.yarn),
       ['install', '--ignore-scripts'],
-      {stdio: 'inherit'}
+      {stdio: 'inherit'},
     );
   }
 
