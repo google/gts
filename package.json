@@ -32,14 +32,9 @@
     "fix": "eslint --fix '**/*.ts'"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=18"
   },
-  "keywords": [
-    "typescript",
-    "linter",
-    "formatter",
-    "google"
-  ],
+  "keywords": ["typescript", "linter", "formatter", "google"],
   "author": "Google Inc.",
   "license": "Apache-2.0",
   "dependencies": {
