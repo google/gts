@@ -16,14 +16,12 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import * as rimraf from 'rimraf';
 import {promisify} from 'util';
 import * as ncp from 'ncp';
 import * as writeFileAtomic from 'write-file-atomic';
 import * as JSON5 from 'json5';
 
 export const readFilep = promisify(fs.readFile);
-export const rimrafp = promisify(rimraf);
 export const writeFileAtomicp = promisify(writeFileAtomic);
 export const ncpp = promisify(ncp.ncp);
 

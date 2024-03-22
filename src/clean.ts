@@ -15,9 +15,10 @@
  */
 import chalk = require('chalk');
 import * as ts from 'typescript';
+import {rimraf} from 'rimraf';
 
 import {Options} from './cli';
-import {getTSConfig, rimrafp} from './util';
+import {getTSConfig} from './util';
 
 interface TSConfig {
   compilerOptions: ts.CompilerOptions;
@@ -39,7 +40,7 @@ export async function clean(options: Options): Promise<boolean> {
     }
     const message = `${chalk.red('Removing')} ${outDir} ...`;
     options.logger.log(message);
-    await rimrafp(outDir);
+    await rimraf(outDir);
     return true;
   } else {
     options.logger.error(
