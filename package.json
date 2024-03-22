@@ -70,7 +70,7 @@
     "@types/ncp": "^2.0.4",
     "@types/node": "20.11.30",
     "@types/prettier": "^3.0.0",
-    "@types/rimraf": "^3.0.0",
+    "@types/rimraf": "^4.0.0",
     "@types/sinon": "^17.0.0",
     "@types/tmp": "^0.2.0",
     "@types/write-file-atomic": "^4.0.0",
