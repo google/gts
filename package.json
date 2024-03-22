@@ -65,7 +65,7 @@
     "@types/eslint": "^8.0.0",
     "@types/fs-extra": "^11.0.0",
     "@types/inquirer": "^8.0.0",
-    "@types/json5": "0.0.30",
+    "@types/json5": "2.2.0",
     "@types/mocha": "^10.0.0",
     "@types/ncp": "^2.0.4",
     "@types/node": "20.11.5",
