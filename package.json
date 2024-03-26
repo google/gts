@@ -34,12 +34,7 @@
   "engines": {
     "node": ">=14"
   },
-  "keywords": [
-    "typescript",
-    "linter",
-    "formatter",
-    "google"
-  ],
+  "keywords": ["typescript", "linter", "formatter", "google"],
   "author": "Google Inc.",
   "license": "Apache-2.0",
   "dependencies": {
@@ -69,7 +64,6 @@
     "@types/mocha": "^10.0.0",
     "@types/ncp": "^2.0.4",
     "@types/node": "20.11.30",
-    "@types/prettier": "^3.0.0",
     "@types/rimraf": "^3.0.0",
     "@types/sinon": "^17.0.0",
     "@types/tmp": "^0.2.0",
