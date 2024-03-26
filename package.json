@@ -1,6 +1,6 @@
 {
   "name": "gts",
-  "version": "5.3.0",
+  "version": "5.3.1",
   "description": "Google TypeScript Style",
   "repository": "google/gts",
   "main": "build/src/index.js",
@@ -34,7 +34,12 @@
   "engines": {
     "node": ">=14"
   },
-  "keywords": ["typescript", "linter", "formatter", "google"],
+  "keywords": [
+    "typescript",
+    "linter",
+    "formatter",
+    "google"
+  ],
   "author": "Google Inc.",
   "license": "Apache-2.0",
   "dependencies": {
