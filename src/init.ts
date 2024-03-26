@@ -19,12 +19,12 @@ import * as inquirer from 'inquirer';
 import * as path from 'path';
 import {ncp} from 'ncp';
 import * as util from 'util';
+import * as writeFileAtomic from 'write-file-atomic';
 
 import {
   getPkgManagerCommand,
   readFilep as read,
   readJsonp as readJson,
-  writeFileAtomicp as write,
   Bag,
   DefaultPackage,
 } from './util';
@@ -168,7 +168,7 @@ async function writePackageJson(
 ): Promise<void> {
   options.logger.log('Writing package.json...');
   if (!options.dryRun) {
-    await write('./package.json', formatJson(packageJson));
+    await writeFileAtomic('./package.json', formatJson(packageJson));
   }
   const preview = {
     scripts: packageJson.scripts,
@@ -216,7 +216,7 @@ async function generateConfigFile(
   if (writeFile) {
     options.logger.log(`Writing ${filename}...`);
     if (!options.dryRun) {
-      await write(filename, contents);
+      await writeFileAtomic(filename, contents);
     }
     options.logger.log(contents);
   }
@@ -322,18 +322,22 @@ export async function init(options: Options): Promise<boolean> {
     generatedPackageJson = true;
   }
 
-  const addedDeps = await addDependencies(packageJson, options);
-  const addedScripts = await addScripts(packageJson, options);
+  const [addedDeps, addedScripts] = await Promise.all([
+    addDependencies(packageJson, options),
+    addScripts(packageJson, options),
+  ]);
   if (generatedPackageJson || addedDeps || addedScripts) {
     await writePackageJson(packageJson, options);
   } else {
     options.logger.log('No edits needed in package.json.');
   }
-  await generateTsConfig(options);
-  await generateESLintConfig(options);
-  await generateESLintIgnore(options);
-  await generatePrettierConfig(options);
-  await generateEditorConfig(options);
+  await Promise.all([
+    generateTsConfig(options),
+    generateESLintConfig(options),
+    generateESLintIgnore(options),
+    generatePrettierConfig(options),
+    generateEditorConfig(options),
+  ]);
   await installDefaultTemplate(options);
 
   // Run `npm install` after initial setup so `npm run lint` works right away.
