@@ -63,7 +63,7 @@
     "@types/json5": "2.2.0",
     "@types/mocha": "^10.0.0",
     "@types/ncp": "^2.0.4",
-    "@types/node": "20.11.30",
+    "@types/node": "20.12.2",
     "@types/rimraf": "^3.0.0",
     "@types/sinon": "^17.0.0",
     "@types/tmp": "^0.2.0",
