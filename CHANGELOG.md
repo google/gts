@@ -1,5 +1,19 @@
 # Changelog
 
+## [5.3.1](https://github.com/google/gts/compare/v5.3.0...v5.3.1) (2024-04-10)
+
+
+### Bug Fixes
+
+* **deps:** replace dependency eslint-plugin-node with eslint-plugin-n ([#865](https://github.com/google/gts/issues/865)) ([efbe3a8](https://github.com/google/gts/commit/efbe3a838f40959188190dc04b4f11f45dd1aa87))
+* **deps:** update dependency eslint to v8.57.0 ([#833](https://github.com/google/gts/issues/833)) ([0c0a45c](https://github.com/google/gts/commit/0c0a45c83832034ed96c19c0f7956180587991ed))
+* **deps:** update dependency prettier to v3.2.5 ([#846](https://github.com/google/gts/issues/846)) ([7e60e38](https://github.com/google/gts/commit/7e60e3878b877865b3536ea66dc3607d9243cee4))
+
+
+### Performance Improvements
+
+* Supercharge Performance & Efficiency: Leveraging `Promise.all` for Resource-Friendly Tasks 🚤 ([#838](https://github.com/google/gts/issues/838)) ([7424fe1](https://github.com/google/gts/commit/7424fe19f822dc152315c1b1eb5f874512a88b55))
+
 ## [5.3.0](https://github.com/google/gts/compare/v5.2.0...v5.3.0) (2024-03-21)
 
 
