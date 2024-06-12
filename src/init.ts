@@ -33,7 +33,6 @@ import {Options} from './cli';
 import {PackageJson} from '@npm/types';
 import chalk = require('chalk');
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const pkg = require('../../package.json');
 
 const ncpp = util.promisify(ncp);
@@ -109,7 +108,6 @@ export async function addScripts(
       }
 
       if (install) {
-        // eslint-disable-next-line require-atomic-updates
         packageJson.scripts[script] = scripts[script];
         edits = true;
       }
@@ -147,7 +145,6 @@ export async function addDependencies(
       }
 
       if (install) {
-        // eslint-disable-next-line require-atomic-updates
         packageJson.devDependencies[dep] = deps[dep];
         edits = true;
       }

@@ -14,5 +14,5 @@
  * limitations under the License.
  */
 
-import * as cfg from '../.eslintrc.json';
+const cfg = require('../eslint.config.js');
 module.exports = cfg;
