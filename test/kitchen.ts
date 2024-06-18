@@ -8,7 +8,7 @@ import {describe, it, before, after} from 'mocha';
 
 import spawn = require('cross-spawn');
 import execa = require('execa');
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+
 const pkg = require('../../package.json');
 const keep = !!process.env.GTS_KEEP_TEMPDIRS;
 const stagingDir = tmp.dirSync({keep, unsafeCleanup: true});
