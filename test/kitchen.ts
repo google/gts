@@ -90,9 +90,26 @@ describe('🚰 kitchen sink', () => {
       path.join(stagingPath, 'gts.tgz'),
       path.join(tmpDir.name, 'gts.tgz')
     );
+
+    // TODO: DEBUG
+    console.dir(
+      {
+        LISTING_BEFORE: fs.readdirSync(path.join(tmpDir.name, 'kitchen')),
+      },
+      {depth: 20}
+    );
+
     // It's important to use `-n` here because we don't want to overwrite
     // the version of gts installed, as it will trigger the npm install.
     spawn.sync(GTS, ['init', '-n'], opts);
+
+    // TODO: DEBUG
+    console.dir(
+      {
+        LISTING: fs.readdirSync(path.join(tmpDir.name, 'kitchen')),
+      },
+      {depth: 20}
+    );
 
     // The `extends` field must use the local gts path.
     const tsconfigJson = fs.readFileSync(
