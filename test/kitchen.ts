@@ -14,7 +14,7 @@ const keep = !!process.env.GTS_KEEP_TEMPDIRS;
 const stagingDir = tmp.dirSync({keep, unsafeCleanup: true});
 const stagingPath = stagingDir.name;
 const execOpts = {
-  cwd: `${stagingPath}${path.sep}kitchen`,
+  cwd: path.join(stagingPath, 'kitchen'),
   encoding: 'utf8' as BufferEncoding,
 };
 
@@ -73,7 +73,13 @@ describe('🚰 kitchen sink', () => {
   it('should use as a non-locally installed module', () => {
     // Use from a directory different from where we have locally installed. This
     // simulates use as a globally installed module.
-    const GTS = path.resolve(stagingPath, 'kitchen/node_modules/.bin/gts');
+    const GTS = path.resolve(
+      stagingPath,
+      'kitchen',
+      'node_modules',
+      '.bin',
+      'gts'
+    );
     const tmpDir = tmp.dirSync({keep, unsafeCleanup: true});
     const opts = {cwd: path.join(tmpDir.name, 'kitchen')};
 
