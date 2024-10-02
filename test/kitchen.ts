@@ -21,10 +21,11 @@ const execOpts = {
 describe('🚰 kitchen sink', () => {
   const fixturesPath = path.join('test', 'fixtures');
   const gtsPath = path.join('node_modules', '.bin', 'gts');
-  const kitchenPath = path.join(stagingPath, 'kitchen');
+  const kitchenPath = execOpts.cwd;
 
   // Create a staging directory with temp fixtures used to test on a fresh application.
   before(() => {
+    fs.mkdirSync(kitchenPath);
     console.log(`${chalk.blue(`${__filename} staging area: ${stagingPath}`)}`);
     cp.execSync('npm pack');
     const tarball = `${pkg.name}-${pkg.version}.tgz`;
