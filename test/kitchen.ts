@@ -93,8 +93,17 @@ describe('🚰 kitchen sink', () => {
       path.join(tmpDir.name, 'gts.tgz')
     );
 
+    console.log({
+      a: tmpDir.name,
+      b: stagingPath,
+    });
+
     // Make kitchen directory
-    fs.mkdirSync(opts.cwd);
+    try {
+      fs.mkdirSync(opts.cwd);
+    } catch {
+      // .
+    }
 
     // It's important to use `-n` here because we don't want to overwrite
     // the version of gts installed, as it will trigger the npm install.
