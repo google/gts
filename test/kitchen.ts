@@ -92,25 +92,12 @@ describe('🚰 kitchen sink', () => {
       path.join(tmpDir.name, 'gts.tgz')
     );
 
-    // TODO: DEBUG
-    console.dir(
-      {
-        LISTING_BEFORE: fs.readdirSync(path.join(tmpDir.name, 'kitchen')),
-      },
-      {depth: 20}
-    );
+    // Make kitchen directory
+    fs.mkdirSync(opts.cwd);
 
     // It's important to use `-n` here because we don't want to overwrite
     // the version of gts installed, as it will trigger the npm install.
-    console.dir(spawn.sync(GTS, ['init', '-n'], opts), {depth: 20});
-
-    // TODO: DEBUG
-    console.dir(
-      {
-        LISTING: fs.readdirSync(path.join(tmpDir.name, 'kitchen')),
-      },
-      {depth: 20}
-    );
+    spawn.sync(GTS, ['init', '-n'], opts);
 
     // The `extends` field must use the local gts path.
     const tsconfigJson = fs.readFileSync(
