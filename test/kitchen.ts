@@ -25,7 +25,6 @@ describe('🚰 kitchen sink', () => {
 
   // Create a staging directory with temp fixtures used to test on a fresh application.
   before(() => {
-    fs.mkdirSync(kitchenPath);
     console.log(`${chalk.blue(`${__filename} staging area: ${stagingPath}`)}`);
     cp.execSync('npm pack');
     const tarball = `${pkg.name}-${pkg.version}.tgz`;
@@ -93,17 +92,12 @@ describe('🚰 kitchen sink', () => {
       path.join(tmpDir.name, 'gts.tgz')
     );
 
-    console.log({
-      a: tmpDir.name,
-      b: stagingPath,
-    });
-
-    // Make kitchen directory
-    try {
-      fs.mkdirSync(opts.cwd);
-    } catch {
-      // .
-    }
+    console.log(
+      path.resolve(stagingPath, 'kitchen', 'node_modules', '.bin'),
+      fs.readdirSync(
+        path.resolve(stagingPath, 'kitchen', 'node_modules', '.bin')
+      )
+    );
 
     // It's important to use `-n` here because we don't want to overwrite
     // the version of gts installed, as it will trigger the npm install.
