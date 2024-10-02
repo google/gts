@@ -92,12 +92,26 @@ describe('🚰 kitchen sink', () => {
       path.join(tmpDir.name, 'gts.tgz')
     );
 
-    console.log(
-      path.resolve(stagingPath, 'kitchen', 'node_modules', '.bin'),
-      fs.readdirSync(
-        path.resolve(stagingPath, 'kitchen', 'node_modules', '.bin')
-      )
-    );
+    try {
+      console.log(
+        path.resolve(stagingPath, 'kitchen'),
+        fs.readdirSync(path.resolve(stagingPath, 'kitchen'))
+      );
+
+      console.log(
+        path.resolve(stagingPath, 'kitchen', 'node_modules'),
+        fs.readdirSync(path.resolve(stagingPath, 'kitchen', 'node_modules'))
+      );
+
+      console.log(
+        path.resolve(stagingPath, 'kitchen', 'node_modules', '.bin'),
+        fs.readdirSync(
+          path.resolve(stagingPath, 'kitchen', 'node_modules', '.bin')
+        )
+      );
+    } catch (e) {
+      console.dir({e});
+    }
 
     // It's important to use `-n` here because we don't want to overwrite
     // the version of gts installed, as it will trigger the npm install.
