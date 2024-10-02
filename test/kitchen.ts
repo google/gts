@@ -15,8 +15,8 @@ const stagingDir = tmp.dirSync({keep, unsafeCleanup: true});
 const stagingPath = stagingDir.name;
 const execOpts = {
   cwd: path.join(stagingPath, 'kitchen'),
-  encoding: 'utf8' as BufferEncoding,
-};
+  encoding: 'utf8',
+} as const;
 
 describe('🚰 kitchen sink', () => {
   const fixturesPath = path.join('test', 'fixtures');
@@ -34,6 +34,7 @@ describe('🚰 kitchen sink', () => {
     fs.moveSync('gts.tgz', targetPath);
     fs.copySync(fixturesPath, path.join(stagingPath, path.sep));
   });
+
   // CLEAN UP - remove the staging directory when done.
   after('cleanup staging', () => {
     if (!keep) {
@@ -81,7 +82,7 @@ describe('🚰 kitchen sink', () => {
       'gts'
     );
     const tmpDir = tmp.dirSync({keep, unsafeCleanup: true});
-    const opts = {cwd: path.join(tmpDir.name, 'kitchen')};
+    const opts = {cwd: path.join(tmpDir.name, 'kitchen')} as const;
 
     // Copy test files.
     fs.copySync(fixturesPath, tmpDir.name);
@@ -101,7 +102,7 @@ describe('🚰 kitchen sink', () => {
 
     // It's important to use `-n` here because we don't want to overwrite
     // the version of gts installed, as it will trigger the npm install.
-    spawn.sync(GTS, ['init', '-n'], opts);
+    console.dir(spawn.sync(GTS, ['init', '-n'], opts), {depth: 20});
 
     // TODO: DEBUG
     console.dir(
