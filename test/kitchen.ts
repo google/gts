@@ -18,7 +18,9 @@ const execOpts = {
   encoding: 'utf8',
 } as const;
 
-describe('🚰 kitchen sink', () => {
+const action = process.platform !== 'win32' ? describe : describe.skip;
+
+action('🚰 kitchen sink', () => {
   const fixturesPath = path.join('test', 'fixtures');
   const gtsPath = path.join('node_modules', '.bin', 'gts');
   const kitchenPath = execOpts.cwd;
