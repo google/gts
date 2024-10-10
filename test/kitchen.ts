@@ -54,10 +54,10 @@ describe('🚰 kitchen sink', () => {
       '-n',
     ];
 
-    spawn.sync('npm', ['ci'], execOpts);
     const res = spawn.sync('npx', args, execOpts);
     console.log('out: ', res.stdout + '');
     console.log('error: ', res.stderr + '');
+    spawn.sync('npm', ['ci'], execOpts);
 
     // Ensure config files got generated.
     fs.accessSync(path.join(kitchenPath, 'tsconfig.json'));
