@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 /**
  * Copyright 2017 Google Inc. All Rights Reserved.
  *
