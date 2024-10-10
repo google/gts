@@ -33,6 +33,7 @@ describe('🚰 kitchen sink', () => {
     console.log('moving packed tar to ', targetPath);
     fs.moveSync('gts.tgz', targetPath);
     fs.copySync(fixturesPath, path.join(stagingPath, path.sep));
+    console.log('fixtures:', fs.readdirSync(path.join(stagingPath, path.sep)));
   });
 
   // CLEAN UP - remove the staging directory when done.
@@ -91,27 +92,6 @@ describe('🚰 kitchen sink', () => {
       path.join(stagingPath, 'gts.tgz'),
       path.join(tmpDir.name, 'gts.tgz')
     );
-
-    try {
-      console.log(
-        path.resolve(stagingPath, 'kitchen'),
-        fs.readdirSync(path.resolve(stagingPath, 'kitchen'))
-      );
-
-      console.log(
-        path.resolve(stagingPath, 'kitchen', 'node_modules'),
-        fs.readdirSync(path.resolve(stagingPath, 'kitchen', 'node_modules'))
-      );
-
-      console.log(
-        path.resolve(stagingPath, 'kitchen', 'node_modules', '.bin'),
-        fs.readdirSync(
-          path.resolve(stagingPath, 'kitchen', 'node_modules', '.bin')
-        )
-      );
-    } catch (e) {
-      console.dir({e});
-    }
 
     // It's important to use `-n` here because we don't want to overwrite
     // the version of gts installed, as it will trigger the npm install.
