@@ -54,6 +54,7 @@ describe('🚰 kitchen sink', () => {
       '-n',
     ];
 
+    spawn.sync('npm', ['ci'], execOpts);
     const res = spawn.sync('npx', args, execOpts);
     console.log('out: ', res.stdout + '');
     console.log('error: ', res.stderr + '');
