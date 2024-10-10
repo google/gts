@@ -34,6 +34,10 @@ describe('🚰 kitchen sink', () => {
     fs.moveSync('gts.tgz', targetPath);
     fs.copySync(fixturesPath, path.join(stagingPath, path.sep));
     console.log('fixtures:', fs.readdirSync(path.join(stagingPath, path.sep)));
+    console.log(
+      'kitchen fixtures:',
+      fs.readdirSync(path.join(stagingPath, path.sep, 'kitchen'))
+    );
   });
 
   // CLEAN UP - remove the staging directory when done.
