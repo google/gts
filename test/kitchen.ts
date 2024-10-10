@@ -57,7 +57,6 @@ describe('🚰 kitchen sink', () => {
     const res = spawn.sync('npx', args, execOpts);
     console.log('out: ', res.stdout + '');
     console.log('error: ', res.stderr + '');
-    spawn.sync('npm', ['ci'], execOpts);
 
     // Ensure config files got generated.
     fs.accessSync(path.join(kitchenPath, 'tsconfig.json'));
@@ -96,7 +95,6 @@ describe('🚰 kitchen sink', () => {
 
     // It's important to use `-n` here because we don't want to overwrite
     // the version of gts installed, as it will trigger the npm install.
-    spawn.sync(GTS, ['init', '-n'], opts);
     spawn.sync(GTS, ['init', '-n'], opts);
 
     // The `extends` field must use the local gts path.
