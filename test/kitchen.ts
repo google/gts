@@ -26,6 +26,7 @@ describe('🚰 kitchen sink', () => {
   // Create a staging directory with temp fixtures used to test on a fresh application.
   before(() => {
     console.log(`${chalk.blue(`${__filename} staging area: ${stagingPath}`)}`);
+    console.log('directory pre-pack:', fs.readdirSync('.'));
     cp.execSync('npm pack');
     const tarball = `${pkg.name}-${pkg.version}.tgz`;
     fs.renameSync(tarball, 'gts.tgz');
@@ -33,11 +34,6 @@ describe('🚰 kitchen sink', () => {
     console.log('moving packed tar to ', targetPath);
     fs.moveSync('gts.tgz', targetPath);
     fs.copySync(fixturesPath, path.join(stagingPath, path.sep));
-    console.log('fixtures:', fs.readdirSync(path.join(stagingPath, path.sep)));
-    console.log(
-      'kitchen fixtures:',
-      fs.readdirSync(path.join(stagingPath, path.sep, 'kitchen'))
-    );
   });
 
   // CLEAN UP - remove the staging directory when done.
@@ -99,6 +95,7 @@ describe('🚰 kitchen sink', () => {
 
     // It's important to use `-n` here because we don't want to overwrite
     // the version of gts installed, as it will trigger the npm install.
+    spawn.sync(GTS, ['init', '-n'], opts);
     spawn.sync(GTS, ['init', '-n'], opts);
 
     // The `extends` field must use the local gts path.
