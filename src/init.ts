@@ -30,7 +30,7 @@ import {
 } from './util';
 
 import {Options} from './cli';
-import {PackageJson} from '@npm/types';
+import {PackageJSON} from '@npm/types';
 import chalk = require('chalk');
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -38,7 +38,7 @@ const pkg = require('../../package.json');
 
 const ncpp = util.promisify(ncp);
 
-const DEFAULT_PACKAGE_JSON: PackageJson = {
+const DEFAULT_PACKAGE_JSON: PackageJSON = {
   name: '',
   version: '0.0.0',
   description: '',
@@ -76,7 +76,7 @@ async function query(
 }
 
 export async function addScripts(
-  packageJson: PackageJson,
+  packageJson: PackageJSON,
   options: Options,
 ): Promise<boolean> {
   let edits = false;
@@ -119,7 +119,7 @@ export async function addScripts(
 }
 
 export async function addDependencies(
-  packageJson: PackageJson,
+  packageJson: PackageJSON,
   options: Options,
 ): Promise<boolean> {
   let edits = false;
@@ -163,7 +163,7 @@ function formatJson(object: {}) {
 }
 
 async function writePackageJson(
-  packageJson: PackageJson,
+  packageJson: PackageJSON,
   options: Options,
 ): Promise<void> {
   options.logger.log('Writing package.json...');
