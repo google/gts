@@ -11,10 +11,9 @@
     "noImplicitReturns": true,
     "pretty": true,
     "sourceMap": true,
+    "stripInternal": true,
     "strict": true,
     "target": "es2018"
   },
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }
