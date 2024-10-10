@@ -11,6 +11,7 @@
     "noImplicitReturns": true,
     "pretty": true,
     "sourceMap": true,
+    "stripInternal": true,
     "strict": true,
     "target": "es2018"
   },
