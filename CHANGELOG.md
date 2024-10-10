@@ -1,5 +1,39 @@
 # Changelog
 
+## [5.3.1](https://github.com/google/gts/compare/v5.3.0...v5.3.1) (2024-04-10)
+
+
+### Bug Fixes
+
+* **deps:** replace dependency eslint-plugin-node with eslint-plugin-n ([#865](https://github.com/google/gts/issues/865)) ([efbe3a8](https://github.com/google/gts/commit/efbe3a838f40959188190dc04b4f11f45dd1aa87))
+* **deps:** update dependency eslint to v8.57.0 ([#833](https://github.com/google/gts/issues/833)) ([0c0a45c](https://github.com/google/gts/commit/0c0a45c83832034ed96c19c0f7956180587991ed))
+* **deps:** update dependency prettier to v3.2.5 ([#846](https://github.com/google/gts/issues/846)) ([7e60e38](https://github.com/google/gts/commit/7e60e3878b877865b3536ea66dc3607d9243cee4))
+
+
+### Performance Improvements
+
+* Supercharge Performance & Efficiency: Leveraging `Promise.all` for Resource-Friendly Tasks 🚤 ([#838](https://github.com/google/gts/issues/838)) ([7424fe1](https://github.com/google/gts/commit/7424fe19f822dc152315c1b1eb5f874512a88b55))
+
+## [5.3.0](https://github.com/google/gts/compare/v5.2.0...v5.3.0) (2024-03-21)
+
+
+### Features
+
+* adding pre-commit-hooks.yaml ([#858](https://github.com/google/gts/issues/858)) ([b17994d](https://github.com/google/gts/commit/b17994d2f26f0cacaf3e7956dc01bc644a32b5ae))
+
+
+### Bug Fixes
+
+* **deps:** update dependency eslint to v8.51.0 ([#812](https://github.com/google/gts/issues/812)) ([ae913c1](https://github.com/google/gts/commit/ae913c17ae4460d0f76aad16b96cb3e1f23a5b89))
+* **deps:** update dependency eslint to v8.52.0 ([#821](https://github.com/google/gts/issues/821)) ([50b3ce5](https://github.com/google/gts/commit/50b3ce56190a5f785c52b00b8da56769255caaa1))
+* **deps:** update dependency eslint to v8.53.0 ([#829](https://github.com/google/gts/issues/829)) ([7d9ffed](https://github.com/google/gts/commit/7d9ffed35d0ee076bda063e5189573eeba82ac0a))
+* **deps:** update dependency eslint-config-prettier to v9.1.0 ([#836](https://github.com/google/gts/issues/836)) ([9105ebb](https://github.com/google/gts/commit/9105ebb83516746503f8714914fc62da0e7fe1a6))
+* **deps:** update dependency eslint-plugin-prettier to v5.0.1 ([#817](https://github.com/google/gts/issues/817)) ([89b8955](https://github.com/google/gts/commit/89b8955576d1997d2bc587b79bf57d3c4d07cdda))
+* **deps:** update dependency eslint-plugin-prettier to v5.1.2 ([#839](https://github.com/google/gts/issues/839)) ([b5ab5c4](https://github.com/google/gts/commit/b5ab5c495e6da286ac57dc285586806f612913b8))
+* **deps:** update dependency eslint-plugin-prettier to v5.1.3 ([#845](https://github.com/google/gts/issues/845)) ([6e13e12](https://github.com/google/gts/commit/6e13e12b9d4f82fc43ef015980d5345fb47b9a41))
+* **deps:** update dependency prettier to v3.1.0 ([#832](https://github.com/google/gts/issues/832)) ([faf6d7e](https://github.com/google/gts/commit/faf6d7e60e7a382077de8fd7c8c5a9ec065259a5))
+* **deps:** update dependency prettier to v3.1.1 ([#837](https://github.com/google/gts/issues/837)) ([6de3e3b](https://github.com/google/gts/commit/6de3e3b9a741e6ff0e34996848a2ac1f8957bb32))
+
 ## [5.2.0](https://github.com/google/gts/compare/v5.1.1...v5.2.0) (2023-10-04)
 
 

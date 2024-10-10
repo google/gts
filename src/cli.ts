@@ -169,9 +169,16 @@ if (cli.input.length < 1) {
   usage();
 }
 
-run(cli.input[0], cli.input.slice(1)).then(success => {
-  if (!success) {
-    // eslint-disable-next-line no-process-exit
+run(cli.input[0], cli.input.slice(1)).then(
+  success => {
+    if (!success) {
+      // eslint-disable-next-line n/no-process-exit
+      process.exit(1);
+    }
+  },
+  e => {
+    console.error(e);
+    // eslint-disable-next-line n/no-process-exit
     process.exit(1);
   }
-});
+);
