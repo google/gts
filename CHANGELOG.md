@@ -1,5 +1,33 @@
 # Changelog
 
+## [6.0.0](https://github.com/google/gts/compare/v5.3.1...v6.0.0) (2024-10-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* Update '.prettierrc.json' to include `trailingComma: "all"` to match internal Google config ([#822](https://github.com/google/gts/issues/822))
+* Update `typescript` and other dependencies ([#902](https://github.com/google/gts/issues/902))
+* Set `no-floating-promises` to `error` ([#901](https://github.com/google/gts/issues/901))
+* Set `composite: true` in `tsconfig-google.json` ([#899](https://github.com/google/gts/issues/899))
+* Set `stripInternal` in `tsconfig-google.json` ([#900](https://github.com/google/gts/issues/900))
+* Support Node 18+ ([#896](https://github.com/google/gts/issues/896))
+
+### Features
+
+* Set `composite: true` in `tsconfig-google.json` ([#899](https://github.com/google/gts/issues/899)) ([71972dc](https://github.com/google/gts/commit/71972dc0e5611fbbe8b3885eb18d19563545cd4b))
+* Set `no-floating-promises` to `error` ([#901](https://github.com/google/gts/issues/901)) ([1d28f92](https://github.com/google/gts/commit/1d28f92df53b9efd3924e4dbf11dc71dd8091d36))
+* Set `stripInternal` in `tsconfig-google.json` ([#900](https://github.com/google/gts/issues/900)) ([9b37243](https://github.com/google/gts/commit/9b37243804dcca9a69b00142706f60f36b89e405))
+* Support Node 18+ ([#896](https://github.com/google/gts/issues/896)) ([f011fa3](https://github.com/google/gts/commit/f011fa3ae9628ed72eeec6095cf8b9c0813317e7))
+* Update '.prettierrc.json' to include `trailingComma: "all"` to match internal Google config ([#822](https://github.com/google/gts/issues/822)) ([27d0d93](https://github.com/google/gts/commit/27d0d93cdeedd885fa494c875957edf6399202e0))
+* Update `typescript` and other dependencies ([#902](https://github.com/google/gts/issues/902)) ([1c18b3a](https://github.com/google/gts/commit/1c18b3ae1a54bbcbb587518dede9bfaf8fd5e5dd))
+
+
+### Bug Fixes
+
+* **deps:** update dependency eslint to v8.57.1 ([#903](https://github.com/google/gts/issues/903)) ([23da8ef](https://github.com/google/gts/commit/23da8ef208a8ba957c2fc5fead4c72b98448d35d))
+* **deps:** update dependency eslint-plugin-prettier to v5.2.1 ([#894](https://github.com/google/gts/issues/894)) ([a6d5e6a](https://github.com/google/gts/commit/a6d5e6a24037e4ed3b2a56861ef7b7e1e20982e4))
+* **deps:** update dependency prettier to v3.3.3 ([#883](https://github.com/google/gts/issues/883)) ([52dca7c](https://github.com/google/gts/commit/52dca7c40808eda19e12a840a058581097dd2c9f))
+
 ## [5.3.1](https://github.com/google/gts/compare/v5.3.0...v5.3.1) (2024-04-10)
 
 
