@@ -20,7 +20,7 @@ import * as assert from 'assert';
 import * as fs from 'fs';
 import * as path from 'path';
 import {accessSync} from 'fs';
-import {PackageJson} from '@npm/types';
+import {PackageJSON} from '@npm/types';
 import {withFixtures, Fixtures} from 'inline-fixtures';
 import {describe, it, beforeEach, afterEach} from 'mocha';
 
@@ -41,16 +41,16 @@ const OPTIONS_NO = Object.assign({}, OPTIONS, {no: true});
 const OPTIONS_YARN = Object.assign({}, OPTIONS_YES, {yarn: true});
 const MINIMAL_PACKAGE_JSON = {name: 'name', version: 'v1.1.1'};
 
-function hasExpectedScripts(packageJson: PackageJson): boolean {
+function hasExpectedScripts(packageJson: PackageJSON): boolean {
   return (
     !!packageJson.scripts &&
     ['lint', 'clean', 'compile', 'fix', 'prepare', 'pretest', 'posttest'].every(
-      s => !!packageJson.scripts![s]
+      s => !!packageJson.scripts![s],
     )
   );
 }
 
-function hasExpectedDependencies(packageJson: PackageJson): boolean {
+function hasExpectedDependencies(packageJson: PackageJSON): boolean {
   return (
     !!packageJson.devDependencies &&
     ['gts', 'typescript'].every(d => !!packageJson.devDependencies![d])
@@ -69,7 +69,7 @@ describe('init', () => {
   });
 
   it('addScripts should add a scripts section if none exists', async () => {
-    const pkg: PackageJson = {...MINIMAL_PACKAGE_JSON};
+    const pkg: PackageJSON = {...MINIMAL_PACKAGE_JSON};
     const result = await init.addScripts(pkg, OPTIONS);
     assert.strictEqual(result, true); // made edits.
     assert.ok(pkg.scripts);
@@ -86,7 +86,7 @@ describe('init', () => {
       pretest: 'fake run compile',
       posttest: 'fake run lint',
     };
-    const pkg: PackageJson = {
+    const pkg: PackageJSON = {
       ...MINIMAL_PACKAGE_JSON,
       scripts: {...SCRIPTS},
     };
@@ -105,7 +105,7 @@ describe('init', () => {
       pretest: 'fake run compile',
       posttest: 'fake run lint',
     };
-    const pkg: PackageJson = {
+    const pkg: PackageJSON = {
       ...MINIMAL_PACKAGE_JSON,
       scripts: {...SCRIPTS},
     };
@@ -115,7 +115,7 @@ describe('init', () => {
   });
 
   it('addDependencies should add a deps section if none exists', async () => {
-    const pkg: PackageJson = {...MINIMAL_PACKAGE_JSON};
+    const pkg: PackageJSON = {...MINIMAL_PACKAGE_JSON};
     const result = await init.addDependencies(pkg, OPTIONS);
     assert.strictEqual(result, true); // made edits.
     assert.ok(pkg.devDependencies);
@@ -127,7 +127,7 @@ describe('init', () => {
       typescript: 'or the other',
       '@types/node': 'or another',
     };
-    const pkg: PackageJson = {
+    const pkg: PackageJSON = {
       ...MINIMAL_PACKAGE_JSON,
       devDependencies: {...DEPS},
     };
@@ -139,7 +139,7 @@ describe('init', () => {
 
   it('addDependencies should edit existing deps on yes', async () => {
     const DEPS = {gts: 'something', typescript: 'or the other'};
-    const pkg: PackageJson = {
+    const pkg: PackageJSON = {
       ...MINIMAL_PACKAGE_JSON,
       devDependencies: {...DEPS},
     };
@@ -161,14 +161,14 @@ describe('init', () => {
         assert.notStrictEqual(
           contents,
           originalContents,
-          'the file should have been modified'
+          'the file should have been modified',
         );
         assert.strictEqual(
           contents.some,
           originalContents.some,
-          'unrelated property should have preserved'
+          'unrelated property should have preserved',
         );
-      }
+      },
     );
   });
 
@@ -195,7 +195,7 @@ describe('init', () => {
         const contents = await readJson('./package.json');
         const cmd = process.platform === 'win32' ? 'yarn.cmd' : 'yarn';
         assert.strictEqual(contents.scripts.prepare, cmd + ' run compile');
-      }
+      },
     );
   });
 
