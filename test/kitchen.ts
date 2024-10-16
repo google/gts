@@ -14,20 +14,21 @@ const keep = !!process.env.GTS_KEEP_TEMPDIRS;
 const stagingDir = tmp.dirSync({keep, unsafeCleanup: true});
 const stagingPath = stagingDir.name;
 const execOpts = {
-  cwd: `${stagingPath}${path.sep}kitchen`,
-  encoding: 'utf8' as BufferEncoding,
-};
+  cwd: path.join(stagingPath, 'kitchen'),
+  encoding: 'utf8',
+} as const;
 
 const action = process.platform !== 'win32' ? describe : describe.skip;
 
 action('🚰 kitchen sink', () => {
   const fixturesPath = path.join('test', 'fixtures');
   const gtsPath = path.join('node_modules', '.bin', 'gts');
-  const kitchenPath = path.join(stagingPath, 'kitchen');
+  const kitchenPath = execOpts.cwd;
 
   // Create a staging directory with temp fixtures used to test on a fresh application.
   before(() => {
     console.log(`${chalk.blue(`${__filename} staging area: ${stagingPath}`)}`);
+    console.log('directory pre-pack:', fs.readdirSync('.'));
     cp.execSync('npm pack');
     const tarball = `${pkg.name}-${pkg.version}.tgz`;
     fs.renameSync(tarball, 'gts.tgz');
@@ -36,6 +37,7 @@ action('🚰 kitchen sink', () => {
     fs.moveSync('gts.tgz', targetPath);
     fs.copySync(fixturesPath, path.join(stagingPath, path.sep));
   });
+
   // CLEAN UP - remove the staging directory when done.
   after('cleanup staging', () => {
     if (!keep) {
@@ -75,9 +77,15 @@ action('🚰 kitchen sink', () => {
   it('should use as a non-locally installed module', () => {
     // Use from a directory different from where we have locally installed. This
     // simulates use as a globally installed module.
-    const GTS = path.resolve(stagingPath, 'kitchen/node_modules/.bin/gts');
+    const GTS = path.resolve(
+      stagingPath,
+      'kitchen',
+      'node_modules',
+      '.bin',
+      'gts'
+    );
     const tmpDir = tmp.dirSync({keep, unsafeCleanup: true});
-    const opts = {cwd: path.join(tmpDir.name, 'kitchen')};
+    const opts = {cwd: path.join(tmpDir.name, 'kitchen')} as const;
 
     // Copy test files.
     fs.copySync(fixturesPath, tmpDir.name);
@@ -86,6 +94,7 @@ action('🚰 kitchen sink', () => {
       path.join(stagingPath, 'gts.tgz'),
       path.join(tmpDir.name, 'gts.tgz'),
     );
+
     // It's important to use `-n` here because we don't want to overwrite
     // the version of gts installed, as it will trigger the npm install.
     spawn.sync(GTS, ['init', '-n'], opts);
