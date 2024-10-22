@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.0.1](https://github.com/google/gts/compare/v6.0.0...v6.0.1) (2024-10-22)
+
+
+### Bug Fixes
+
+* Allow `typescript` v5+ as a peer dependency ([#909](https://github.com/google/gts/issues/909)) ([996aaec](https://github.com/google/gts/commit/996aaece999033e2686300477bdae21debf62368))
+
 ## [6.0.0](https://github.com/google/gts/compare/v5.3.1...v6.0.0) (2024-10-10)
 
 
