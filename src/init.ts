@@ -19,7 +19,6 @@ import * as inquirer from 'inquirer';
 import * as path from 'path';
 import {ncp} from 'ncp';
 import * as util from 'util';
-import * as writeFileAtomic from 'write-file-atomic';
 
 import {
   getPkgManagerCommand,
@@ -168,7 +167,7 @@ async function writePackageJson(
 ): Promise<void> {
   options.logger.log('Writing package.json...');
   if (!options.dryRun) {
-    await writeFileAtomic('./package.json', formatJson(packageJson));
+    await fs.promises.writeFile('./package.json', formatJson(packageJson));
   }
   const preview = {
     scripts: packageJson.scripts,
@@ -216,7 +215,7 @@ async function generateConfigFile(
   if (writeFile) {
     options.logger.log(`Writing ${filename}...`);
     if (!options.dryRun) {
-      await writeFileAtomic(filename, contents);
+      await fs.promises.writeFile(filename, contents);
     }
     options.logger.log(contents);
   }
