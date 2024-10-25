@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.0.2](https://github.com/google/gts/compare/v6.0.1...v6.0.2) (2024-10-25)
+
+
+### Bug Fixes
+
+* TS `lib` Support for Node 18+ ([#913](https://github.com/google/gts/issues/913)) ([82aa8e3](https://github.com/google/gts/commit/82aa8e33869b9d91ac426afbe3027e6b6f7b90b3))
+
 ## [6.0.1](https://github.com/google/gts/compare/v6.0.0...v6.0.1) (2024-10-22)
 
 
