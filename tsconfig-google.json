@@ -4,7 +4,7 @@
     "allowUnusedLabels": false,
     "composite": true,
     "forceConsistentCasingInFileNames": true,
-    "lib": ["es2018"],
+    "lib": ["ES2023"],
     "module": "commonjs",
     "noEmitOnError": true,
     "noFallthroughCasesInSwitch": true,
@@ -13,7 +13,7 @@
     "sourceMap": true,
     "stripInternal": true,
     "strict": true,
-    "target": "es2018"
+    "target": "ES2022"
   },
   "exclude": ["node_modules"]
 }
