@@ -1,6 +1,6 @@
 {
   "name": "gts",
-  "version": "6.0.2",
+  "version": "6.0.3",
   "description": "Google TypeScript Style",
   "repository": "google/gts",
   "main": "build/src/index.js",
@@ -43,8 +43,8 @@
   "author": "Google Inc.",
   "license": "Apache-2.0",
   "dependencies": {
-    "@typescript-eslint/eslint-plugin": "5.62.0",
-    "@typescript-eslint/parser": "5.62.0",
+    "@typescript-eslint/eslint-plugin": "8.11.0",
+    "@typescript-eslint/parser": "8.0.1",
     "chalk": "^4.1.2",
     "eslint": "8.57.1",
     "eslint-config-prettier": "9.1.0",
