@@ -1,11 +1,11 @@
 {
-  "name": "gts",
+  "name": "kts",
   "version": "6.0.2",
-  "description": "Google TypeScript Style",
-  "repository": "google/gts",
+  "description": "Google TypeScript Style, fork for Kode Factory",
+  "repository": "kode-factory/kts",
   "main": "build/src/index.js",
   "bin": {
-    "gts": "build/src/cli.js"
+    "kts": "build/src/cli.js"
   },
   "files": [
     "CHANGELOG.md",
