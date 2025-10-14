@@ -53,12 +53,12 @@ gts lint *.ts
 
 ### Working with eslint
 
-Under the covers, we use [eslint][eslint-url] to enforce the style guide and provide automated fixes, and [prettier][prettier-url] to re-format code. To use the shared `eslint` configuration, create an `.eslintrc` in your project directory, and extend the shared config:
+Under the covers, we use [eslint][eslint-url] to enforce the style guide and provide automated fixes, and [prettier][prettier-url] to re-format code. To use the shared `eslint` configuration, create an `eslint.config.js` in your project directory, and extend the shared config:
 
-```yml
----
-extends:
-  - './node_modules/gts'
+```js
+module.exports = [
+  ...require('gts'),
+];
 ```
 
 If you don't want to use the `gts` CLI, you can drop down to using the module as a basic `eslint` config, and just use the `eslint` cli:

@@ -143,7 +143,7 @@ export async function run(verb: string, files: string[]): Promise<boolean> {
       try {
         await execa('eslint', flags, {stdio: 'inherit'});
         return true;
-      } catch (e) {
+      } catch {
         return false;
       }
     }
@@ -172,12 +172,11 @@ if (cli.input.length < 1) {
 run(cli.input[0], cli.input.slice(1))
   .then(success => {
     if (!success) {
-      // eslint-disable-next-line n/no-process-exit
       process.exit(1);
     }
   })
   .catch(e => {
     console.error(e);
-    // eslint-disable-next-line n/no-process-exit
+
     process.exit(1);
   });
