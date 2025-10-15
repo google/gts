@@ -40,7 +40,7 @@ export interface Options {
 export type VerbFilesFunction = (
   options: Options,
   files: string[],
-  fix?: boolean
+  fix?: boolean,
 ) => Promise<boolean>;
 
 const logger: Logger = console;
@@ -103,7 +103,7 @@ export async function run(verb: string, files: string[]): Promise<boolean> {
     throw new Error(
       `gts requires node.js 10.x or up. You are currently running
       ${process.version}, which is not supported. Please upgrade to
-      a safe, secure version of nodejs!`
+      a safe, secure version of nodejs!`,
     );
   }
 
@@ -131,7 +131,7 @@ export async function run(verb: string, files: string[]): Promise<boolean> {
       '**/*.js',
       '**/*.tsx',
       '**/*.jsx',
-      '--no-error-on-unmatched-pattern'
+      '--no-error-on-unmatched-pattern',
     );
   }
 
@@ -167,9 +167,15 @@ if (cli.input.length < 1) {
   usage();
 }
 
-run(cli.input[0], cli.input.slice(1)).then(success => {
-  if (!success) {
+run(cli.input[0], cli.input.slice(1))
+  .then(success => {
+    if (!success) {
+      // eslint-disable-next-line n/no-process-exit
+      process.exit(1);
+    }
+  })
+  .catch(e => {
+    console.error(e);
     // eslint-disable-next-line n/no-process-exit
     process.exit(1);
-  }
-});
+  });
