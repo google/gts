@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 import chalk = require('chalk');
+import * as fs from 'fs';
 import * as ts from 'typescript';
 
 import {Options} from './cli';
-import {getTSConfig, rimrafp} from './util';
+import {getTSConfig} from './util';
 
 interface TSConfig {
   compilerOptions: ts.CompilerOptions;
@@ -39,7 +40,7 @@ export async function clean(options: Options): Promise<boolean> {
     }
     const message = `${chalk.red('Removing')} ${outDir} ...`;
     options.logger.log(message);
-    await rimrafp(outDir);
+    await fs.promises.rm(outDir, {recursive: true, force: true});
     return true;
   } else {
     options.logger.error(

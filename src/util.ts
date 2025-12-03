@@ -15,14 +15,13 @@
  */
 
 import * as fs from 'fs';
-import * as path from 'path';
-import {rimraf} from 'rimraf';
-import {promisify} from 'util';
-import * as ncp from 'ncp';
 import * as JSON5 from 'json5';
+import * as ncp from 'ncp';
+import * as path from 'path';
+import {promisify} from 'util';
 
 export const readFilep = promisify(fs.readFile);
-export const rimrafp = rimraf;
+
 export const ncpp = promisify(ncp.ncp);
 
 export interface Bag<T> {
