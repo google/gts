@@ -56,7 +56,7 @@
     "meow": "^9.0.0",
     "ncp": "^2.0.0",
     "prettier": "3.3.3",
-    "rimraf": "3.0.2",
+    "rimraf": "6.1.2",
     "write-file-atomic": "^4.0.0"
   },
   "devDependencies": {
