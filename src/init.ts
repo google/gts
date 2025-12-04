@@ -33,7 +33,6 @@ import {Options} from './cli';
 import {PackageJSON} from '@npm/types';
 import chalk = require('chalk');
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const pkg = require('../../package.json');
 
 const ncpp = util.promisify(ncp);
@@ -109,7 +108,6 @@ export async function addScripts(
       }
 
       if (install) {
-        // eslint-disable-next-line require-atomic-updates
         packageJson.scripts[script] = scripts[script];
         edits = true;
       }
@@ -147,7 +145,6 @@ export async function addDependencies(
       }
 
       if (install) {
-        // eslint-disable-next-line require-atomic-updates
         packageJson.devDependencies[dep] = deps[dep];
         edits = true;
       }
@@ -177,11 +174,24 @@ async function writePackageJson(
   options.logger.dir(preview);
 }
 
-export const ESLINT_CONFIG = {
-  extends: './node_modules/gts/',
-};
+export const ESLINT_CONFIG = `let customConfig = [];
+let hasIgnoresFile = false;
+try {
+  require.resolve('./eslint.ignores.js');
+  hasIgnoresFile = true;
+} catch {
+  // eslint.ignores.js doesn't exist
+}
 
-export const ESLINT_IGNORE = 'build/\n';
+if (hasIgnoresFile) {
+  const ignores = require('./eslint.ignores.js');
+  customConfig = [{ignores}];
+}
+
+module.exports = [...customConfig, ...require('gts')];
+`;
+
+export const ESLINT_IGNORE = "module.exports = ['build/']\n";
 
 async function generateConfigFile(
   options: Options,
@@ -223,15 +233,11 @@ async function generateConfigFile(
 }
 
 async function generateESLintConfig(options: Options): Promise<void> {
-  return generateConfigFile(
-    options,
-    './.eslintrc.json',
-    formatJson(ESLINT_CONFIG),
-  );
+  return generateConfigFile(options, './eslint.config.js', ESLINT_CONFIG);
 }
 
 async function generateESLintIgnore(options: Options): Promise<void> {
-  return generateConfigFile(options, './.eslintignore', ESLINT_IGNORE);
+  return generateConfigFile(options, './eslint.ignores.js', ESLINT_IGNORE);
 }
 
 async function generateTsConfig(options: Options): Promise<void> {
@@ -245,8 +251,8 @@ async function generateTsConfig(options: Options): Promise<void> {
 
 async function generatePrettierConfig(options: Options): Promise<void> {
   const style = `module.exports = {
-  ...require('gts/.prettierrc.json')
-}
+  ...require('gts/.prettierrc.json'),
+};
 `;
   return generateConfigFile(options, './.prettierrc.js', style);
 }

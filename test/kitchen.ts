@@ -8,7 +8,7 @@ import {describe, it, before, after} from 'mocha';
 
 import spawn = require('cross-spawn');
 import execa = require('execa');
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+
 const pkg = require('../../package.json');
 const keep = !!process.env.GTS_KEEP_TEMPDIRS;
 const stagingDir = tmp.dirSync({keep, unsafeCleanup: true});
@@ -17,6 +17,19 @@ const execOpts = {
   cwd: `${stagingPath}${path.sep}kitchen`,
   encoding: 'utf8' as BufferEncoding,
 };
+
+function assertIncludes(actual: string, expected: string, message?: string) {
+  if (!actual.includes(expected)) {
+    console.log('\n=== assertIncludes FAILURE ===');
+    console.log('Expected substring:', expected);
+    console.log('Actual text:', actual);
+    console.log('==============================\n');
+    assert.fail(
+      message ||
+        `Expected string to include "${expected}" but it was not found`,
+    );
+  }
+}
 
 const action = process.platform !== 'win32' ? describe : describe.skip;
 
@@ -60,8 +73,8 @@ action('🚰 kitchen sink', () => {
 
     // Ensure config files got generated.
     fs.accessSync(path.join(kitchenPath, 'tsconfig.json'));
-    fs.accessSync(path.join(kitchenPath, '.eslintrc.json'));
-    fs.accessSync(path.join(kitchenPath, '.eslintignore'));
+    fs.accessSync(path.join(kitchenPath, 'eslint.config.js'));
+    fs.accessSync(path.join(kitchenPath, 'eslint.ignores.js'));
     fs.accessSync(path.join(kitchenPath, '.prettierrc.js'));
     fs.accessSync(path.join(kitchenPath, '.editorconfig'));
     console.log('ensured config files existed');
@@ -124,12 +137,12 @@ action('🚰 kitchen sink', () => {
     );
     assert.ok(
       fs
-        .readFileSync(path.join(kitchenPath, '.eslintrc.json'), 'utf8')
+        .readFileSync(path.join(kitchenPath, 'eslint.config.js'), 'utf8')
         .endsWith('\n'),
     );
     assert.ok(
       fs
-        .readFileSync(path.join(kitchenPath, '.eslintignore'), 'utf8')
+        .readFileSync(path.join(kitchenPath, 'eslint.ignores.js'), 'utf8')
         .endsWith('\n'),
     );
     assert.ok(
@@ -146,19 +159,22 @@ action('🚰 kitchen sink', () => {
       Object.assign({}, {reject: false}, execOpts),
     );
     assert.strictEqual(res.exitCode, 1);
-    assert.ok(res.stdout.includes('assigned a value but'));
+    assertIncludes(
+      res.stdout,
+      'is never reassigned.',
+      'Expected to find unused variable error',
+    );
   });
 
   it('should fix', () => {
     const preFix = fs
       .readFileSync(path.join(kitchenPath, 'src', 'server.ts'), 'utf8')
       .split(/[\n\r]+/);
-
     cp.execSync('npm run fix', execOpts);
     const postFix = fs
       .readFileSync(path.join(kitchenPath, 'src', 'server.ts'), 'utf8')
       .split(/[\n\r]+/);
-    assert.strictEqual(preFix[0].trim() + ';', postFix[0]); // fix should have added a semi-colon
+    assert.strictEqual(preFix[1].trim() + ';', postFix[1]); // fix should have added a semi-colon
   });
 
   it('should lint after fix', () => {
