@@ -65,7 +65,7 @@
   "devDependencies": {
     "@npm/types": "^2.0.0",
     "@types/cross-spawn": "^6.0.2",
-    "@types/eslint": "^8.0.0",
+    "@types/eslint": "^9.0.0",
     "@types/fs-extra": "^11.0.0",
     "@types/inquirer": "^8.0.0",
     "@types/json5": "2.2.0",
