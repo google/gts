@@ -1,5 +1,16 @@
 # Changelog
 
+## [7.0.0](https://github.com/google/gts/compare/v6.0.2...v7.0.0) (2025-12-04)
+
+
+### ⚠ BREAKING CHANGES
+
+* eslint use new config format (plus update deps) ([#935](https://github.com/google/gts/issues/935))
+
+### Features
+
+* eslint use new config format (plus update deps) ([#935](https://github.com/google/gts/issues/935)) ([625836a](https://github.com/google/gts/commit/625836a980c5d7ae8e987eee154a6d2da5b3cb0f))
+
 ## [6.0.2](https://github.com/google/gts/compare/v6.0.1...v6.0.2) (2024-10-25)
 
 
