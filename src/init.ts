@@ -13,24 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {confirm} from '@inquirer/prompts';
 import * as cp from 'child_process';
 import * as fs from 'fs';
-import * as inquirer from 'inquirer';
-import * as path from 'path';
 import {ncp} from 'ncp';
+import * as path from 'path';
 import * as util from 'util';
 import * as writeFileAtomic from 'write-file-atomic';
 
 import {
+  Bag,
+  DefaultPackage,
   getPkgManagerCommand,
   readFilep as read,
   readJsonp as readJson,
-  Bag,
-  DefaultPackage,
 } from './util';
 
-import {Options} from './cli';
 import {PackageJSON} from '@npm/types';
+import {Options} from './cli';
 import chalk = require('chalk');
 
 const pkg = require('../../package.json');
@@ -65,13 +65,11 @@ async function query(
     options.logger.log(message);
   }
 
-  const answers: inquirer.Answers = await inquirer.prompt({
-    type: 'confirm',
-    name: 'query',
+  const answer = await confirm({
     message: question,
     default: defaultVal,
   });
-  return answers.query;
+  return answer;
 }
 
 export async function addScripts(
