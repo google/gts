@@ -29,7 +29,7 @@ jobs:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
       - uses: actions/setup-node@v6
         with:
-          node-version: 18
+          node-version: 24
       - run: npm ci
       - run: npm run system-test
   system_test:
@@ -38,7 +38,7 @@ jobs:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
       - uses: actions/setup-node@v6
         with:
-          node-version: 18
+          node-version: 24
       - run: npm ci
       - run: npm run system-test
   lint:
@@ -47,7 +47,7 @@ jobs:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
       - uses: actions/setup-node@v6
         with:
-          node-version: 18
+          node-version: 24
       - run: npm ci
       - run: npm run lint
   license_check:
@@ -56,6 +56,6 @@ jobs:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
       - uses: actions/setup-node@v6
         with:
-          node-version: 18
+          node-version: 24
       - run: npm ci
       - run: npm run license-check
