@@ -73,6 +73,7 @@ module.exports = defineConfig([
       },
     },
     rules: {
+      '@typescript-eslint/array-type': ['error', { default: 'array-simple' }],
       '@typescript-eslint/ban-ts-comment': 'warn',
       '@typescript-eslint/no-floating-promises': 'error',
       '@typescript-eslint/no-non-null-assertion': 'off',
