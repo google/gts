@@ -6,8 +6,18 @@
     "resolveJsonModule": true,
     "allowJs": true,
     "checkJs": false,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "esModuleInterop": true
   },
-  "include": ["eslint.config.js", "eslint.ignores.js", "src/**/*.js", "src/**/*.ts", "test/**/*.ts"],
+  "include": [
+    "eslint.config.js",
+    "eslint.ignores.js",
+    "src/**/*.js",
+    "src/**/*.ts",
+    "test/**/*.ts",
+    "dist/**/*.js",
+    "package.json",
+    "tsup.config.ts"
+  ],
   "exclude": ["test/fixtures/**/*.*", "template/**/*.*"]
 }

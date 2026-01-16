@@ -17,11 +17,11 @@
  */
 
 import * as path from 'path';
-import * as meow from 'meow';
+import meow from 'meow';
 import {init} from './init';
 import {clean} from './clean';
 import {isYarnUsed} from './util';
-import * as execa from 'execa';
+import execa from 'execa';
 
 export interface Logger {
   log: (...args: Array<{}>) => void;
@@ -141,7 +141,7 @@ export async function run(verb: string, files: string[]): Promise<boolean> {
     case 'lint':
     case 'check': {
       try {
-        await execa('eslint', flags, {stdio: 'inherit'});
+        await execa('npx', ['eslint', ...flags], {stdio: 'inherit'});
         return true;
       } catch {
         return false;
@@ -150,7 +150,7 @@ export async function run(verb: string, files: string[]): Promise<boolean> {
     case 'fix': {
       const fixFlag = options.dryRun ? '--fix-dry-run' : '--fix';
       try {
-        await execa('eslint', [fixFlag, ...flags], {stdio: 'inherit'});
+        await execa('npx', ['eslint', fixFlag, ...flags], {stdio: 'inherit'});
         return true;
       } catch (e) {
         console.error(e);

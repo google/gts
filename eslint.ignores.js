@@ -1,1 +1,1 @@
-module.exports = ['build/', '**/node_modules/', 'template/', 'test/fixtures/'];
+module.exports = ['build/', '**/node_modules/', 'template/', 'test/fixtures/', 'dist/'];

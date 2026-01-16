@@ -15,7 +15,7 @@
  */
 
 import * as sinon from 'sinon';
-import * as cp from 'child_process';
+import cp from 'child_process';
 import * as assert from 'assert';
 import * as fs from 'fs';
 import * as path from 'path';

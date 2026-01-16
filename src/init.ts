@@ -19,7 +19,7 @@ import * as inquirer from 'inquirer';
 import * as path from 'path';
 import {ncp} from 'ncp';
 import * as util from 'util';
-import * as writeFileAtomic from 'write-file-atomic';
+import writeFileAtomic from 'write-file-atomic';
 
 import {
   getPkgManagerCommand,
@@ -33,7 +33,7 @@ import {Options} from './cli';
 import {PackageJSON} from '@npm/types';
 import chalk = require('chalk');
 
-const pkg = require('../../package.json');
+import * as pkg from '../package.json';
 
 const ncpp = util.promisify(ncp);
 

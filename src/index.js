@@ -21,7 +21,7 @@ const prettierConfig = require('eslint-config-prettier');
 const pluginN = require('eslint-plugin-n');
 const pluginPrettier = require('eslint-plugin-prettier');
 const globals = require('globals');
-const defineConfig = require('eslint/config').defineConfig;
+const { defineConfig } = require('eslint/config');
 
 module.exports = defineConfig([
   eslint.configs.recommended,

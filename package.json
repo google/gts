@@ -3,14 +3,23 @@
   "version": "7.0.0",
   "description": "Google TypeScript Style",
   "repository": "google/gts",
-  "main": "build/src/index.js",
+  "main": "dist/cjs/index.js",
+  "types": "dist/cjs/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    },
+    "./package.json": "./package.json",
+    "./.prettierrc.json": "./.prettierrc.json",
+    "./tsconfig-google.json": "./tsconfig-google.json"
+  },
   "bin": {
-    "gts": "build/src/cli.js"
+    "gts": "dist/cjs/cli.js"
   },
   "files": [
     "CHANGELOG.md",
-    "build/src",
-    "build/template",
+    "dist",
     "build/eslint.config.js",
     "build/eslint.ignores.js",
     ".prettierrc.json",
@@ -21,14 +30,14 @@
   ],
   "scripts": {
     "build": "npm run compile",
-    "clean": "node -e \"require('fs').rmSync('./build', { recursive: true, force: true })\"",
-    "compile": "tsc",
-    "postcompile": "ncp template build/template",
+    "clean": "node -e \"require('fs').rmSync('./dist', { recursive: true, force: true })\"",
+    "compile": "tsup",
+    "postcompile": "ncp template dist/cjs/template && ncp template dist/esm/template",
     "lint": "eslint '**/*.ts'",
     "prepare": "npm run compile",
-    "test": "c8 mocha build/test/test-*.js",
-    "system-test": "c8 mocha build/test/kitchen.js",
-    "pretest": "npm run compile",
+    "test": "c8 mocha --import=tsx test/test-*.ts",
+    "system-test": "c8 mocha --import=tsx test/kitchen.ts",
+    "pretest": "tsc --noEmit && npm run compile",
     "presystem-test": "npm run compile",
     "license-check": "jsgl --local .",
     "fix": "eslint --fix '**/*.ts'"
@@ -83,6 +92,8 @@
     "mocha": "^11.0.0",
     "sinon": "^21.0.0",
     "tmp": "0.2.4",
+    "tsup": "^8.5.1",
+    "tsx": "^4.21.0",
     "typescript": "^5.6.3"
   },
   "peerDependencies": {

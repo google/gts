@@ -9,7 +9,7 @@ import {describe, it, before, after} from 'mocha';
 import spawn = require('cross-spawn');
 import execa = require('execa');
 
-const pkg = require('../../package.json');
+const pkg = require('../package.json');
 const keep = !!process.env.GTS_KEEP_TEMPDIRS;
 const stagingDir = tmp.dirSync({keep, unsafeCleanup: true});
 const stagingPath = stagingDir.name;
