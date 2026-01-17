@@ -257,6 +257,21 @@ async function generatePrettierConfig(options: Options): Promise<void> {
   return generateConfigFile(options, './.prettierrc.js', style);
 }
 
+async function generateGitIngore(options: Options): Promise<void> {
+  const config = `.DS_Store
+.nyc_output
+.vscode
+build
+coverage
+node_modules
+npm-debug.log
+yarn-error.log
+yarn.lock
+__pycache__
+`;
+  return generateConfigFile(options, './.gitignore', config);
+}
+
 async function generateEditorConfig(options: Options): Promise<void> {
   const config = `root = true
 
@@ -343,6 +358,7 @@ export async function init(options: Options): Promise<boolean> {
     generateESLintIgnore(options),
     generatePrettierConfig(options),
     generateEditorConfig(options),
+    generateGitIngore(options),
   ]);
   await installDefaultTemplate(options);
 
