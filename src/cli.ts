@@ -37,6 +37,7 @@ export interface Options {
   no: boolean;
   logger: Logger;
   yarn?: boolean;
+  cache?: boolean;
 }
 
 export type VerbFilesFunction = (
@@ -65,6 +66,7 @@ const cli = meow({
     -n, --no      Assume a no answer for every prompt.
     --dry-run     Don't make any actual changes.
     --yarn        Use yarn instead of npm.
+    --cache       Only check changed files
 
 	Examples
     $ gts init -y
@@ -78,6 +80,7 @@ const cli = meow({
     no: {type: 'boolean', alias: 'n'},
     dryRun: {type: 'boolean'},
     yarn: {type: 'boolean'},
+    cache: {type: 'boolean'},
   },
 });
 
@@ -118,6 +121,7 @@ export async function run(verb: string, files: string[]): Promise<boolean> {
     no: cli.flags.no || cli.flags.n || false,
     logger,
     yarn: cli.flags.yarn || isYarnUsed(),
+    cache: cli.flags.cache || false,
   } as Options;
   // Linting/formatting depend on typescript. We don't want to load the
   // typescript module during init, since it might not exist.
@@ -135,6 +139,10 @@ export async function run(verb: string, files: string[]): Promise<boolean> {
       '**/*.jsx',
       '--no-error-on-unmatched-pattern',
     );
+  }
+
+  if (options.cache) {
+    flags.push('--cache');
   }
 
   switch (verb) {
