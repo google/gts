@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import chalk = require('chalk');
+import pc = require('picocolors');
 import * as fs from 'fs';
 import * as ts from 'typescript';
 
@@ -33,19 +33,19 @@ export async function clean(options: Options): Promise<boolean> {
     const outDir = tsconfig.compilerOptions.outDir;
     if (outDir === '.') {
       options.logger.error(
-        `${chalk.red('ERROR:')} ${chalk.gray('compilerOptions.outDir')} ` +
+        `${pc.red('ERROR:')} ${pc.gray('compilerOptions.outDir')} ` +
           'cannot use the value ".".  That would delete all of our sources.',
       );
       return false;
     }
-    const message = `${chalk.red('Removing')} ${outDir} ...`;
+    const message = `${pc.red('Removing')} ${outDir} ...`;
     options.logger.log(message);
     await fs.promises.rm(outDir, {recursive: true, force: true});
     return true;
   } else {
     options.logger.error(
-      `${chalk.red('ERROR:')} The ${chalk.gray('clean')} command` +
-        ` requires ${chalk.gray('compilerOptions.outDir')} to be defined in ` +
+      `${pc.red('ERROR:')} The ${pc.gray('clean')} command` +
+        ` requires ${pc.gray('compilerOptions.outDir')} to be defined in ` +
         'tsconfig.json.',
     );
     return false;

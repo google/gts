@@ -1,4 +1,4 @@
-import chalk = require('chalk');
+import pc = require('picocolors');
 import * as cp from 'child_process';
 import * as fs from 'fs-extra';
 import * as tmp from 'tmp';
@@ -40,7 +40,7 @@ action('🚰 kitchen sink', () => {
 
   // Create a staging directory with temp fixtures used to test on a fresh application.
   before(() => {
-    console.log(`${chalk.blue(`${__filename} staging area: ${stagingPath}`)}`);
+    console.log(`${pc.blue(`${__filename} staging area: ${stagingPath}`)}`);
     cp.execSync('npm pack');
     const tarball = `${pkg.name}-${pkg.version}.tgz`;
     fs.renameSync(tarball, 'gts.tgz');
