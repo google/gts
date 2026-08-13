@@ -31,7 +31,7 @@ import {
 
 import {Options} from './cli';
 import {PackageJSON} from '@npm/types';
-import chalk = require('chalk');
+import pc = require('picocolors');
 
 const pkg = require('../../package.json');
 
@@ -102,8 +102,8 @@ export async function addScripts(
     if (existing !== target) {
       if (existing) {
         const message =
-          `package.json already has a script for ${chalk.bold(script)}:\n` +
-          `-${chalk.red(existing)}\n+${chalk.green(target)}`;
+          `package.json already has a script for ${pc.bold(script)}:\n` +
+          `-${pc.red(existing)}\n+${pc.green(target)}`;
         install = await query(message, 'Replace', false, options);
       }
 
@@ -139,8 +139,8 @@ export async function addDependencies(
     if (existing !== target) {
       if (existing) {
         const message =
-          `Already have devDependency for ${chalk.bold(dep)}:\n` +
-          `-${chalk.red(existing)}\n+${chalk.green(target)}`;
+          `Already have devDependency for ${pc.bold(dep)}:\n` +
+          `-${pc.red(existing)}\n+${pc.green(target)}`;
         install = await query(message, 'Overwrite', false, options);
       }
 
@@ -216,7 +216,7 @@ async function generateConfigFile(
     return;
   } else if (existing) {
     writeFile = await query(
-      `${chalk.bold(filename)} already exists`,
+      `${pc.bold(filename)} already exists`,
       'Overwrite',
       false,
       options,
@@ -313,7 +313,7 @@ export async function init(options: Options): Promise<boolean> {
       throw new Error(`Unable to open package.json file: ${err.message}`);
     }
     const generate = await query(
-      `${chalk.bold('package.json')} does not exist.`,
+      `${pc.bold('package.json')} does not exist.`,
       'Generate',
       true,
       options,
