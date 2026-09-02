@@ -1,5 +1,5 @@
 'use strict';
-const config = require('./src/index.js');
+const config = require('./build/src/index.js');
 const ignores = require('./eslint.ignores.js');
 const defineConfig = require('eslint/config').defineConfig;
 

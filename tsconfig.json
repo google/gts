@@ -8,6 +8,6 @@
     "checkJs": false,
     "skipLibCheck": true
   },
-  "include": ["eslint.config.js", "eslint.ignores.js", "src/**/*.js", "src/**/*.ts", "test/**/*.ts"],
-  "exclude": ["test/fixtures/**/*.*", "template/**/*.*"]
+  "include": ["src/**/*.js", "src/**/*.ts", "test/**/*.ts"],
+  "exclude": ["build", "node_modules", "test/fixtures/**/*.*", "template/**/*.*"]
 }
